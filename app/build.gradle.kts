@@ -107,6 +107,8 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging)
 
+    implementation(libs.youtube.player)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

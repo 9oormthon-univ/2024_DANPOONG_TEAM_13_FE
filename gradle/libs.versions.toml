@@ -23,6 +23,7 @@ okhttp3 = "5.0.0-alpha.11"
 chuckerLibrary = "4.0.0"
 hilt = "2.47"
 hiltNavigationCompose = "1.0.0-alpha02"
+youtubePlayer = "12.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -70,6 +71,8 @@ chucker_library = { group = "com.github.chuckerteam.chucker", name = "library", 
 
 kakao-sdk-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakaoSdkUser" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutinesAndroid" }
+
+youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "youtubePlayer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
