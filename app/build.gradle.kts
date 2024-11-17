@@ -31,6 +31,11 @@ android {
 
         buildConfigField(
             "String",
+            "BASE_URL",
+            properties["base.url"].toString()
+        )
+        buildConfigField(
+            "String",
             "KAKAO_APP_KEY",
             properties["kakao.native.app.key"].toString()
         )
