@@ -52,6 +52,7 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-common = { group = "com.google.firebase", name = "firebase-common" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase_messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
