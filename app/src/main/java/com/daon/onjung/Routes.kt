@@ -12,7 +12,7 @@ object Routes {
         const val ROUTE = "homeRoute"
     }
 
-    object MailBox {
+    object Mail {
         const val ROUTE = "mailBoxRoute"
     }
 
