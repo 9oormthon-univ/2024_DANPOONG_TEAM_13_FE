@@ -57,7 +57,10 @@ fun ShopInfoContainer(
     Column(
         modifier = modifier.background(
             color = OnjungTheme.colors.white,
-            shape = RoundedCornerShape(20.dp)
+            shape = RoundedCornerShape(
+                bottomStart = 20.dp,
+                bottomEnd = 20.dp
+            )
         )
     ) {
         ShopInfoHeader(
@@ -95,8 +98,9 @@ private fun ShopInfoHeader(
 
     Column(
         modifier = Modifier.padding(
-            horizontal = 20.dp,
-            vertical = 24.dp
+            start = 20.dp,
+            end = 20.dp,
+            bottom = 24.dp
         )
     ) {
         Row(
@@ -240,7 +244,7 @@ private fun ShopInfoDetail(
         ) {
             ShopInfoChip(
                 iconRes = R.drawable.ic_visitor_chip,
-                label = "총 방문자 수"
+                label = "총 동참인 수"
             )
 
             Text(
@@ -360,7 +364,7 @@ private fun ExpandButton(
                 .fillMaxWidth()
                 .height(1.dp)
                 .background(
-                    color = OnjungTheme.colors.text_3
+                    color = Color(0xFFD9D9D9)
                 )
         )
         Box(

@@ -243,7 +243,7 @@ private fun ExpandButton(
                 .fillMaxWidth()
                 .height(1.dp)
                 .background(
-                    color = OnjungTheme.colors.text_3
+                    color = Color(0xFFD9D9D9)
                 )
         )
         Box(
