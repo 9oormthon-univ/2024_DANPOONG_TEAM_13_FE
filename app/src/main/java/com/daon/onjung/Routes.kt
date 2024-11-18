@@ -2,20 +2,21 @@ package com.daon.onjung
 
 object Routes {
     object Auth {
-        const val Route = "authRoute"
+        const val ROUTE = "authRoute"
 
-
+        const val SPLASH = "splash"
+        const val LOGIN = "login"
     }
 
     object Home {
-        const val Route = "homeRoute"
+        const val ROUTE = "homeRoute"
     }
 
     object MailBox {
-        const val Route = "mailBoxRoute"
+        const val ROUTE = "mailBoxRoute"
     }
 
     object Profile {
-        const val Route = "profileRoute"
+        const val ROUTE = "profileRoute"
     }
 }

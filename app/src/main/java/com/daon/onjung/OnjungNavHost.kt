@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
+import com.daon.onjung.ui.auth.authGraph
 import com.daon.onjung.ui.component.BottomNavigationBar
 import com.daon.onjung.ui.component.BottomNavigationBarItem
 import com.daon.onjung.ui.theme.OnjungTheme
@@ -53,9 +54,11 @@ fun OnjungNavHost(
             NavHost(
                 modifier = Modifier.padding(padding),
                 navController = navController,
-                startDestination = Routes.Auth.Route
+                startDestination = Routes.Auth.ROUTE
             ) {
-
+                authGraph(
+                    appState = appState
+                )
             }
         }
     }

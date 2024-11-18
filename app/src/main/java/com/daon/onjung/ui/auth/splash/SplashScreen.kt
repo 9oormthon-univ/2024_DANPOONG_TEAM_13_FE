@@ -8,26 +8,41 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.navOptions
+import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
+import com.daon.onjung.Routes
 import com.daon.onjung.ui.theme.OnjungTheme
+import kotlinx.coroutines.delay
 
-@Preview(showBackground = true)
 @Composable
-fun SplashScreen() {
+internal fun SplashScreen(
+    appState: OnjungAppState
+) {
+    LaunchedEffect(Unit) {
+        delay(1500)
+        appState.navigate(
+            Routes.Auth.LOGIN,
+            navOptions {
+                 popUpTo(Routes.Auth.ROUTE) { inclusive = true }
+            }
+        )
+    }
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column (
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_app_logo),
                 contentDescription = "App Logo",

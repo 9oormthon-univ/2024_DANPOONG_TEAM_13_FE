@@ -10,16 +10,16 @@ enum class TopLevelDestination(
     Home(
         label = "홈",
         icon = R.drawable.ic_home,
-        route = Routes.Home.Route
+        route = Routes.Home.ROUTE
     ),
     MailBox(
         label = "온기 우편함",
         icon = R.drawable.ic_mail,
-        route = Routes.MailBox.Route
+        route = Routes.MailBox.ROUTE
     ),
     Profile(
         label = "나의 온기",
         icon = R.drawable.ic_heart,
-        route = Routes.Profile.Route
+        route = Routes.Profile.ROUTE
     )
 }
