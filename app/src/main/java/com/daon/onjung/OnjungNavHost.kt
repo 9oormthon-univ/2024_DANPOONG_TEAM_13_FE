@@ -41,7 +41,7 @@ fun OnjungNavHost(
         modifier = Modifier.navigationBarsPadding()
     ) {
         Scaffold(
-            backgroundColor = Color.White,
+            backgroundColor = OnjungTheme.colors.gray_2,
             snackbarHost = {
                 appState.scaffoldState.snackbarHostState
             },

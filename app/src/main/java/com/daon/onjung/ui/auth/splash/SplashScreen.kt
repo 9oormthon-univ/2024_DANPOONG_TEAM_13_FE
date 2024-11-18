@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.auth.splash
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,7 +38,9 @@ internal fun SplashScreen(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(OnjungTheme.colors.white),
         contentAlignment = Alignment.Center
     ) {
         Column (

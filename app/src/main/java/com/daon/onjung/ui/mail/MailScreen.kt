@@ -35,7 +35,6 @@ internal fun MailScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = OnjungTheme.colors.gray_2)
             .statusBarsPadding()
     ) {
         TopBar(
