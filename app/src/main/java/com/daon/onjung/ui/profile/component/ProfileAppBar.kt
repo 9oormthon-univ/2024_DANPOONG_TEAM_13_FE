@@ -73,7 +73,7 @@ fun ProfileTopBar(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_coupon),
-                        contentDescription = "Switch Icon",
+                        contentDescription = "Coupon Icon",
                         modifier = Modifier.padding(end = 6.dp),
                         tint = if (count > 0) OnjungTheme.colors.main_coral  else OnjungTheme.colors.gray_1 ,
                     )
