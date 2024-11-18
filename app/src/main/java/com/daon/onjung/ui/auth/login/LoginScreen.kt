@@ -31,10 +31,10 @@ import androidx.compose.ui.unit.sp
 import com.daon.onjung.R
 import com.daon.onjung.ui.theme.OnjungTheme
 
-@Composable
-fun LoginScreen(
 
-) {
+@Preview(showBackground = true)
+@Composable
+fun LoginScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -44,8 +44,8 @@ fun LoginScreen(
                         Color(0xFFFFEEDF),
                         Color.Transparent,
                     ),
-                    start = Offset(0f, 0f),  // 그라데이션 시작점 (위)
-                    end = Offset(0f, Float.POSITIVE_INFINITY)  // 그라데이션 종료점 (아래)
+                    start = Offset(0f, 0f),
+                    end = Offset(0f, Float.POSITIVE_INFINITY)
                 )
             ),
         contentAlignment = Alignment.Center
@@ -96,13 +96,5 @@ fun LoginScreen(
                 )
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    OnjungTheme {
-        LoginScreen()
     }
 }

@@ -18,10 +18,9 @@ import androidx.compose.ui.unit.sp
 import com.daon.onjung.R
 import com.daon.onjung.ui.theme.OnjungTheme
 
+@Preview(showBackground = true)
 @Composable
-fun SplashScreen(
-
-) {
+fun SplashScreen() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -44,13 +43,5 @@ fun SplashScreen(
                 textAlign = TextAlign.Center
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SplashScreenPreview() {
-    OnjungTheme {
-        SplashScreen()
     }
 }

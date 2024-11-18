@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.daon.onjung.R
 import com.daon.onjung.ui.theme.OnjungTheme
 
+@Preview
 @Composable
 fun KakaoLoginButton(
     onClick: () -> Unit = {},
@@ -59,13 +60,5 @@ fun KakaoLoginButton(
                 textAlign = TextAlign.Center
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun KakaoLoginButtonPreview() {
-    OnjungTheme {
-        KakaoLoginButton()
     }
 }
