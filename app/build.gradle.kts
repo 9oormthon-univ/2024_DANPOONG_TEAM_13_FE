@@ -112,6 +112,8 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging)
 
+    implementation(libs.coil.compose)
+
     implementation(libs.youtube.player)
 
     testImplementation(libs.junit)
