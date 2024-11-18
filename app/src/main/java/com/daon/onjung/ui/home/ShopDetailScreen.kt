@@ -33,9 +33,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.daon.onjung.MainActivity
+import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
 import com.daon.onjung.ui.component.ShopInfoContainer
 import com.daon.onjung.ui.component.TopBar
@@ -103,9 +103,10 @@ val news = ShopNews(
     )
 )
 
-@Preview(showBackground = true)
 @Composable
-internal fun ShopDetailScreen() {
+internal fun ShopDetailScreen(
+    appState: OnjungAppState
+) {
     var isExpanded by remember { mutableStateOf(true) }
 
     Column(
@@ -115,7 +116,12 @@ internal fun ShopDetailScreen() {
     ) {
         TopBar(
             "식당 상세",
-            leftIconOnClick = {}
+            leftIconOnClick = {
+                appState.navController.navigateUp()
+            },
+            rightIconOnClick = {
+                appState.navController.navigateUp()
+            }
         )
         Box(
             modifier = Modifier.weight(1f),

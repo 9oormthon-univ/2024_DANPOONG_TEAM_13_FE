@@ -25,14 +25,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
 import com.daon.onjung.ui.component.ShopMailContainer
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.theme.OnjungTheme
 
-@Preview
 @Composable
-internal fun MailScreen() {
+internal fun MailScreen(
+    appState: OnjungAppState
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()

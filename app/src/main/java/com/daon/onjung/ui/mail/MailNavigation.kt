@@ -13,6 +13,8 @@ fun NavGraphBuilder.mailGraph(
     composable(
         route = Routes.Mail.ROUTE
     ) {
-        MailScreen()
+        MailScreen(
+            appState = appState
+        )
     }
 }
