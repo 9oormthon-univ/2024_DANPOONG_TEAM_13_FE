@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.daon.onjung.R
 import com.daon.onjung.ui.theme.OnjungTheme
 
-
 @Composable
 fun ShowMoreButton(
     text: String = "",
