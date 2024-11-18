@@ -19,7 +19,7 @@ class ApiResultCall<T>(private val delegate: Call<T>) : Call<ApiResult<T>> {
                         callback.onResponse(
                             this@ApiResultCall,
                             Response.success(
-                                ApiResult.Success(response.body()!!, response.code())
+                                ApiResult.Success(response.body()!!)
                             )
                         )
                     } else {
