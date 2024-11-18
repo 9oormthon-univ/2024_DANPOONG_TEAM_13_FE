@@ -13,6 +13,14 @@ fun NavGraphBuilder.homeGraph(
     composable(
         route = Routes.Home.ROUTE
     ) {
-        HomeScreen()
+        HomeScreen(
+            appState = appState
+        )
+    }
+
+    composable(
+        route = Routes.Home.SHOP_DETAIL
+    ) {
+        ShopDetailScreen()
     }
 }

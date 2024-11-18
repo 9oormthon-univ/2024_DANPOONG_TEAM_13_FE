@@ -40,6 +40,7 @@ import com.daon.onjung.util.formatCurrency
 
 @Composable
 fun ShopInfoContainer(
+    modifier: Modifier = Modifier,
     name: String,
     imageUrl: String,
     tag: String,
@@ -54,7 +55,7 @@ fun ShopInfoContainer(
     onExpandChange: (Boolean) -> Unit
 ) {
     Column(
-        modifier = Modifier.background(
+        modifier = modifier.background(
             color = OnjungTheme.colors.white,
             shape = RoundedCornerShape(20.dp)
         )

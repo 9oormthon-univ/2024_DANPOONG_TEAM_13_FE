@@ -124,7 +124,7 @@ fun ShopCard(
                             ),
                         )
                     }
-                 }
+                }
             }
 
             Row(

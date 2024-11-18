@@ -10,6 +10,8 @@ object Routes {
 
     object Home {
         const val ROUTE = "homeRoute"
+
+        const val SHOP_DETAIL = "shopDetail"
     }
 
     object Mail {

@@ -2,10 +2,10 @@ package com.daon.onjung.ui.component.button
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -38,8 +38,6 @@ fun FilledWidthButton(
     ) {
         Button(
             onClick = onClick,
-            modifier = Modifier
-                .height(64.dp),
             enabled = isEnabled,
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (isEnabled) {
@@ -52,6 +50,9 @@ fun FilledWidthButton(
                 } else {
                     OnjungTheme.colors.text_3
                 }
+            ),
+            contentPadding = PaddingValues(
+                vertical = 16.dp
             )
         ) {
             Text(

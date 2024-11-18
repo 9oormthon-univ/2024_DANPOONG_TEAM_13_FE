@@ -1,6 +1,5 @@
 package com.daon.onjung.ui.component
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,9 +18,7 @@ fun YoutubeScreen(
     lifecycleOwner: LifecycleOwner
 ) {
     AndroidView(
-        modifier = modifier
-            .padding(8.dp)
-            .clip(RoundedCornerShape(10.dp)),
+        modifier = modifier.clip(RoundedCornerShape(10.dp)),
         factory = { context ->
             YouTubePlayerView(context = context).apply {
                 lifecycleOwner.lifecycle.addObserver(this)
