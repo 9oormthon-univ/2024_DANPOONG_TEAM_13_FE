@@ -1,4 +1,4 @@
-package com.daon.onjung.ui.splash
+package com.daon.onjung.ui.auth.splash
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,11 +36,12 @@ fun SplashScreen(
             )
             Spacer(modifier = Modifier.height(44.dp))
             Text(
-                text = "온정과 시작하는\n 선행의 선순환",
+                text = "온정과 시작하는\n선행의 선순환",
                 style = OnjungTheme.typography.h2.copy(
                     color = OnjungTheme.colors.main_coral,
                     lineHeight = 30.sp
-                )
+                ),
+                textAlign = TextAlign.Center
             )
         }
     }
