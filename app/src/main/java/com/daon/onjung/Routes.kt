@@ -20,5 +20,7 @@ object Routes {
 
     object Profile {
         const val ROUTE = "profileRoute"
+
+        const val RESTAURANT_LIST = "restaurantList"
     }
 }

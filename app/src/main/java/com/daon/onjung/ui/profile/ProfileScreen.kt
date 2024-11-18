@@ -37,13 +37,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
+import com.daon.onjung.Routes
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.delay
 
-val restaurants = listOf(
+private val restaurants = listOf(
     "한걸음 닭꼬치",
     "행복 국수",
     "온정 국밥",
@@ -51,9 +52,10 @@ val restaurants = listOf(
     "보람 돈까스"
 )
 
-@Preview
 @Composable
-internal fun ProfileScreen() {
+internal fun ProfileScreen(
+    appState: OnjungAppState
+) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val offsetDistance = screenWidth / 3
@@ -104,7 +106,12 @@ internal fun ProfileScreen() {
 
             }
 
-            ProfileHeader(restaurantCount = restaurants.size)
+            ProfileHeader(
+                restaurantCount = restaurants.size,
+                onShowAll = {
+                    appState.navigate(Routes.Profile.RESTAURANT_LIST)
+                }
+            )
         }
 
         ProfileSummary(
@@ -168,6 +175,7 @@ internal fun ProfileScreen() {
 @Composable
 private fun ProfileHeader(
     restaurantCount: Int,
+    onShowAll: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -201,6 +209,7 @@ private fun ProfileHeader(
         }
 
         Row(
+            modifier = Modifier.clickable { onShowAll() },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(

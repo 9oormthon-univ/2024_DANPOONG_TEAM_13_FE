@@ -13,6 +13,16 @@ fun NavGraphBuilder.profileGraph(
     composable(
         route = Routes.Profile.ROUTE
     ) {
-        ProfileScreen()
+        ProfileScreen(
+            appState = appState
+        )
+    }
+
+    composable(
+        route = Routes.Profile.RESTAURANT_LIST
+    ) {
+        ProfileRestaurantListScreen(
+            appState = appState
+        )
     }
 }
