@@ -15,7 +15,7 @@ enum class TopLevelDestination(
     MailBox(
         label = "온기 우편함",
         icon = R.drawable.ic_mail,
-        route = Routes.MailBox.ROUTE
+        route = Routes.Mail.ROUTE
     ),
     Profile(
         label = "나의 온기",
