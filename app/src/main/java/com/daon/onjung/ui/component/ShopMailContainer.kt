@@ -1,6 +1,5 @@
 package com.daon.onjung.ui.component
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,7 +51,7 @@ fun ShopMailContainer(
     Column(
         modifier = modifier.background(
             color = OnjungTheme.colors.white,
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(20.dp)
         ),
     ) {
         ShopMailHeader(
@@ -341,7 +340,6 @@ private fun ShopMailContainerPreview() {
             isExpanded = isExpanded,
             onExpandChange = {
                 isExpanded = it
-                Log.d("isExpanded", isExpanded.toString())
             }
         )
     }
