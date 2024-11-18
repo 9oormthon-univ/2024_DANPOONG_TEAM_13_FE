@@ -47,7 +47,6 @@ fun BottomNavigationBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 40.dp)
-                .padding(vertical = 4.dp)
                 .selectableGroup()
         ) {
             Row(

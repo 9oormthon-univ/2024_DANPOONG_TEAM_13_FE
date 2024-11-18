@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
+import com.daon.onjung.Routes
 import com.daon.onjung.ui.theme.OnjungTheme
 
 @Composable
@@ -71,7 +72,9 @@ internal fun LoginScreen(
 
             Spacer(modifier = Modifier.weight(1f))
             KakaoLoginButton(
-                onClick = {},
+                onClick = {
+                    appState.navigate(Routes.Home.ROUTE)
+                },
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
             Spacer(modifier = Modifier.height(34.dp))

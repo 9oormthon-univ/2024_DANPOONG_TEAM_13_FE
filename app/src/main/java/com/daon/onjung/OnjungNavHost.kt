@@ -1,5 +1,8 @@
 package com.daon.onjung
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,7 +46,11 @@ fun OnjungNavHost(
                 appState.scaffoldState.snackbarHostState
             },
             bottomBar = {
-                if (appState.shouldShowBottomBar) {
+                AnimatedVisibility(
+                    appState.shouldShowBottomBar,
+                    enter = slideInVertically { it },
+                    exit = slideOutVertically { it },
+                ) {
                     OnjungBottomNavigationBar(
                         destinations = appState.topLevelDestinations,
                         currentDestination = appState.currentDestination,

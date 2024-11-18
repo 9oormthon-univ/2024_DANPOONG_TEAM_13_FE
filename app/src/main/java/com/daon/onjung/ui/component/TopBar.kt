@@ -1,6 +1,7 @@
 package com.daon.onjung.ui.component
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,14 +37,15 @@ fun TopBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(68.dp)
+            .background(OnjungTheme.colors.white)
+            .height(60.dp)
             .statusBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 5.dp),
+                .padding(horizontal = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
