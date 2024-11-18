@@ -25,4 +25,13 @@ fun NavGraphBuilder.profileGraph(
             appState = appState
         )
     }
+
+    composable(
+        route = Routes.Profile.TICKET_LIST
+    ) {
+        ProfileTicketListScreen(
+            appState = appState,
+            bottomSheetState = bottomSheetState
+        )
+    }
 }

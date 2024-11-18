@@ -103,7 +103,7 @@ internal fun ProfileScreen(
             ProfileAppBar(
                 ticketCount = restaurants.size
             ) {
-
+                appState.navigate(Routes.Profile.TICKET_LIST)
             }
 
             ProfileHeader(
