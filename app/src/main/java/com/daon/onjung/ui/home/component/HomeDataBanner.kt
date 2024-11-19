@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -46,7 +45,7 @@ fun HomeDataBanner(
         color = OnjungTheme.colors.main_coral,
         shape = RoundedCornerShape(10.dp),
         modifier = modifier
-            .size(width = 320.dp, height = 170.dp)
+            .fillMaxWidth()
     ) {
         Column (
             modifier = Modifier
@@ -143,6 +142,7 @@ fun HomeDataBanner(
                 }
                 Spacer(modifier = Modifier.height(8.dp))
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

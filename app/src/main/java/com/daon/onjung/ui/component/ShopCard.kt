@@ -44,6 +44,8 @@ fun ShopCard(
     val context = LocalContext.current
 
     Surface(
+        modifier = Modifier
+            .width(236.dp),
         onClick = { onClick(shopId) },
         color = OnjungTheme.colors.white,
         shape = RoundedCornerShape(10.dp)
@@ -54,7 +56,7 @@ fun ShopCard(
             ) {
                 AsyncImage(
                     modifier = Modifier.aspectRatio(1.3f),
-                    model = painterResource(id = R.drawable.img_dummy),
+                    model = R.drawable.img_dummy,
                     contentDescription = "IMG_SHOP",
                 )
 
