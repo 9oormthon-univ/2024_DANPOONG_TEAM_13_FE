@@ -1,0 +1,73 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="60dp"
+    android:height="60dp"
+    android:viewportWidth="60"
+    android:viewportHeight="60">
+  <path
+      android:pathData="M30,0L30,0A30,30 0,0 1,60 30L60,30A30,30 0,0 1,30 60L30,60A30,30 0,0 1,0 30L0,30A30,30 0,0 1,30 0z"
+      android:fillColor="#EEEEEE"/>
+  <group>
+    <clip-path
+        android:pathData="M30,0.001L30,0.001A30,30 0,0 1,60 30.001L60,30.001A30,30 0,0 1,30 60.001L30,60.001A30,30 0,0 1,0 30.001L0,30.001A30,30 0,0 1,30 0.001z"/>
+    <path
+        android:pathData="M53.928,46.4C53.928,64.323 42.727,70.138 29.996,70.138C17.264,70.138 6.068,64.323 6.068,46.4C6.068,28.476 14.749,12.546 30,12.546C45.251,12.546 53.933,28.476 53.933,46.4H53.928Z">
+      <aapt:attr name="android:fillColor">
+        <gradient 
+            android:startX="29.996"
+            android:startY="70.138"
+            android:endX="29.996"
+            android:endY="12.546"
+            android:type="linear">
+          <item android:offset="0" android:color="#FFFFF2ED"/>
+          <item android:offset="0.14" android:color="#FFFFF8F6"/>
+          <item android:offset="0.37" android:color="#FFFFFDFD"/>
+          <item android:offset="1" android:color="#FFFFFFFF"/>
+        </gradient>
+      </aapt:attr>
+    </path>
+    <path
+        android:pathData="M15.1,47.32C19.829,47.32 23.663,43.486 23.663,38.757C23.663,34.028 19.829,30.195 15.1,30.195C10.371,30.195 6.538,34.028 6.538,38.757C6.538,43.486 10.371,47.32 15.1,47.32Z">
+      <aapt:attr name="android:fillColor">
+        <gradient 
+            android:centerX="15.1"
+            android:centerY="38.757"
+            android:gradientRadius="11.395"
+            android:type="radial">
+          <item android:offset="0" android:color="#99FFCEC3"/>
+          <item android:offset="0.13" android:color="#91FFD0C5"/>
+          <item android:offset="0.3" android:color="#7FFFD6CC"/>
+          <item android:offset="0.51" android:color="#60FFDFD8"/>
+          <item android:offset="0.75" android:color="#35FFEDE9"/>
+          <item android:offset="1" android:color="#00FFFFFF"/>
+        </gradient>
+      </aapt:attr>
+    </path>
+    <path
+        android:pathData="M44.401,47.32C49.13,47.32 52.964,43.486 52.964,38.757C52.964,34.028 49.13,30.195 44.401,30.195C39.672,30.195 35.838,34.028 35.838,38.757C35.838,43.486 39.672,47.32 44.401,47.32Z">
+      <aapt:attr name="android:fillColor">
+        <gradient 
+            android:centerX="44.401"
+            android:centerY="38.757"
+            android:gradientRadius="11.395"
+            android:type="radial">
+          <item android:offset="0" android:color="#99FFCEC3"/>
+          <item android:offset="0.13" android:color="#91FFD0C5"/>
+          <item android:offset="0.3" android:color="#7FFFD6CC"/>
+          <item android:offset="0.51" android:color="#60FFDFD8"/>
+          <item android:offset="0.75" android:color="#35FFEDE9"/>
+          <item android:offset="1" android:color="#00FFFFFF"/>
+        </gradient>
+      </aapt:attr>
+    </path>
+    <path
+        android:pathData="M24.111,34.899C24.947,34.899 25.625,34.222 25.625,33.386C25.625,32.55 24.947,31.872 24.111,31.872C23.275,31.872 22.598,32.55 22.598,33.386C22.598,34.222 23.275,34.899 24.111,34.899Z"
+        android:fillColor="#000000"/>
+    <path
+        android:pathData="M35.899,34.899C36.735,34.899 37.412,34.222 37.412,33.386C37.412,32.55 36.735,31.872 35.899,31.872C35.063,31.872 34.386,32.55 34.386,33.386C34.386,34.222 35.063,34.899 35.899,34.899Z"
+        android:fillColor="#000000"/>
+    <path
+        android:pathData="M32.053,35.225C31.794,35.225 31.574,35.269 31.462,35.299C31.083,35.389 30.583,35.497 30.056,35.497C29.444,35.497 28.858,35.376 28.315,35.251C28.194,35.221 28.069,35.208 27.935,35.208C27.06,35.208 26.426,35.812 26.426,36.64C26.426,38.231 27.996,39.477 30,39.477C32.005,39.477 33.575,38.231 33.575,36.64C33.575,35.795 32.962,35.23 32.048,35.23L32.053,35.225Z"
+        android:fillColor="#ED9A9A"/>
+  </group>
+</vector>

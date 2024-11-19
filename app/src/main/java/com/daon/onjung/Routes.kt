@@ -25,4 +25,8 @@ object Routes {
         const val RESTAURANT_LIST = "restaurantList"
         const val TICKET_LIST = "ticketList"
     }
+
+    object Setting {
+        const val ROUTE = "settingRoute"
+    }
 }
