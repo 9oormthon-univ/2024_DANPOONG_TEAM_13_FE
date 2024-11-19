@@ -147,9 +147,9 @@ internal fun ProfileTicketListScreen(
                 ) {
                     bottomSheetState.showBottomSheet {
                         MealTicketBottomSheet(
-                            ticket.name,
-                            ticket.address,
-                            ticket.date
+                            name = ticket.name,
+                            address = ticket.address,
+                            expirationDate = ticket.date
                         )
                     }
                 }

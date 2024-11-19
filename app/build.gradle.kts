@@ -115,6 +115,7 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation(libs.youtube.player)
+    implementation(libs.capturable)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

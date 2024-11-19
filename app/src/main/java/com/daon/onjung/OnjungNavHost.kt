@@ -9,6 +9,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,7 +46,7 @@ fun OnjungNavHost(
         Scaffold(
             backgroundColor = OnjungTheme.colors.gray_3,
             snackbarHost = {
-                appState.scaffoldState.snackbarHostState
+                OnjungSnackBar(appState = appState)
             },
             bottomBar = {
                 AnimatedVisibility(
@@ -85,6 +88,23 @@ fun OnjungNavHost(
             }
         }
     }
+}
+
+@Composable
+private fun OnjungSnackBar(appState: OnjungAppState) {
+    SnackbarHost(hostState = appState.scaffoldState.snackbarHostState,
+        snackbar = { data ->
+            Snackbar(
+                modifier = Modifier.padding(
+                    bottom = 20.dp,
+                    start = 20.dp,
+                    end = 20.dp
+                )
+            ) {
+                Text(text = data.message)
+            }
+        }
+    )
 }
 
 @Composable
