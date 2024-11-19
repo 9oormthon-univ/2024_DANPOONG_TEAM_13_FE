@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.profile
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -71,11 +73,20 @@ val tickets = listOf(
     )
 )
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun ProfileTicketListScreen(
     appState: OnjungAppState,
     bottomSheetState: OnjungBottomSheetState
 ) {
+    BackHandler {
+        if (bottomSheetState.bottomSheetState.isVisible) {
+            bottomSheetState.hideBottomSheet()
+        } else {
+            appState.navController.navigateUp()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

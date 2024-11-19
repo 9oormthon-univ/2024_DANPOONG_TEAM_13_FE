@@ -25,7 +25,6 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Composable
 fun HomeAppBar(
     modifier: Modifier = Modifier,
-    onSearchClick: () -> Unit,
     onSettingClick: () -> Unit
 ) {
     Row(
@@ -51,20 +50,6 @@ fun HomeAppBar(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-
-                Surface(
-                    onClick = onSearchClick,
-                    interactionSource = NoRippleInteractionSource()
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_search),
-                        contentDescription = "IC_SEARCH",
-                        tint = Color.Unspecified,
-                    )
-                }
-            }
-
-            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                 Surface(
                     onClick = onSettingClick,
                     interactionSource = NoRippleInteractionSource()
@@ -85,7 +70,6 @@ fun HomeAppBar(
 fun HomeAppBarPreview() {
     OnjungTheme {
         HomeAppBar(
-            onSearchClick = { },
             onSettingClick = { }
         )
     }

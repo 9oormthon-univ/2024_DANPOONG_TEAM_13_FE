@@ -1,6 +1,7 @@
 package com.daon.onjung.ui.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
 import com.daon.onjung.rememberOnjungAppState
+import com.daon.onjung.ui.component.button.CircleButton
+import com.daon.onjung.ui.home.component.HomeAppBar
 import com.daon.onjung.ui.home.component.HomeBanner
 import com.daon.onjung.ui.home.component.HomeDataBanner
 import com.daon.onjung.ui.home.component.HomeShopCardLazyRow
@@ -83,47 +87,70 @@ val shopList = listOf(
 internal fun HomeScreen(
     appState: OnjungAppState
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White)
-            .statusBarsPadding()
-            .verticalScroll(rememberScrollState())
-    ) {
-        Spacer(modifier = Modifier.height(20.dp))
-        HomeBanner(
-            modifier = Modifier.padding(horizontal = 20.dp)
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        HomeTitleText(
-            "선행의 물결 함께하기",
-            modifier = Modifier.padding(horizontal = 20.dp)
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        HomeShopCardLazyRow(
-            shopList
-        )
-        Column (
+    Box {
+        Column(
             modifier = Modifier
-                .background(color = OnjungTheme.colors.gray_3)
+                .fillMaxSize()
+                .statusBarsPadding()
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
-            HomeTitleText(
-                "온기를 전한 기업들",
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(modifier = Modifier.height(18.dp))
-            SupportBannerRow(
-                iconList
-            )
-            Spacer(modifier = Modifier.height(26.dp))
+            HomeAppBar {
+
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Spacer(modifier = Modifier.height(20.dp))
+                HomeBanner(
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                HomeTitleText(
+                    "선행의 물결 함께하기",
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                HomeShopCardLazyRow(
+                    shopList
+                )
+                Column(
+                    modifier = Modifier
+                        .background(color = OnjungTheme.colors.gray_3)
+                ) {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    HomeTitleText(
+                        "온기를 전한 기업들",
+                        modifier = Modifier.padding(horizontal = 20.dp)
+                    )
+                    Spacer(modifier = Modifier.height(18.dp))
+                    SupportBannerRow(
+                        iconList
+                    )
+                    Spacer(modifier = Modifier.height(26.dp))
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                HomeDataBanner(
+                    timeText = "2024.10.31 00시 00분",
+                    warmthDeliveryCount = 1234567,
+                    supporterCount = 123456,
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                )
+                Spacer(modifier = Modifier.height(80.dp))
+            }
         }
-        Spacer(modifier = Modifier.height(32.dp))
-        HomeDataBanner(
-            timeText = "2024.10.31 00시 00분",
-            warmthDeliveryCount = 1234567,
-            supporterCount = 123456,
-            modifier = Modifier.padding(horizontal = 20.dp)
+
+        CircleButton(
+            modifier = Modifier.align(
+                alignment = Alignment.BottomEnd
+            ).padding(
+                end = 20.dp,
+                bottom = 25.dp
+            ),
+            text ="영수증 인증",
+            icon = R.drawable.ic_heart
         )
     }
 }
