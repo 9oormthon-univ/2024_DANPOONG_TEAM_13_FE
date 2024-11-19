@@ -46,6 +46,7 @@ fun rememberOnjungBottomSheetState(
     return remember(bottomSheetState, bottomSheetContent, onHideBottomSheet) {
         OnjungBottomSheetState(
             bottomSheetState = bottomSheetState,
+            setOnHideBottomSheet = { onHideBottomSheet.value = it },
             bottomSheetContent = bottomSheetContent,
             keyboardController = keyboardController,
             scope = scope
@@ -57,6 +58,7 @@ fun rememberOnjungBottomSheetState(
 class OnjungBottomSheetState @OptIn(ExperimentalMaterialApi::class) constructor(
     val bottomSheetContent: MutableState<SheetContent?>,
     val bottomSheetState: ModalBottomSheetState,
+    val setOnHideBottomSheet: (() -> Unit) -> Unit,
     val keyboardController: SoftwareKeyboardController?,
     val scope: CoroutineScope,
 ) {

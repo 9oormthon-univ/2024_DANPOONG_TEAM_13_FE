@@ -117,6 +117,13 @@ dependencies {
     implementation(libs.youtube.player)
     implementation(libs.capturable)
 
+    implementation(libs.camera.core)
+    implementation(libs.camera.view)
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+
+    implementation(libs.accompanist.systemui)
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

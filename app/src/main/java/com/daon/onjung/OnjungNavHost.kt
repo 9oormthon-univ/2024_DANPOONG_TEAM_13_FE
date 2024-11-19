@@ -13,6 +13,7 @@ import androidx.compose.material.Snackbar
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,7 @@ import com.daon.onjung.ui.home.homeGraph
 import com.daon.onjung.ui.mail.mailGraph
 import com.daon.onjung.ui.profile.profileGraph
 import com.daon.onjung.ui.theme.OnjungTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -34,6 +36,14 @@ fun OnjungNavHost(
     bottomSheetState: OnjungBottomSheetState
 ) {
     val navController = appState.navController
+
+    val systemUiController = rememberSystemUiController()
+
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = Color.White
+        )
+    }
 
     ModalBottomSheetLayout(
         sheetContent = {

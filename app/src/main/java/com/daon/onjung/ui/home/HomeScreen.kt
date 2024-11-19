@@ -1,5 +1,10 @@
 package com.daon.onjung.ui.home
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.daon.onjung.OnjungAppState
+import com.daon.onjung.OnjungBottomSheetState
 import com.daon.onjung.R
+import com.daon.onjung.Routes
 import com.daon.onjung.rememberOnjungAppState
+import com.daon.onjung.rememberOnjungBottomSheetState
 import com.daon.onjung.ui.component.button.CircleButton
 import com.daon.onjung.ui.home.component.HomeAppBar
 import com.daon.onjung.ui.home.component.HomeBanner
@@ -85,8 +94,21 @@ val shopList = listOf(
 
 @Composable
 internal fun HomeScreen(
-    appState: OnjungAppState
+    appState: OnjungAppState,
+    bottomSheetState: OnjungBottomSheetState
 ) {
+    val context = LocalContext.current
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            appState.navigate(Routes.Home.CAMERA)
+        } else {
+            Toast.makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     Box {
         Column(
             modifier = Modifier
@@ -143,15 +165,23 @@ internal fun HomeScreen(
         }
 
         CircleButton(
-            modifier = Modifier.align(
-                alignment = Alignment.BottomEnd
-            ).padding(
-                end = 20.dp,
-                bottom = 25.dp
-            ),
-            text ="영수증 인증",
+            modifier = Modifier
+                .align(
+                    alignment = Alignment.BottomEnd
+                )
+                .padding(
+                    end = 20.dp,
+                    bottom = 25.dp
+                ),
+            text = "영수증 인증",
             icon = R.drawable.ic_heart
-        )
+        ) {
+            if (context.checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                appState.navigate(Routes.Home.CAMERA)
+            } else {
+                permissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
     }
 }
 
@@ -160,9 +190,11 @@ internal fun HomeScreen(
 fun HomeScreenPreview() {
     OnjungTheme {
         val appState = rememberOnjungAppState()
+        val bottomSheetState = rememberOnjungBottomSheetState()
 
         HomeScreen(
-            appState = appState
+            appState = appState,
+            bottomSheetState = bottomSheetState
         )
     }
 }

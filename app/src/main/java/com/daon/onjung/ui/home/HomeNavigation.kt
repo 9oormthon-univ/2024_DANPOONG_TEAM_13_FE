@@ -14,7 +14,17 @@ fun NavGraphBuilder.homeGraph(
         route = Routes.Home.ROUTE
     ) {
         HomeScreen(
-            appState = appState
+            appState = appState,
+            bottomSheetState = bottomSheetState
+        )
+    }
+
+    composable(
+        route = Routes.Home.CAMERA
+    ) {
+        CameraScreen(
+            appState = appState,
+            bottomSheetState = bottomSheetState
         )
     }
 
