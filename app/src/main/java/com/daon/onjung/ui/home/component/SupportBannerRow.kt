@@ -1,4 +1,4 @@
-package com.daon.onjung.ui.home
+package com.daon.onjung.ui.home.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyRow
@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.daon.onjung.R
+import com.daon.onjung.ui.home.IconData
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

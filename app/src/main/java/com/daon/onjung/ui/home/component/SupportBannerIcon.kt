@@ -1,4 +1,4 @@
-package com.daon.onjung.ui.home
+package com.daon.onjung.ui.home.component
 
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
