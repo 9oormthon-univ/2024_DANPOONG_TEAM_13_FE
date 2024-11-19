@@ -90,19 +90,19 @@ internal fun HomeScreen(
             .statusBarsPadding()
             .verticalScroll(rememberScrollState())
     ) {
-        Column (
+        Spacer(modifier = Modifier.height(20.dp))
+        HomeBanner(
             modifier = Modifier.padding(horizontal = 20.dp)
-        ){
-            Spacer(modifier = Modifier.height(20.dp))
-            HomeBanner()
-            Spacer(modifier = Modifier.height(32.dp))
-            HomeTitleText("선행의 물결 함께하기")
-            Spacer(modifier = Modifier.height(10.dp))
-            HomeShopCardLazyRow(
-                shopList
-            )
-        }
-
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        HomeTitleText(
+            "선행의 물결 함께하기",
+            modifier = Modifier.padding(horizontal = 20.dp)
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        HomeShopCardLazyRow(
+            shopList
+        )
         Column (
             modifier = Modifier
                 .background(color = OnjungTheme.colors.gray_3)

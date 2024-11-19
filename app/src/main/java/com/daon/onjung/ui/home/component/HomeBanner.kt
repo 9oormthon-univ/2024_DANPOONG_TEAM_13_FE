@@ -26,9 +26,11 @@ import com.daon.onjung.ui.theme.OnjungTheme
 
 @Preview(showBackground = true)
 @Composable
-fun HomeBanner() {
+fun HomeBanner(
+    modifier: Modifier = Modifier
+) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 color = OnjungTheme.colors.main_coral,
