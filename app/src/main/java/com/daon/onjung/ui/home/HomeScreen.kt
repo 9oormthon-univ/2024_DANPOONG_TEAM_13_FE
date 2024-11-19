@@ -116,7 +116,7 @@ internal fun HomeScreen(
                 .statusBarsPadding()
         ) {
             HomeAppBar {
-
+                appState.navigate(Routes.Setting.ROUTE)
             }
 
             Column(

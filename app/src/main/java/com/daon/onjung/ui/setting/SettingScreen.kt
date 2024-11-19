@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
+import com.daon.onjung.Routes
 import com.daon.onjung.rememberOnjungAppState
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.setting.component.Profile
@@ -58,6 +59,9 @@ internal fun SettingScreen(
         TopBar(
             "설정",
             rightIcon = null,
+            leftIconOnClick = {
+                appState.navigate(Routes.Home.ROUTE)
+            }
         )
         Spacer(modifier = Modifier.height(12.dp))
         Profile(

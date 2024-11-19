@@ -26,6 +26,7 @@ import com.daon.onjung.ui.component.BottomNavigationBarItem
 import com.daon.onjung.ui.home.homeGraph
 import com.daon.onjung.ui.mail.mailGraph
 import com.daon.onjung.ui.profile.profileGraph
+import com.daon.onjung.ui.setting.settingGraph
 import com.daon.onjung.ui.theme.OnjungTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -92,6 +93,10 @@ fun OnjungNavHost(
                     bottomSheetState = bottomSheetState
                 )
                 profileGraph(
+                    appState = appState,
+                    bottomSheetState = bottomSheetState
+                )
+                settingGraph(
                     appState = appState,
                     bottomSheetState = bottomSheetState
                 )
