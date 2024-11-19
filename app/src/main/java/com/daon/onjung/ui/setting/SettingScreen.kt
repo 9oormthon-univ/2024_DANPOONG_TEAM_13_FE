@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
 import com.daon.onjung.rememberOnjungAppState
+import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.setting.component.Profile
 import com.daon.onjung.ui.setting.component.SettingButtonList
 import com.daon.onjung.ui.setting.component.SettingTitleText
@@ -54,6 +55,10 @@ internal fun SettingScreen(
             .statusBarsPadding()
             .verticalScroll(rememberScrollState())
     ) {
+        TopBar(
+            "설정",
+            rightIcon = null,
+        )
         Spacer(modifier = Modifier.height(12.dp))
         Profile(
             name = "카카오 닉네임",
@@ -84,7 +89,7 @@ internal fun SettingScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun SettingScreenPreview() {
     OnjungTheme {

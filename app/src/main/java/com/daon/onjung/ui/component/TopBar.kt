@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,10 +34,12 @@ fun TopBar(
     trailingIcon: @Composable (() -> Unit) = {},
     leftIconOnClick: () -> Unit = {},
     rightIconOnClick: () -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
+            .shadow(elevation = 10.dp)
             .background(OnjungTheme.colors.white)
             .height(60.dp)
             .statusBarsPadding(),
