@@ -1,6 +1,7 @@
 package com.daon.onjung.ui.mail
 
 import androidx.lifecycle.viewModelScope
+import com.daon.onjung.Constants
 import com.daon.onjung.data.repository.OnjungRepository
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.util.BaseViewModel
@@ -36,7 +37,7 @@ class MailViewModel @Inject constructor(
                     postEffect(MailContract.Effect.ShowSnackBar(it.message))
                 }
                 is ApiResult.NetworkError -> {
-                    postEffect(MailContract.Effect.ShowSnackBar("네트워크 에러가 발생하였습니다"))
+                    postEffect(MailContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
                 }
             }
         }

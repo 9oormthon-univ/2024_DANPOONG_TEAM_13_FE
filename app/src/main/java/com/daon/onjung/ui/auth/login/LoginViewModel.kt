@@ -3,6 +3,7 @@ package com.daon.onjung.ui.auth.login
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.daon.onjung.Constants
 import com.daon.onjung.Routes
 import com.daon.onjung.data.repository.AuthRepository
 import com.daon.onjung.data.repository.DataStoreRepository
@@ -88,7 +89,7 @@ class LoginViewModel @Inject constructor(
                 }
 
                 is ApiResult.NetworkError -> {
-                    postEffect(LoginContract.Effect.ShowSnackBar("네트워크 오류가 발생했습니다."))
+                    postEffect(LoginContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
                 }
             }
         }

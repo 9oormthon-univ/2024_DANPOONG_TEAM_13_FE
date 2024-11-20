@@ -1,6 +1,7 @@
 package com.daon.onjung.ui.home
 
 import androidx.lifecycle.viewModelScope
+import com.daon.onjung.Constants
 import com.daon.onjung.data.repository.OnjungRepository
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.util.BaseViewModel
@@ -34,7 +35,7 @@ class HomeViewModel @Inject constructor(
                         postEffect(HomeContract.Effect.ShowSnackBar(it.message))
                     }
                     is ApiResult.NetworkError -> {
-                        postEffect(HomeContract.Effect.ShowSnackBar("네트워크 에러가 발생하였습니다"))
+                        postEffect(HomeContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
                     }
                 }
             }

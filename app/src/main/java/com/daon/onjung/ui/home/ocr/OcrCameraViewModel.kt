@@ -2,6 +2,7 @@ package com.daon.onjung.ui.home.ocr
 
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
+import com.daon.onjung.Constants
 import com.daon.onjung.data.repository.OnjungRepository
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.util.BaseViewModel
@@ -99,7 +100,7 @@ class OcrCameraViewModel @Inject constructor(
                 }
 
                 is ApiResult.NetworkError -> {
-                    postEffect(OcrCameraContract.Effect.ShowSnackBar("네트워크 오류가 발생했습니다."))
+                    postEffect(OcrCameraContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
                 }
             }
         }
