@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.home
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.daon.onjung.OnjungAppState
@@ -13,9 +14,12 @@ fun NavGraphBuilder.homeGraph(
     composable(
         route = Routes.Home.ROUTE
     ) {
+        val viewModel: HomeViewModel = hiltViewModel()
+
         HomeScreen(
             appState = appState,
-            bottomSheetState = bottomSheetState
+            bottomSheetState = bottomSheetState,
+            viewModel = viewModel
         )
     }
 

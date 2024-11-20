@@ -16,18 +16,18 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.OnjungBottomSheetState
 import com.daon.onjung.R
 import com.daon.onjung.Routes
-import com.daon.onjung.rememberOnjungAppState
-import com.daon.onjung.rememberOnjungBottomSheetState
 import com.daon.onjung.ui.component.button.CircleButton
 import com.daon.onjung.ui.home.component.HomeAppBar
 import com.daon.onjung.ui.home.component.HomeBanner
@@ -36,6 +36,7 @@ import com.daon.onjung.ui.home.component.HomeShopCardLazyRow
 import com.daon.onjung.ui.home.component.HomeTitleText
 import com.daon.onjung.ui.home.component.SupportBannerRow
 import com.daon.onjung.ui.theme.OnjungTheme
+import kotlinx.coroutines.flow.collectLatest
 
 val iconList = listOf(
     IconData(
@@ -95,9 +96,29 @@ val shopList = listOf(
 @Composable
 internal fun HomeScreen(
     appState: OnjungAppState,
-    bottomSheetState: OnjungBottomSheetState
+    bottomSheetState: OnjungBottomSheetState,
+    viewModel: HomeViewModel
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val effectFlow = viewModel.effect
+
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.getOnjungSummary()
+
+        effectFlow.collectLatest { effect ->
+            when (effect) {
+                is HomeContract.Effect.NavigateTo -> {
+                    appState.navigate(effect.destination, effect.navOptions)
+                }
+
+                is HomeContract.Effect.ShowSnackBar -> {
+                    appState.showSnackBar(effect.message)
+                }
+            }
+        }
+    }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -155,9 +176,9 @@ internal fun HomeScreen(
                 }
                 Spacer(modifier = Modifier.height(32.dp))
                 HomeDataBanner(
-                    timeText = "2024.10.31 00시 00분",
-                    warmthDeliveryCount = 1234567,
-                    supporterCount = 123456,
+                    timeText = uiState.onjungSummary.dateTime,
+                    warmthDeliveryCount = uiState.onjungSummary.totalDonationCount,
+                    supporterCount = uiState.onjungSummary.totalDonatorCount,
                     modifier = Modifier.padding(horizontal = 20.dp)
                 )
                 Spacer(modifier = Modifier.height(80.dp))
@@ -182,19 +203,5 @@ internal fun HomeScreen(
                 permissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun HomeScreenPreview() {
-    OnjungTheme {
-        val appState = rememberOnjungAppState()
-        val bottomSheetState = rememberOnjungBottomSheetState()
-
-        HomeScreen(
-            appState = appState,
-            bottomSheetState = bottomSheetState
-        )
     }
 }
