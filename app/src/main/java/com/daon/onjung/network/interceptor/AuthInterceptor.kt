@@ -39,8 +39,10 @@ class AuthInterceptor @Inject constructor(
 
                 if (newToken.isSuccessful) {
                     val newAccessToken = newToken.body()?.data?.accessToken ?: ""
+                    val newRefreshToken = newToken.body()?.data?.refreshToken ?: ""
 
                     dataStoreRepository.setAccessToken(newAccessToken)
+                    dataStoreRepository.setRefreshToken(newRefreshToken)
 
                     val newAuthenticationRequest = originalRequest.newBuilder()
                         .header("Authorization", "Bearer $newAccessToken")
