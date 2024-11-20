@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.profile
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.daon.onjung.OnjungAppState
@@ -13,8 +14,11 @@ fun NavGraphBuilder.profileGraph(
     composable(
         route = Routes.Profile.ROUTE
     ) {
+        val viewModel: ProfileViewModel = hiltViewModel()
+
         ProfileScreen(
-            appState = appState
+            appState = appState,
+            viewModel = viewModel
         )
     }
 

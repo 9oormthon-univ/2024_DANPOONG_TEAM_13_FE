@@ -38,11 +38,13 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
 import com.daon.onjung.Routes
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 
 private val restaurants = listOf(
     "한걸음 닭꼬치",
@@ -54,8 +56,26 @@ private val restaurants = listOf(
 
 @Composable
 internal fun ProfileScreen(
-    appState: OnjungAppState
+    appState: OnjungAppState,
+    viewModel: ProfileViewModel
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val effectFlow = viewModel.effect
+
+    LaunchedEffect(Unit) {
+        effectFlow.collectLatest { effect ->
+            when (effect) {
+                is ProfileContract.Effect.NavigateTo -> {
+                    appState.navController.navigate(effect.destination, effect.navOptions)
+                }
+
+                is ProfileContract.Effect.ShowSnackBar -> {
+                    appState.showSnackBar(effect.message)
+                }
+            }
+        }
+    }
+
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val offsetDistance = screenWidth / 3
@@ -116,8 +136,8 @@ internal fun ProfileScreen(
 
         ProfileSummary(
             modifier = Modifier.align(Alignment.BottomCenter),
-            warmthDonationCount = restaurants.size,
-            totalWarmthDonationAmount = restaurants.size * 5
+            warmthDonationCount = uiState.onjungBrief.totalOnjungCount,
+            totalWarmthDonationAmount = uiState.onjungBrief.totalOnjungAmount
         )
 
         Box(
