@@ -46,7 +46,7 @@ class OnjungAppState(
         @Composable get() = currentDestination?.route ==
                 topLevelDestinations.find { it.route == currentDestination?.route }?.route
 
-    fun showSnackbar(message: String) {
+    fun showSnackBar(message: String) {
         scope.launch {
             scaffoldState.snackbarHostState.showSnackbar(message)
         }

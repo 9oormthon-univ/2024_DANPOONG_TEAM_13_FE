@@ -4,6 +4,9 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.daon.onjung.BuildConfig
 import com.daon.onjung.network.adapter.ApiResultCallAdapterFactory
+import com.daon.onjung.network.converter.EnumConverterFactory
+import com.daon.onjung.network.interceptor.AuthInterceptor
+import com.daon.onjung.network.service.AuthService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,6 +15,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -21,9 +25,11 @@ object NetworkModule {
     @Provides
     @Singleton
     fun providesOkHttpClient(
+        authInterceptor: AuthInterceptor,
         @ApplicationContext context: Context
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
             .addNetworkInterceptor(
                 HttpLoggingInterceptor().apply {
                     if (BuildConfig.DEBUG) {
@@ -46,5 +52,12 @@ object NetworkModule {
             .client(okHttpClient)
             .baseUrl(BuildConfig.BASE_URL)
             .addCallAdapterFactory(ApiResultCallAdapterFactory())
+            .addConverterFactory(EnumConverterFactory())
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
+
+    @Provides
+    @Singleton
+    fun providesAuthService(retrofit: Retrofit): AuthService =
+        retrofit.create(AuthService::class.java)
 }

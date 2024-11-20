@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -26,13 +28,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
-import com.daon.onjung.Routes
 import com.daon.onjung.ui.theme.OnjungTheme
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 internal fun LoginScreen(
-    appState: OnjungAppState
+    appState: OnjungAppState,
+    viewModel: LoginViewModel
 ) {
+    val effectFlow = viewModel.effect
+
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        effectFlow.collectLatest { effect ->
+            when (effect) {
+                is LoginContract.Effect.NavigateTo -> {
+                    appState.navigate(effect.destination, effect.navOptions)
+                }
+
+                is LoginContract.Effect.ShowSnackBar -> {
+                    appState.showSnackBar(effect.message)
+                }
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -73,7 +94,7 @@ internal fun LoginScreen(
             Spacer(modifier = Modifier.weight(1f))
             KakaoLoginButton(
                 onClick = {
-                    appState.navigate(Routes.Home.ROUTE)
+                    viewModel.processEvent(LoginContract.Event.KakaoLoginButtonClicked(context))
                 },
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
