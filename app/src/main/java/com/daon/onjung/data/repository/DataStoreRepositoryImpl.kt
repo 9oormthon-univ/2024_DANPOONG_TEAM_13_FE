@@ -9,12 +9,12 @@ import javax.inject.Inject
 class DataStoreRepositoryImpl @Inject constructor(
     private val dataStoreDataSource: DataStoreDataSource
 ) : DataStoreRepository {
-    override fun getIsFirstLaunch(): Boolean = runBlocking {
-        dataStoreDataSource.getBooleanValue(Constants.IS_FIRST_LAUNCH).first()
+    override fun getIsNotFirstLaunch(): Boolean = runBlocking {
+        dataStoreDataSource.getBooleanValue(Constants.IS_NOT_FIRST_LAUNCH).first()
     }
 
-    override fun setIsFirstLaunch(isFirstLaunch: Boolean) = runBlocking {
-        dataStoreDataSource.setBooleanValue(Constants.IS_FIRST_LAUNCH, isFirstLaunch)
+    override fun setIsNotFirstLaunch(isFirstLaunch: Boolean) = runBlocking {
+        dataStoreDataSource.setBooleanValue(Constants.IS_NOT_FIRST_LAUNCH, isFirstLaunch)
     }
 
     override fun getAccessToken(): String = runBlocking{
