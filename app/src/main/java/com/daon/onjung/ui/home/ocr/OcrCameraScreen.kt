@@ -48,7 +48,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.OnjungBottomSheetState
 import com.daon.onjung.R
+import com.daon.onjung.TopLevelDestination
 import com.daon.onjung.ui.home.component.OcrFailedDialog
+import com.daon.onjung.ui.home.component.OnjungSuccessDialog
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -157,13 +159,25 @@ internal fun OcrCameraScreen(
         }
     }
 
-
     if (uiState.isOcrErrorDialogVisible) {
         cameraProvider?.unbindAll()
 
         OcrFailedDialog {
             viewModel.processEvent(OcrCameraContract.Event.OcrErrorDialogDismissed)
         }
+    }
+
+    if (uiState.isPostReceiptSuccessDialogVisible) {
+        if (bottomSheetState.bottomSheetState.isVisible) bottomSheetState.hideBottomSheet()
+
+        OnjungSuccessDialog(
+            onDismissRequest = {
+                appState.navigateToTopLevelDestination(TopLevelDestination.Profile)
+                viewModel.processEvent(OcrCameraContract.Event.PostReceiptSuccessDialogDismissed)
+            },
+            title = "온기를 실천해 주셔서 감사해요",
+            description = "온정이 계속 함께할게요!"
+        )
     }
 
     Box(

@@ -41,6 +41,10 @@ class OcrCameraViewModel @Inject constructor(
                     postEffect(OcrCameraContract.Effect.CameraResume)
                     updateState(currentState.copy(isOcrErrorDialogVisible = false))
                 }
+
+                is OcrCameraContract.Event.PostReceiptSuccessDialogDismissed -> {
+                    updateState(currentState.copy(isPostReceiptSuccessDialogVisible = false))
+                }
             }
         }
     }
@@ -92,7 +96,7 @@ class OcrCameraViewModel @Inject constructor(
             updateState(currentState.copy(isLoading = false))
             when (it) {
                 is ApiResult.Success -> {
-
+                    updateState(currentState.copy(isPostReceiptSuccessDialogVisible = true))
                 }
 
                 is ApiResult.ApiError -> {
