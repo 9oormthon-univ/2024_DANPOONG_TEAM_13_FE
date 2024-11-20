@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import com.daon.onjung.ui.auth.authGraph
 import com.daon.onjung.ui.component.BottomNavigationBar
 import com.daon.onjung.ui.component.BottomNavigationBarItem
+import com.daon.onjung.ui.donation.donationGraph
 import com.daon.onjung.ui.home.homeGraph
 import com.daon.onjung.ui.mail.mailGraph
 import com.daon.onjung.ui.profile.profileGraph
@@ -97,6 +98,10 @@ fun OnjungNavHost(
                     bottomSheetState = bottomSheetState
                 )
                 settingGraph(
+                    appState = appState,
+                    bottomSheetState = bottomSheetState
+                )
+                donationGraph(
                     appState = appState,
                     bottomSheetState = bottomSheetState
                 )

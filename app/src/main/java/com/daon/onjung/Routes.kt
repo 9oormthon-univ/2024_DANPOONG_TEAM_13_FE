@@ -29,4 +29,13 @@ object Routes {
     object Setting {
         const val ROUTE = "settingRoute"
     }
+
+    object Donation {
+        const val ROUTE = "donationRoute"
+
+        const val KAKAOPAY = "kakaopay"
+        const val KAKAOPAYPAYMENT = "kakaopayPayment"
+        const val KAKAOPAYRESULT = "kakaopayResult"
+        const val DONDATIONRESULT = "donationResult"
+    }
 }
