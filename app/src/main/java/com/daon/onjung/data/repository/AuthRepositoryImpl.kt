@@ -2,6 +2,7 @@ package com.daon.onjung.data.repository
 
 import com.daon.onjung.data.datasource.AuthDataSource
 import com.daon.onjung.network.model.LoginProvider
+import com.daon.onjung.network.model.request.DeviceTokenRequest
 import com.daon.onjung.network.model.request.LoginRequest
 import javax.inject.Inject
 
@@ -13,5 +14,9 @@ class AuthRepositoryImpl @Inject constructor(
         accessToken: String,
         provider: LoginProvider
     ) = authDataSource.kakaoLogin(LoginRequest(accessToken, provider))
+
+    override suspend fun patchDeviceToken(
+        deviceToken: String
+    ) = authDataSource.patchDeviceToken(DeviceTokenRequest(deviceToken))
 
 }

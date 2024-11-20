@@ -13,4 +13,8 @@ interface AuthRepository {
         provider: LoginProvider
     ) : Flow<ApiResult<BaseResponse<UserTokenResponse>>>
 
+    suspend fun patchDeviceToken(
+        deviceToken: String
+    ) : Flow<ApiResult<BaseResponse<Any>>>
+
 }

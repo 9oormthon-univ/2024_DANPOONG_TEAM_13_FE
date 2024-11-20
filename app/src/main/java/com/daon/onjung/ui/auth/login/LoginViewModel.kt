@@ -9,6 +9,7 @@ import com.daon.onjung.data.repository.DataStoreRepository
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.LoginProvider
 import com.daon.onjung.util.BaseViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -77,6 +78,7 @@ class LoginViewModel @Inject constructor(
                 is ApiResult.Success -> {
                     dataStoreRepository.setAccessToken(result.data?.data?.accessToken ?: "")
                     dataStoreRepository.setRefreshToken(result.data?.data?.refreshToken ?: "")
+                    patchDeviceToken()
 
                     postEffect(LoginContract.Effect.NavigateTo(Routes.Home.ROUTE))
                 }
@@ -87,6 +89,33 @@ class LoginViewModel @Inject constructor(
 
                 is ApiResult.NetworkError -> {
                     postEffect(LoginContract.Effect.ShowSnackBar("네트워크 오류가 발생했습니다."))
+                }
+            }
+        }
+    }
+
+    private fun patchDeviceToken(){
+        val firebaseMessaging = FirebaseMessaging.getInstance()
+
+        firebaseMessaging.token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                viewModelScope.launch {
+                    authRepository.patchDeviceToken(token).collect { result ->
+                        when (result) {
+                            is ApiResult.Success -> {
+                                Log.d("patchDeviceToken", "Success")
+                            }
+
+                            is ApiResult.ApiError -> {
+                                Log.d("patchDeviceToken", "ApiError")
+                            }
+
+                            is ApiResult.NetworkError -> {
+                                Log.d("patchDeviceToken", "NetworkError")
+                            }
+                        }
+                    }
                 }
             }
         }
