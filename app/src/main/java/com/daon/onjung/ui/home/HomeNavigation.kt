@@ -6,6 +6,8 @@ import androidx.navigation.compose.composable
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.OnjungBottomSheetState
 import com.daon.onjung.Routes
+import com.daon.onjung.ui.home.ocr.OcrCameraScreen
+import com.daon.onjung.ui.home.ocr.OcrCameraViewModel
 
 fun NavGraphBuilder.homeGraph(
     appState: OnjungAppState,
@@ -24,11 +26,14 @@ fun NavGraphBuilder.homeGraph(
     }
 
     composable(
-        route = Routes.Home.CAMERA
+        route = Routes.Home.OCR_CAMERA
     ) {
-        CameraScreen(
+        val viewModel: OcrCameraViewModel = hiltViewModel()
+
+        OcrCameraScreen(
             appState = appState,
-            bottomSheetState = bottomSheetState
+            bottomSheetState = bottomSheetState,
+            viewModel = viewModel
         )
     }
 

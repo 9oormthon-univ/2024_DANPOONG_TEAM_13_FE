@@ -27,14 +27,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.daon.onjung.R
 import com.daon.onjung.ui.theme.OnjungTheme
-import com.daon.onjung.util.formatCurrency
 
 @Composable
 fun ReceiptConfirmBottomSheet(
     name: String,
     address: String,
     visitDate: String,
-    spentAmount: Int,
+    spentAmount: String,
+    onConfirm: () -> Unit,
     hideBottomSheet: () -> Unit
 ) {
     Box(
@@ -189,7 +189,7 @@ fun ReceiptConfirmBottomSheet(
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Text(
-                            text = formatCurrency(spentAmount),
+                            text = "$spentAmount 원",
                             style = OnjungTheme.typography.body1,
                             color = OnjungTheme.colors.text_2,
                             overflow = TextOverflow.Ellipsis
@@ -215,7 +215,7 @@ fun ReceiptConfirmBottomSheet(
                 ActionButton(
                     text = "등록하기",
                     modifier = Modifier.weight(1f),
-                    onClick = { /* TODO: 등록하기 로직 추가 */ },
+                    onClick = { onConfirm() },
                     backgroundColor = OnjungTheme.colors.main_coral,
                     contentColor = OnjungTheme.colors.white
                 )
@@ -256,7 +256,8 @@ fun ReceiptConfirmBottomSheetPreview() {
             name = "가게명",
             address = "주소",
             visitDate = "방문일",
-            spentAmount = 10000,
+            spentAmount = "10000",
+            onConfirm = { },
             hideBottomSheet = { }
         )
     }

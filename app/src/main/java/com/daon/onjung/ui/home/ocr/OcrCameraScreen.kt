@@ -1,8 +1,9 @@
-package com.daon.onjung.ui.home
+package com.daon.onjung.ui.home.ocr
 
 import ReceiptConfirmBottomSheet
 import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,20 +44,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.OnjungBottomSheetState
 import com.daon.onjung.R
 import com.daon.onjung.ui.theme.OnjungTheme
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-internal fun CameraScreen(
+internal fun OcrCameraScreen(
     appState: OnjungAppState,
-    bottomSheetState: OnjungBottomSheetState
+    bottomSheetState: OnjungBottomSheetState,
+    viewModel: OcrCameraViewModel
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val effectFlow = viewModel.effect
+
     val lensFacing = CameraSelector.LENS_FACING_BACK
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
@@ -64,7 +71,6 @@ internal fun CameraScreen(
     val cameraxSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
     val imageCapture = remember { ImageCapture.Builder().build() }
 
-    var isGuideTextVisible by remember { mutableStateOf(true) }
     var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
 
     DisposableEffect(Unit) {
@@ -84,8 +90,42 @@ internal fun CameraScreen(
     }
 
     LaunchedEffect(Unit) {
-        delay(2000)
-        isGuideTextVisible = false
+        effectFlow.collectLatest { effect ->
+            when (effect) {
+                is OcrCameraContract.Effect.NavigateTo -> {
+                    appState.navigate(effect.destination, effect.navOptions)
+                }
+
+                is OcrCameraContract.Effect.ShowSnackBar -> {
+                    appState.showSnackBar(effect.message)
+                    cameraProvider?.bindToLifecycle(lifecycleOwner, cameraxSelector, preview, imageCapture)
+                }
+
+                is OcrCameraContract.Effect.ShowOcrResult -> {
+                    bottomSheetState.showBottomSheet {
+                        ReceiptConfirmBottomSheet(
+                            name = effect.storeName,
+                            address = effect.storeAddress,
+                            visitDate = effect.paymentDate,
+                            spentAmount = effect.paymentAmount,
+                            onConfirm = {
+                                viewModel.processEvent(
+                                    OcrCameraContract.Event.PostReceiptButtonClicked(
+                                        effect.storeName,
+                                        effect.storeAddress,
+                                        effect.paymentDate,
+                                        effect.paymentAmount
+                                    )
+                                )
+                            },
+                            hideBottomSheet = {
+                                bottomSheetState.hideBottomSheet()
+                            }
+                        )
+                    }
+                }
+            }
+        }
     }
 
     LaunchedEffect(lensFacing) {
@@ -111,12 +151,22 @@ internal fun CameraScreen(
     ) {
         AndroidView(factory = { previewView }, modifier = Modifier.fillMaxSize())
 
-        if (isGuideTextVisible) {
+        if (uiState.isGuideTextVisible) {
             Text(
                 text = "영수증의 처음과 끝이\n모두 포함되게 촬영해 주세요.",
                 style = OnjungTheme.typography.h2.copy(color = OnjungTheme.colors.white),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Center)
+            )
+        }
+
+        if (uiState.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(45.dp)
+                    .align(Alignment.Center),
+                color = OnjungTheme.colors.main_coral,
+                trackColor = Color(0xFFECECEC)
             )
         }
 
@@ -151,21 +201,9 @@ internal fun CameraScreen(
                 modifier = Modifier
                     .size(56.dp)
                     .clickable {
-                        captureImage(imageCapture, context) {
-                            bottomSheetState.showBottomSheet {
-                                // 카메라 세션 해제
-                                cameraProvider?.unbindAll()
-
-                                ReceiptConfirmBottomSheet(
-                                    name = "한입 닭꼬치",
-                                    address = "송파구 오금로 533 1층",
-                                    visitDate = "10월 30일",
-                                    spentAmount = 23000,
-                                    hideBottomSheet = {
-                                        bottomSheetState.hideBottomSheet()
-                                    }
-                                )
-                            }
+                        captureImage(imageCapture, context) { uri ->
+                            cameraProvider?.unbindAll()
+                            viewModel.processEvent(OcrCameraContract.Event.ImageCaptured(uri))
                         }
                     },
                 painter = painterResource(id = R.drawable.ic_capture),
@@ -188,10 +226,8 @@ private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
 private fun captureImage(
     imageCapture: ImageCapture,
     context: Context,
-    onSuccess: () -> Unit
+    onSuccess: (Uri) -> Unit
 ) {
-    Log.d("CameraScreen", "captureImage")
-
     val name = "onjung-${System.currentTimeMillis()}.jpg"
     val contentValues = ContentValues().apply {
         put(MediaStore.MediaColumns.DISPLAY_NAME, name)
@@ -215,13 +251,18 @@ private fun captureImage(
         ContextCompat.getMainExecutor(context),
         object : ImageCapture.OnImageSavedCallback {
             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                val savedUri = outputFileResults.savedUri
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     contentValues.clear() // IS_PENDING 플래그 제거
                     contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
-                    context.contentResolver.update(outputFileResults.savedUri!!, contentValues, null, null)
+                    if (savedUri != null) {
+                        context.contentResolver.update(savedUri, contentValues, null, null)
+                    }
                 }
                 Log.d("CameraScreen", "Image saved successfully to gallery")
-                onSuccess()
+                if (savedUri != null) {
+                    onSuccess(savedUri) // Uri를 성공 콜백으로 전달
+                }
             }
 
             override fun onError(exception: ImageCaptureException) {

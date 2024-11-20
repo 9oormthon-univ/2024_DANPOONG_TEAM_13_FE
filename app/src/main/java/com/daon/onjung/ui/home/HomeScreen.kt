@@ -124,7 +124,7 @@ internal fun HomeScreen(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            appState.navigate(Routes.Home.CAMERA)
+            appState.navigate(Routes.Home.OCR_CAMERA)
         } else {
             Toast.makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
         }
@@ -198,7 +198,7 @@ internal fun HomeScreen(
             icon = R.drawable.ic_heart
         ) {
             if (context.checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                appState.navigate(Routes.Home.CAMERA)
+                appState.navigate(Routes.Home.OCR_CAMERA)
             } else {
                 permissionLauncher.launch(Manifest.permission.CAMERA)
             }

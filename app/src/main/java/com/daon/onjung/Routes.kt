@@ -12,7 +12,7 @@ object Routes {
         const val ROUTE = "homeRoute"
 
         const val SHOP_DETAIL = "shopDetail"
-        const val CAMERA = "camera"
+        const val OCR_CAMERA = "ocrCamera"
     }
 
     object Mail {
