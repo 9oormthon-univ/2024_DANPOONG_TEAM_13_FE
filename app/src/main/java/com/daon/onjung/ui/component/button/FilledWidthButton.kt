@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.daon.onjung.ui.theme.OnjungTheme
 
 @Composable
@@ -26,6 +27,7 @@ fun FilledWidthButton(
     text: String = "",
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
+    fontSize: Int = 20,
     shadowElevation: Dp = 0.dp,
     onClick: () -> Unit = {}
 ) {
@@ -58,7 +60,8 @@ fun FilledWidthButton(
             Text(
                 text,
                 style = OnjungTheme.typography.h2.copy(
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = fontSize.sp
                 ),
             )
         }
