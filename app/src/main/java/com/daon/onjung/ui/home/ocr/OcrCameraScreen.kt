@@ -48,7 +48,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.OnjungBottomSheetState
 import com.daon.onjung.R
+import com.daon.onjung.ui.home.component.OcrFailedDialog
 import com.daon.onjung.ui.theme.OnjungTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -98,11 +100,12 @@ internal fun OcrCameraScreen(
 
                 is OcrCameraContract.Effect.ShowSnackBar -> {
                     appState.showSnackBar(effect.message)
-                    cameraProvider?.bindToLifecycle(lifecycleOwner, cameraxSelector, preview, imageCapture)
                 }
 
                 is OcrCameraContract.Effect.ShowOcrResult -> {
                     bottomSheetState.showBottomSheet {
+                        cameraProvider?.unbindAll()
+
                         ReceiptConfirmBottomSheet(
                             name = effect.storeName,
                             address = effect.storeAddress,
@@ -124,6 +127,16 @@ internal fun OcrCameraScreen(
                         )
                     }
                 }
+
+                is OcrCameraContract.Effect.CameraResume -> {
+                    delay(500)
+                    cameraProvider?.bindToLifecycle(
+                        lifecycleOwner,
+                        cameraxSelector,
+                        preview,
+                        imageCapture
+                    )
+                }
             }
         }
     }
@@ -141,6 +154,15 @@ internal fun OcrCameraScreen(
             bottomSheetState.hideBottomSheet()
         } else {
             appState.navController.navigateUp()
+        }
+    }
+
+
+    if (uiState.isOcrErrorDialogVisible) {
+        cameraProvider?.unbindAll()
+
+        OcrFailedDialog {
+            viewModel.processEvent(OcrCameraContract.Event.OcrErrorDialogDismissed)
         }
     }
 
@@ -202,7 +224,6 @@ internal fun OcrCameraScreen(
                     .size(56.dp)
                     .clickable {
                         captureImage(imageCapture, context) { uri ->
-                            cameraProvider?.unbindAll()
                             viewModel.processEvent(OcrCameraContract.Event.ImageCaptured(uri))
                         }
                     },

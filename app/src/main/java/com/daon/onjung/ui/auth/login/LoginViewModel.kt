@@ -47,24 +47,6 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun kakaoLogin(context: Context) {
-        UserApiClient.instance.me { user, error ->
-            if (error != null) {
-                error.printStackTrace()
-                if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                    viewModelScope.launch {
-                        postEffect(LoginContract.Effect.ShowSnackBar("정보없성"))
-                    }
-                    return@me
-                }
-                UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
-            } else if (user != null) {
-                Log.i("LoginViewModel", "email: ${user.kakaoAccount?.email}")
-                Log.i("LoginViewModel", "nickname: ${user.kakaoAccount?.profile?.nickname}")
-                Log.i("LoginViewModel", "profile image: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
-            }
-        }
-
-
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
                 if (error != null) {

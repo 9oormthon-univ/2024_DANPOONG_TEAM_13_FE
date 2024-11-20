@@ -35,6 +35,11 @@ class OcrCameraViewModel @Inject constructor(
                 is OcrCameraContract.Event.PostReceiptButtonClicked -> {
                     postReceipt()
                 }
+
+                is OcrCameraContract.Event.OcrErrorDialogDismissed -> {
+                    postEffect(OcrCameraContract.Effect.CameraResume)
+                    updateState(currentState.copy(isOcrErrorDialogVisible = false))
+                }
             }
         }
     }
@@ -64,11 +69,11 @@ class OcrCameraViewModel @Inject constructor(
                 }
 
                 is ApiResult.ApiError -> {
-                    postEffect(OcrCameraContract.Effect.ShowSnackBar(it.message))
+                    updateState(currentState.copy(isOcrErrorDialogVisible = true))
                 }
 
                 is ApiResult.NetworkError -> {
-                    postEffect(OcrCameraContract.Effect.ShowSnackBar("네트워크 오류가 발생했습니다."))
+                    updateState(currentState.copy(isOcrErrorDialogVisible = true))
                 }
             }
         }
