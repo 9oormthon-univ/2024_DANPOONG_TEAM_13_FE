@@ -4,6 +4,8 @@ import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.PostReceiptRequest
 import com.daon.onjung.network.model.response.OcrResponse
+import com.daon.onjung.network.model.response.OnjungBriefResponse
+import com.daon.onjung.network.model.response.OnjungCountResponse
 import com.daon.onjung.network.model.response.OnjungSummaryResponse
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
@@ -19,5 +21,9 @@ interface OnjungDataSource {
     fun postReceipt(
         postReceiptRequest: PostReceiptRequest
     ): Flow<ApiResult<BaseResponse<Any>>>
+
+    fun getOnjungCount(): Flow<ApiResult<BaseResponse<OnjungCountResponse>>>
+
+    fun getOnjungBrief(): Flow<ApiResult<BaseResponse<OnjungBriefResponse>>>
 
 }

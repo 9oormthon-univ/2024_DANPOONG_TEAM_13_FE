@@ -26,4 +26,12 @@ class OnjungDataSourceImpl @Inject constructor(
         emit(onjungService.postReceipt(postReceiptRequest))
     }.flowOn(ioDispatcher)
 
+    override fun getOnjungCount() = flow {
+        emit(onjungService.getOnjungCount())
+    }.flowOn(ioDispatcher)
+
+    override fun getOnjungBrief() = flow {
+        emit(onjungService.getOnjungBrief())
+    }.flowOn(ioDispatcher)
+
 }

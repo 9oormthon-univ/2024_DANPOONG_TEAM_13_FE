@@ -4,6 +4,8 @@ import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.PostReceiptRequest
 import com.daon.onjung.network.model.response.OcrResponse
+import com.daon.onjung.network.model.response.OnjungBriefResponse
+import com.daon.onjung.network.model.response.OnjungCountResponse
 import com.daon.onjung.network.model.response.OnjungSummaryResponse
 import okhttp3.MultipartBody
 import retrofit2.http.Body
@@ -28,4 +30,9 @@ interface OnjungService {
         @Body postReceiptRequest: PostReceiptRequest
     ): ApiResult<BaseResponse<Any>>
 
+    @GET("/api/v1/onjungs/count")
+    suspend fun getOnjungCount() : ApiResult<BaseResponse<OnjungCountResponse>>
+
+    @GET("/api/v1/onjungs/briefs")
+    suspend fun getOnjungBrief() : ApiResult<BaseResponse<OnjungBriefResponse>>
 }

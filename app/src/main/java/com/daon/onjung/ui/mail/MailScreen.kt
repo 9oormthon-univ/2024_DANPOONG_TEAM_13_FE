@@ -18,6 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,16 +27,36 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
 import com.daon.onjung.ui.component.ShopMailContainer
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.theme.OnjungTheme
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 internal fun MailScreen(
-    appState: OnjungAppState
+    appState: OnjungAppState,
+    viewModel: MailViewModel
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val effectFlow = viewModel.effect
+
+    LaunchedEffect(Unit) {
+        effectFlow.collectLatest { effect ->
+            when (effect) {
+                is MailContract.Effect.NavigateTo -> {
+                    appState.navController.navigate(effect.destination, effect.navOptions)
+                }
+
+                is MailContract.Effect.ShowSnackBar -> {
+                    appState.showSnackBar(effect.message)
+                }
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +80,7 @@ internal fun MailScreen(
 
             item {
                 Text(
-                    "3개의 식당과 온기를 나누었어요.",
+                    "${uiState.onjungCount}개의 식당과 온기를 나누었어요.",
                     style = OnjungTheme.typography.body2.copy(
                         color = OnjungTheme.colors.text_3,
                     ),

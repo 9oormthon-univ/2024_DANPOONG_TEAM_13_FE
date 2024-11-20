@@ -44,4 +44,7 @@ class OnjungRepositoryImpl @Inject constructor(
         )
     }
 
+    override fun getOnjungCount() = onjungDataSource.getOnjungCount()
+
+    override fun getOnjungBrief() = onjungDataSource.getOnjungBrief()
 }
