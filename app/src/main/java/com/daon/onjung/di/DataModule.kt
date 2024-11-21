@@ -6,12 +6,16 @@ import com.daon.onjung.data.datasource.DataStoreDataSource
 import com.daon.onjung.data.datasource.DataStoreDataSourceImpl
 import com.daon.onjung.data.datasource.OnjungDataSource
 import com.daon.onjung.data.datasource.OnjungDataSourceImpl
+import com.daon.onjung.data.datasource.StoreDataSource
+import com.daon.onjung.data.datasource.StoreDataSourceImpl
 import com.daon.onjung.data.repository.AuthRepository
 import com.daon.onjung.data.repository.AuthRepositoryImpl
 import com.daon.onjung.data.repository.DataStoreRepository
 import com.daon.onjung.data.repository.DataStoreRepositoryImpl
 import com.daon.onjung.data.repository.OnjungRepository
 import com.daon.onjung.data.repository.OnjungRepositoryImpl
+import com.daon.onjung.data.repository.StoreRepository
+import com.daon.onjung.data.repository.StoreRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -50,5 +54,15 @@ abstract class DataModule {
     abstract fun bindsOnjungRepository(
         onjungRepository: OnjungRepositoryImpl
     ): OnjungRepository
+
+    @Binds
+    abstract fun bindsStoreDataSource(
+        storeDataSource: StoreDataSourceImpl
+    ): StoreDataSource
+
+    @Binds
+    abstract fun bindsStoreRepository(
+        storeRepository: StoreRepositoryImpl
+    ): StoreRepository
 
 }

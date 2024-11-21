@@ -8,6 +8,7 @@ import com.daon.onjung.network.converter.EnumConverterFactory
 import com.daon.onjung.network.interceptor.AuthInterceptor
 import com.daon.onjung.network.service.AuthService
 import com.daon.onjung.network.service.OnjungService
+import com.daon.onjung.network.service.StoreService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -66,4 +67,9 @@ object NetworkModule {
     @Singleton
     fun providesOnjungService(retrofit: Retrofit): OnjungService =
         retrofit.create(OnjungService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesStoreService(retrofit: Retrofit): StoreService =
+        retrofit.create(StoreService::class.java)
 }

@@ -63,36 +63,6 @@ val iconList = listOf(
     )
 )
 
-val shopList = listOf(
-    ShopData(
-        shopId = 1,
-        tag = "국가 유공자",
-        tagColor = Color(0xFF81A5DA),
-        title = "헌신에 보답하는\n감사의 식탁",
-        likeCount = "1080",
-        name = "한걸음 닭꼬치",
-        region = "송파구"
-    ),
-    ShopData(
-        shopId = 2,
-        tag = "결식 아동",
-        tagColor = Color(0xFF83CB82),
-        title = "아이들에게\n전하는 희망의 밥상",
-        likeCount = "250",
-        name = "보람 돈까스",
-        region = "용산구"
-    ),
-    ShopData(
-        shopId = 3,
-        tag = "결식 아동",
-        tagColor = Color(0xFF83CB82),
-        title = "아이들에게\n전하는 희망의 밥상",
-        likeCount = "250",
-        name = "보람 돈까스",
-        region = "용산구"
-    ),
-)
-
 @Composable
 internal fun HomeScreen(
     appState: OnjungAppState,
@@ -105,8 +75,6 @@ internal fun HomeScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.getOnjungSummary()
-
         effectFlow.collectLatest { effect ->
             when (effect) {
                 is HomeContract.Effect.NavigateTo -> {
@@ -157,10 +125,15 @@ internal fun HomeScreen(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 HomeShopCardLazyRow(
-                    shopList
-                ) {
-                    appState.navigate(Routes.Home.SHOP_DETAIL)
-                }
+                    shopList = uiState.storeList,
+                    isLastPage = uiState.isStoreListLastPage,
+                    onLoadMore = {
+                        viewModel.processEvent(HomeContract.Event.LoadMoreStoreList)
+                    },
+                    navigateToShopDetail = { id ->
+                        appState.navigate(Routes.Home.SHOP_DETAIL)
+                    }
+                )
                 Column(
                     modifier = Modifier
                         .background(color = OnjungTheme.colors.gray_3)

@@ -13,8 +13,8 @@ data class StoreOverviewResponse(
 data class StoreOverviewInfo(
     @SerializedName("id")
     val id: Int,
-    @SerializedName("tag")
-    val tag: StoreTag,
+    @SerializedName("tags")
+    val tags: List<StoreTag>,
     @SerializedName("title")
     val title: String,
     @SerializedName("banner_img_url")

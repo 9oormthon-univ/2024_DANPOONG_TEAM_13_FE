@@ -21,9 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -33,16 +34,15 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Composable
 fun ShopCard(
     shopId: Int,
+    imgUrl: String,
     tag: String,
     tagColor: Color,
     title: String,
-    likeCount: String,
+    likeCount: Int,
     name: String,
-    region: String,
+    address: String,
     onClick: (Int) -> Unit
 ) {
-    val context = LocalContext.current
-
     Surface(
         modifier = Modifier
             .width(236.dp),
@@ -56,8 +56,9 @@ fun ShopCard(
             ) {
                 AsyncImage(
                     modifier = Modifier.aspectRatio(1.3f),
-                    model = R.drawable.img_dummy,
+                    model = imgUrl,
                     contentDescription = "IMG_SHOP",
+                    contentScale = ContentScale.Crop
                 )
 
                 Box(
@@ -78,7 +79,8 @@ fun ShopCard(
                 ) {
                     Row(
                         modifier = Modifier.align(Alignment.End),
-                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             modifier = Modifier.size(16.dp),
@@ -124,6 +126,8 @@ fun ShopCard(
                             style = OnjungTheme.typography.title.copy(
                                 color = OnjungTheme.colors.white
                             ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
@@ -141,6 +145,8 @@ fun ShopCard(
                         fontWeight = FontWeight.SemiBold,
                         color = OnjungTheme.colors.text_2
                     ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 Spacer(
@@ -153,10 +159,12 @@ fun ShopCard(
                 )
 
                 Text(
-                    text = region,
+                    text = address,
                     style = OnjungTheme.typography.caption.copy(
                         color = OnjungTheme.colors.text_3
                     ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
@@ -169,12 +177,13 @@ fun ShopCardPreview() {
     OnjungTheme {
         ShopCard(
             shopId = 1,
+            imgUrl = "",
             tag = "국가 유공자",
             tagColor = Color(0xFF81A5DA),
             title = "헌신에 보답하는\n감사의 식탁",
-            likeCount = "100",
+            likeCount = 100,
             name = "한걸음 닭꼬치",
-            region = "송파구",
+            address = "송파구",
             onClick = {}
         )
     }
