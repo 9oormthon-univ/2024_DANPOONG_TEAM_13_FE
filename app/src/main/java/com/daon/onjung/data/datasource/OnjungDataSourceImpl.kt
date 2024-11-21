@@ -34,4 +34,8 @@ class OnjungDataSourceImpl @Inject constructor(
         emit(onjungService.getOnjungBrief())
     }.flowOn(ioDispatcher)
 
+    override fun postPostDonation(id: Int) = flow {
+        emit(onjungService.postDonation(id))
+    }.flowOn(ioDispatcher)
+
 }

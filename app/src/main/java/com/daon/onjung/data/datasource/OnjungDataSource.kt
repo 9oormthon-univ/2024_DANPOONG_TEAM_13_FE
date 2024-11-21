@@ -3,6 +3,7 @@ package com.daon.onjung.data.datasource
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.PostReceiptRequest
+import com.daon.onjung.network.model.response.DonationResponse
 import com.daon.onjung.network.model.response.OcrResponse
 import com.daon.onjung.network.model.response.OnjungBriefResponse
 import com.daon.onjung.network.model.response.OnjungCountResponse
@@ -25,5 +26,7 @@ interface OnjungDataSource {
     fun getOnjungCount(): Flow<ApiResult<BaseResponse<OnjungCountResponse>>>
 
     fun getOnjungBrief(): Flow<ApiResult<BaseResponse<OnjungBriefResponse>>>
+
+    fun postPostDonation(id: Int): Flow<ApiResult<BaseResponse<DonationResponse>>>
 
 }

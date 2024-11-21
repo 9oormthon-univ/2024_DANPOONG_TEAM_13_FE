@@ -172,7 +172,7 @@ internal fun ShopDetailScreen(
 
                 ShopDetailVideoSection(
                     introduce = "\"더 좋은 가격과 퀄리티를 주도록 노력하겠습니다.\"",
-                    youtubeVideoId = "NfmZC0SfB-s"
+                    youtubeVideoId = "sHmo2uGcP2Q"
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

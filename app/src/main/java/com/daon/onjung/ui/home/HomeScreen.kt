@@ -158,7 +158,9 @@ internal fun HomeScreen(
                 Spacer(modifier = Modifier.height(10.dp))
                 HomeShopCardLazyRow(
                     shopList
-                )
+                ) {
+                    appState.navigate(Routes.Home.SHOP_DETAIL)
+                }
                 Column(
                     modifier = Modifier
                         .background(color = OnjungTheme.colors.gray_3)

@@ -3,6 +3,7 @@ package com.daon.onjung.network.service
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.PostReceiptRequest
+import com.daon.onjung.network.model.response.DonationResponse
 import com.daon.onjung.network.model.response.OcrResponse
 import com.daon.onjung.network.model.response.OnjungBriefResponse
 import com.daon.onjung.network.model.response.OnjungCountResponse
@@ -13,6 +14,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface OnjungService {
 
@@ -35,4 +37,9 @@ interface OnjungService {
 
     @GET("/api/v1/onjungs/briefs")
     suspend fun getOnjungBrief() : ApiResult<BaseResponse<OnjungBriefResponse>>
+
+    @POST("/api/v1/stores/{id}/donations")
+    suspend fun postDonation(
+        @Path("id") id: Int
+    ): ApiResult<BaseResponse<DonationResponse>>
 }

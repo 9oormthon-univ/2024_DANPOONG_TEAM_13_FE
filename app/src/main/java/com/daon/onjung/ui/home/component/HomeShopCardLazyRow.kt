@@ -16,7 +16,8 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Composable
 fun HomeShopCardLazyRow(
     shopList: List<ShopData>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToShopDetail: (Int) -> Unit
 ) {
     LazyRow(
         modifier = modifier,
@@ -33,7 +34,7 @@ fun HomeShopCardLazyRow(
                 name = shop.name,
                 region = shop.region,
                 onClick = {
-                    // 페이지 이동
+                    navigateToShopDetail(shop.shopId)
                 }
             )
         }
@@ -77,6 +78,8 @@ fun HomeShopCardLazyRowPreview() {
     OnjungTheme {
         HomeShopCardLazyRow (
             shopList
-        )
+        ) {
+
+        }
     }
 }
