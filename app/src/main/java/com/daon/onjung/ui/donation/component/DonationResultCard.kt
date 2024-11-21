@@ -39,8 +39,8 @@ fun DonationResultCard (
     Column (
         modifier = modifier
             .fillMaxWidth()
-            .border(width = 2.dp, color = Color(0xFFFFC7CE), shape = RoundedCornerShape(8.dp))
-            .background(color = Color(0xFFFFF0EF))
+            .background(color = Color(0xFFFFF0EF), shape = RoundedCornerShape(14.dp))
+            .border(width = 2.dp, color = Color(0xFFFFC7CE), shape = RoundedCornerShape(14.dp))
             .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

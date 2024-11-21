@@ -18,7 +18,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.rememberOnjungAppState
+import com.daon.onjung.ui.component.button.FilledWidthButton
 import com.daon.onjung.ui.donation.component.DonationResultCard
+import com.daon.onjung.ui.donation.component.KakaoShare
 import com.daon.onjung.ui.theme.OnjungTheme
 
 @Composable
@@ -52,6 +54,15 @@ fun DonationResultScreen(
         DonationResultCard(
             modifier = Modifier.padding(horizontal = 50.dp)
         )
+        Spacer(modifier = Modifier.height(27.dp))
+        KakaoShare()
+        Spacer(modifier = Modifier.weight(1f))
+        FilledWidthButton(
+            "확인",
+            modifier = Modifier
+                .padding(horizontal = 20.dp),
+        )
+        Spacer(modifier = Modifier.height(40.dp))
     }
 }
 
