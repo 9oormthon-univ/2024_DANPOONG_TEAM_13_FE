@@ -17,4 +17,7 @@ interface AuthDataSource {
         deviceTokenRequest: DeviceTokenRequest
     ): Flow<ApiResult<BaseResponse<Any>>>
 
+    suspend fun logout(): Flow<ApiResult<BaseResponse<Any>>>
+
+    suspend fun deleteAccount(): Flow<ApiResult<BaseResponse<Any>>>
 }

@@ -7,6 +7,7 @@ import com.daon.onjung.network.model.request.LoginRequest
 import com.daon.onjung.network.model.response.UserTokenResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 
@@ -24,4 +25,10 @@ interface AuthService {
     suspend fun patchDeviceToken(
         @Body deviceTokenRequest: DeviceTokenRequest
     ): ApiResult<BaseResponse<Any>>
+
+    @POST("/api/v1/auth/logout")
+    suspend fun logout(): ApiResult<BaseResponse<Any>>
+
+    @DELETE("/api/v1/auth")
+    suspend fun deleteAccount(): ApiResult<BaseResponse<Any>>
 }

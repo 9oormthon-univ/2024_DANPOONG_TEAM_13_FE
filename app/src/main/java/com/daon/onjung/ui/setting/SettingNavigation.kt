@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.setting
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.daon.onjung.OnjungAppState
@@ -13,8 +14,10 @@ fun NavGraphBuilder.settingGraph(
     composable(
         route = Routes.Setting.ROUTE
     ) {
+        val viewModel: SettingViewModel = hiltViewModel()
         SettingScreen(
-            appState = appState
+            appState = appState,
+            viewModel = viewModel
         )
     }
 }

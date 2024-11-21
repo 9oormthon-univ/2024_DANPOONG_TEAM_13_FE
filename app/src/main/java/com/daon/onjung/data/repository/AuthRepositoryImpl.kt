@@ -19,4 +19,9 @@ class AuthRepositoryImpl @Inject constructor(
         deviceToken: String
     ) = authDataSource.patchDeviceToken(DeviceTokenRequest(deviceToken))
 
+    override suspend fun logout(
+    ) = authDataSource.logout()
+
+    override suspend fun deleteAccount(
+    ) = authDataSource.deleteAccount()
 }

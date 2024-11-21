@@ -17,4 +17,7 @@ interface AuthRepository {
         deviceToken: String
     ) : Flow<ApiResult<BaseResponse<Any>>>
 
+    suspend fun logout() : Flow<ApiResult<BaseResponse<Any>>>
+
+    suspend fun deleteAccount() : Flow<ApiResult<BaseResponse<Any>>>
 }

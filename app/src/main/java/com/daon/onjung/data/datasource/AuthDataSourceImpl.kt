@@ -30,4 +30,13 @@ class AuthDataSourceImpl @Inject constructor(
         emit(authService.patchDeviceToken(deviceTokenRequest))
     }.flowOn(ioDispatcher)
 
+    override suspend fun logout(
+    ): Flow<ApiResult<BaseResponse<Any>>> = flow {
+        emit(authService.logout())
+    }.flowOn(ioDispatcher)
+
+    override suspend fun deleteAccount(
+    ): Flow<ApiResult<BaseResponse<Any>>> = flow {
+        emit(authService.deleteAccount())
+    }.flowOn(ioDispatcher)
 }

@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -72,7 +73,10 @@ internal fun LoginScreen(
     ) {
         Image(
             painter = painterResource(id = R.mipmap.img_login_logo),
-            contentDescription = "login_logo"
+            contentDescription = "login_logo",
+            modifier = Modifier
+                    .fillMaxSize(),
+            contentScale = ContentScale.FillWidth
         )
 
         Column(
