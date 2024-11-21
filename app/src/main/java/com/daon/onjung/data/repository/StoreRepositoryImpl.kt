@@ -14,4 +14,6 @@ class StoreRepositoryImpl @Inject constructor(
 
     override suspend fun getStoreDetail(id: Int) = storeDataSource.getStoreDetail(id)
 
+    override suspend fun putStoreOnjungShare(id: Int) = storeDataSource.putStoreOnjungShare(id)
+
 }

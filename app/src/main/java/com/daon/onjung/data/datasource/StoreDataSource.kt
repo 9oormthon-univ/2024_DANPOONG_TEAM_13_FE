@@ -12,4 +12,6 @@ interface StoreDataSource {
 
     suspend fun getStoreDetail(id: Int): Flow<ApiResult<BaseResponse<StoreDetailResponse>>>
 
+    suspend fun putStoreOnjungShare(id: Int): Flow<ApiResult<BaseResponse<Unit>>>
+
 }

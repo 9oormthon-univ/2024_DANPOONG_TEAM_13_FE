@@ -41,6 +41,7 @@ import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.component.YoutubeScreen
 import com.daon.onjung.ui.component.button.CircleButton
 import com.daon.onjung.ui.component.button.FilledWidthButton
+import com.daon.onjung.ui.home.component.OnjungSuccessDialog
 import com.daon.onjung.ui.theme.OnjungTheme
 import com.daon.onjung.util.formatCurrencyInTenThousandUnit
 import kotlinx.coroutines.flow.collectLatest
@@ -125,6 +126,15 @@ internal fun ShopDetailScreen(
                     appState.showSnackBar(effect.message)
                 }
             }
+        }
+    }
+
+    if (uiState.isOnjungShareDialogVisible) {
+        OnjungSuccessDialog(
+            title = "온기를 나눠주셔서 감사해요",
+            description = "온정이 대신 100원 기부했어요!"
+        ) {
+            viewModel.processEvent(ShopDetailContract.Event.OnjungShareDialogDismissed)
         }
     }
 
@@ -226,7 +236,7 @@ internal fun ShopDetailScreen(
                     ),
                     icon = R.drawable.ic_heart
                 ) {
-
+                    viewModel.processEvent(ShopDetailContract.Event.OnjungShareClicked(shopId))
                 }
 
                 FilledWidthButton(

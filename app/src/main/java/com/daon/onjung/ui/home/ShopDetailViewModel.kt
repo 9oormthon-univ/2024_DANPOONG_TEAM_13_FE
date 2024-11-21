@@ -21,6 +21,14 @@ class ShopDetailViewModel @Inject constructor(
             is ShopDetailContract.Event.ToggleExpand -> {
                 updateIsExpanded(event.isExpanded)
             }
+
+            is ShopDetailContract.Event.OnjungShareClicked -> {
+                shareOnjung(event.id)
+            }
+
+            is ShopDetailContract.Event.OnjungShareDialogDismissed -> {
+                updateState(currentState.copy(isOnjungShareDialogVisible = false))
+            }
         }
     }
 
@@ -54,6 +62,27 @@ class ShopDetailViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    private fun shareOnjung(id: Int) = viewModelScope.launch {
+        storeRepository.putStoreOnjungShare(id)
+            .onStart {
+                updateState(currentState.copy(isLoading = true))
+            }
+            .collect {
+                updateState(currentState.copy(isLoading = false))
+                when (it) {
+                    is ApiResult.Success -> {
+                        updateState(currentState.copy(isOnjungShareDialogVisible = true))
+                    }
+                    is ApiResult.ApiError -> {
+                        postEffect(ShopDetailContract.Effect.ShowSnackBar(it.message))
+                    }
+                    is ApiResult.NetworkError -> {
+                        postEffect(ShopDetailContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
+                    }
+                }
+            }
     }
 
     private fun updateIsExpanded(isExpanded: Boolean) {

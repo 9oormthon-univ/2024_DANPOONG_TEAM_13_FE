@@ -19,11 +19,14 @@ class ShopDetailContract {
         val storeInfo: StoreDetailInfo = StoreDetailInfo("", listOf(StoreTag.DISABLED_GROUP), "", "", "", "", StoreCategory.KOREAN, "", ""),
         val eventInfo: EventDetailInfo = EventDetailInfo(0, 0, 0),
         val onjungInfo: OnjungDetailInfo = OnjungDetailInfo(0, 0, 0, 0),
-        val storeHistories: List<StoreHistory> = emptyList()
+        val storeHistories: List<StoreHistory> = emptyList(),
+        val isOnjungShareDialogVisible: Boolean = false
     ) : UiState
 
     sealed class Event : UiEvent {
         data class ToggleExpand(val isExpanded: Boolean) : Event()
+        data class OnjungShareClicked(val id: Int) : Event()
+        data object OnjungShareDialogDismissed : Event()
     }
 
     sealed class Effect : UiEffect {

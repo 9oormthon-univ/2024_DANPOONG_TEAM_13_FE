@@ -11,4 +11,6 @@ interface StoreRepository {
     suspend fun getStoreList(page: Int, size: Int): Flow<ApiResult<BaseResponse<StoreOverviewResponse>>>
 
     suspend fun getStoreDetail(id: Int): Flow<ApiResult<BaseResponse<StoreDetailResponse>>>
+
+    suspend fun putStoreOnjungShare(id: Int): Flow<ApiResult<BaseResponse<Unit>>>
 }

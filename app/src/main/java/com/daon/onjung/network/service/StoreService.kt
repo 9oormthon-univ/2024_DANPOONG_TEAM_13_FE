@@ -5,6 +5,7 @@ import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.response.StoreDetailResponse
 import com.daon.onjung.network.model.response.StoreOverviewResponse
 import retrofit2.http.GET
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -21,4 +22,8 @@ interface StoreService {
         @Path("id") id: Int
     ): ApiResult<BaseResponse<StoreDetailResponse>>
 
+    @PUT("/api/v1/stores/{id}/shares")
+    suspend fun putStoreOnjungShare(
+        @Path("id") id: Int
+    ): ApiResult<BaseResponse<Unit>>
 }

@@ -30,4 +30,10 @@ class StoreDataSourceImpl @Inject constructor(
         emit(storeService.getStoreDetail(id))
     }.flowOn(ioDispatcher)
 
+    override suspend fun putStoreOnjungShare(
+        id: Int
+    ): Flow<ApiResult<BaseResponse<Unit>>> = flow {
+        emit(storeService.putStoreOnjungShare(id))
+    }.flowOn(ioDispatcher)
+
 }
