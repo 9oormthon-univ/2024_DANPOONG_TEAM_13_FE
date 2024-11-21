@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,12 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.request.ImageRequest
 import com.daon.onjung.R
 import com.daon.onjung.ui.theme.OnjungTheme
 
@@ -43,6 +47,8 @@ fun ShopCard(
     address: String,
     onClick: (Int) -> Unit
 ) {
+    val context = LocalContext.current
+
     Surface(
         modifier = Modifier
             .width(236.dp),
@@ -56,9 +62,22 @@ fun ShopCard(
             ) {
                 AsyncImage(
                     modifier = Modifier.aspectRatio(1.3f),
-                    model = imgUrl,
+                    model = ImageRequest.Builder(context).data(imgUrl).build(),
                     contentDescription = "IMG_SHOP",
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    onState = { state ->
+                        when (state) {
+                            is AsyncImagePainter.State.Success -> {
+                                Log.d("Coil", "Image Load Success")
+                            }
+
+                            is AsyncImagePainter.State.Error -> {
+                                Log.d("Coil", "${state.result.throwable.message}")
+                            }
+
+                            else -> {}
+                        }
+                    },
                 )
 
                 Box(

@@ -8,8 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 
 @Composable
 fun SupportBannerIcon(
@@ -17,6 +19,8 @@ fun SupportBannerIcon(
     imageUrl: String,
     backgroundColor: Color = Color.White,
 ) {
+    val context = LocalContext.current
+
     Surface(
         shadowElevation = 10.dp,
         color = backgroundColor,
@@ -27,7 +31,9 @@ fun SupportBannerIcon(
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
-                model = imageUrl,
+                model = ImageRequest.Builder(context)
+                    .data(imageUrl)
+                    .build(),
                 contentDescription = "IC_COMPANY",
             )
         }

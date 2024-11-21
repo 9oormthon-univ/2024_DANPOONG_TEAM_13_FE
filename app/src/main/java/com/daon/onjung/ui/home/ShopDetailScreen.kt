@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.daon.onjung.MainActivity
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
@@ -261,13 +262,17 @@ private fun ShopDetailHeader(
     tagColor: Color,
     bannerImgUrl: String
 ) {
+    val context = LocalContext.current
+
     Box(
         modifier = Modifier.aspectRatio(1.17f),
         contentAlignment = Alignment.BottomStart
     ) {
         AsyncImage(
             modifier = Modifier.aspectRatio(1.17f),
-            model = bannerImgUrl,
+            model = ImageRequest.Builder(context)
+                .data(bannerImgUrl)
+                .build(),
             contentScale = ContentScale.Crop,
             contentDescription = "IMG_SHOP",
         )
