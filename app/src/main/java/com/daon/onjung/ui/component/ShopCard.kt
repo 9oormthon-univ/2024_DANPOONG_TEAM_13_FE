@@ -64,20 +64,7 @@ fun ShopCard(
                     modifier = Modifier.aspectRatio(1.3f),
                     model = ImageRequest.Builder(context).data(imgUrl).build(),
                     contentDescription = "IMG_SHOP",
-                    contentScale = ContentScale.Crop,
-                    onState = { state ->
-                        when (state) {
-                            is AsyncImagePainter.State.Success -> {
-                                Log.d("Coil", "Image Load Success")
-                            }
-
-                            is AsyncImagePainter.State.Error -> {
-                                Log.d("Coil", "${state.result.throwable.message}")
-                            }
-
-                            else -> {}
-                        }
-                    },
+                    contentScale = ContentScale.Crop
                 )
 
                 Box(

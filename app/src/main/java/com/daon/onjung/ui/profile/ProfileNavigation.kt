@@ -33,9 +33,12 @@ fun NavGraphBuilder.profileGraph(
     composable(
         route = Routes.Profile.TICKET_LIST
     ) {
+        val viewModel: ProfileListViewModel = hiltViewModel()
+
         ProfileTicketListScreen(
             appState = appState,
-            bottomSheetState = bottomSheetState
+            bottomSheetState = bottomSheetState,
+            viewModel = viewModel
         )
     }
 }

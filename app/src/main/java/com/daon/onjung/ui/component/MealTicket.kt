@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,20 +39,19 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.daon.onjung.R
+import com.daon.onjung.network.model.StoreCategory
 import com.daon.onjung.ui.theme.OnjungTheme
-
-enum class TicketState {
-    AVAILABLE, USED, EXPIRED
-}
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun MealTicket(
     name: String,
     imageUrl: String,
-    tag: String,
+    tag: StoreCategory,
     address: String,
-    state: TicketState,
-    date: String,
+    expirationDate: String,
+    isValidate: Boolean,
     onClick: () -> Unit
 ) {
     Column(
@@ -62,19 +62,27 @@ fun MealTicket(
                 cornerRadius = 10.dp
             )
         ).graphicsLayer {
-            if (state != TicketState.AVAILABLE) alpha = 0.6f
+            if (!isValidate) alpha = 0.6f
         }
     ) {
         MealTicketHeader(
             name = name,
             imageUrl = imageUrl,
-            tag = tag,
+            tag = when (tag) {
+                StoreCategory.KOREAN -> "한식"
+                StoreCategory.CHINESE -> "중식"
+                StoreCategory.JAPANESE -> "일식"
+                StoreCategory.WESTERN -> "양식"
+                StoreCategory.ETC -> "기타"
+            },
             address = address
         )
-        HorizontalDottedLine(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp))
+        HorizontalDottedLine(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+        )
         MealTicketFooter(
-            state = state,
-            date = date,
+            expirationDate = expirationDate,
+            isValidate = isValidate,
             onClick = onClick
         )
     }
@@ -155,8 +163,8 @@ private fun MealTicketHeader(
 
 @Composable
 fun MealTicketFooter(
-    state: TicketState,
-    date: String,
+    expirationDate: String,
+    isValidate: Boolean,
     onClick: () -> Unit
 ) {
     Row(
@@ -169,8 +177,11 @@ fun MealTicketFooter(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val isExpired = isExpired(expirationDate)
+        val availableText = if (isValidate) "$expirationDate 까지" else "$expirationDate 사용 완료"
+
         Text(
-            text = if (state == TicketState.AVAILABLE || state == TicketState.EXPIRED) "$date 까지" else " $date 사용",
+            text = availableText,
             style = OnjungTheme.typography.body2,
             color = OnjungTheme.colors.text_3
         )
@@ -184,16 +195,18 @@ fun MealTicketFooter(
             colors = ButtonDefaults.buttonColors(
                 containerColor = OnjungTheme.colors.main_coral,
                 contentColor = OnjungTheme.colors.white,
-                disabledContainerColor = if (state == TicketState.USED) OnjungTheme.colors.main_coral else Color(0xFF8B8B8B),
+                disabledContainerColor = if (isValidate) OnjungTheme.colors.main_coral else Color(0xFF8B8B8B),
             ),
-            enabled = state == TicketState.AVAILABLE
+            enabled = !isExpired && isValidate
         ) {
+            val statusText = when {
+                isExpired -> "기간 만료"
+                isValidate -> "사용하기"
+                else -> "사용 완료"
+            }
+
             Text(
-                text = when (state) {
-                    TicketState.AVAILABLE -> "사용하기"
-                    TicketState.USED -> "사용 완료"
-                    TicketState.EXPIRED -> "기간 만료"
-                },
+                text = statusText,
                 style = OnjungTheme.typography.body2,
                 color = OnjungTheme.colors.white
             )
@@ -210,30 +223,30 @@ fun MealTicketPreview() {
         MealTicket(
             name = "한걸음 닭꼬치",
             imageUrl = "https://via.placeholder.com/150",
-            tag = "일식",
+            tag = StoreCategory.KOREAN,
             address = "송파구 오금로 533 1층 (거여동)",
-            state = TicketState.AVAILABLE,
-            date = "2024. 12. 31",
+            expirationDate = "2022. 12. 31",
+            isValidate = true,
             onClick = { }
         )
 
         MealTicket(
             name = "한걸음 닭꼬치",
             imageUrl = "https://via.placeholder.com/150",
-            tag = "일식",
+            tag = StoreCategory.JAPANESE,
             address = "송파구 오금로 533 1층 (거여동)",
-            state = TicketState.USED,
-            date = "2024. 12. 31",
+            expirationDate = "2024. 12. 31",
+            isValidate = true,
             onClick = { }
         )
 
         MealTicket(
             name = "한걸음 닭꼬치",
             imageUrl = "https://via.placeholder.com/150",
-            tag = "일식",
+            tag = StoreCategory.CHINESE,
             address = "송파구 오금로 533 1층 (거여동)",
-            state = TicketState.EXPIRED,
-            date = "2024. 12. 31",
+            expirationDate = "2022. 12. 31",
+            isValidate = false,
             onClick = { }
         )
     }
@@ -294,3 +307,14 @@ class TicketShape(
     }
 }
 
+fun isExpired(expirationDate: String): Boolean {
+    val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
+
+    return try {
+        val parsedDate = LocalDate.parse(expirationDate, formatter)
+        LocalDate.now().isAfter(parsedDate)
+    } catch (e: Exception) {
+        Log.d("MealTicket", "Failed to parse date: $expirationDate")
+        true
+    }
+}

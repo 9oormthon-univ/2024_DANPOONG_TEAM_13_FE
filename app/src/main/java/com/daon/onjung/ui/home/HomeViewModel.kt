@@ -73,9 +73,11 @@ class HomeViewModel @Inject constructor(
                                 )
                             }
                         }
+
                         is ApiResult.ApiError ->{
                             postEffect(HomeContract.Effect.ShowSnackBar(it.message))
                         }
+
                         is ApiResult.NetworkError -> {
                             postEffect(HomeContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
                         }

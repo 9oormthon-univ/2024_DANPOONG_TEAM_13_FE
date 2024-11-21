@@ -6,6 +6,8 @@ import com.daon.onjung.data.datasource.CompanyDataSource
 import com.daon.onjung.data.datasource.CompanyDataSourceImpl
 import com.daon.onjung.data.datasource.DataStoreDataSource
 import com.daon.onjung.data.datasource.DataStoreDataSourceImpl
+import com.daon.onjung.data.datasource.EventDataSource
+import com.daon.onjung.data.datasource.EventDataSourceImpl
 import com.daon.onjung.data.datasource.OnjungDataSource
 import com.daon.onjung.data.datasource.OnjungDataSourceImpl
 import com.daon.onjung.data.datasource.StoreDataSource
@@ -16,6 +18,8 @@ import com.daon.onjung.data.repository.CompanyRepository
 import com.daon.onjung.data.repository.CompanyRepositoryImpl
 import com.daon.onjung.data.repository.DataStoreRepository
 import com.daon.onjung.data.repository.DataStoreRepositoryImpl
+import com.daon.onjung.data.repository.EventRepository
+import com.daon.onjung.data.repository.EventRepositoryImpl
 import com.daon.onjung.data.repository.OnjungRepository
 import com.daon.onjung.data.repository.OnjungRepositoryImpl
 import com.daon.onjung.data.repository.StoreRepository
@@ -78,5 +82,15 @@ abstract class DataModule {
     abstract fun bindsCompanyRepository(
         companyRepository: CompanyRepositoryImpl
     ): CompanyRepository
+
+    @Binds
+    abstract fun bindsEventDataSource(
+        eventDataSource: EventDataSourceImpl
+    ): EventDataSource
+
+    @Binds
+    abstract fun bindsEventRepository(
+        eventRepository: EventRepositoryImpl
+    ): EventRepository
 
 }

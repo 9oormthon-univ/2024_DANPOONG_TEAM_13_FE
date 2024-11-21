@@ -15,9 +15,13 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -26,59 +30,52 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.OnjungBottomSheetState
 import com.daon.onjung.R
 import com.daon.onjung.ui.component.MealTicket
-import com.daon.onjung.ui.component.TicketState
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.profile.component.MealTicketBottomSheet
 import com.daon.onjung.ui.theme.OnjungTheme
-
-data class MealTicketEntity(
-    val name: String,
-    val imageUrl: String,
-    val tag: String,
-    val address: String,
-    val state: TicketState,
-    val date: String
-)
-
-val tickets = listOf(
-    MealTicketEntity(
-        name = "한걸음 닭꼬치",
-        imageUrl = "https://via.placeholder.com/150",
-        tag = "일식",
-        address = "송파구 오금로 533 1층 (거여동)",
-        state = TicketState.AVAILABLE,
-        date = "2024. 12. 31",
-    ),
-
-    MealTicketEntity(
-        name = "한걸음 닭꼬치",
-        imageUrl = "https://via.placeholder.com/150",
-        tag = "일식",
-        address = "송파구 오금로 533 1층 (거여동)",
-        state = TicketState.USED,
-        date = "2024. 12. 31",
-    ),
-
-    MealTicketEntity(
-        name = "한걸음 닭꼬치",
-        imageUrl = "https://via.placeholder.com/150",
-        tag = "일식",
-        address = "송파구 오금로 533 1층 (거여동)",
-        state = TicketState.EXPIRED,
-        date = "2024. 12. 31",
-    )
-)
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun ProfileTicketListScreen(
     appState: OnjungAppState,
-    bottomSheetState: OnjungBottomSheetState
+    bottomSheetState: OnjungBottomSheetState,
+    viewModel: ProfileListViewModel
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val effectFlow = viewModel.effect
+
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(Unit) {
+        effectFlow.collectLatest { effect ->
+            when (effect) {
+                is ProfileListContract.Effect.NavigateTo -> {
+                    appState.navigate(effect.destination, effect.navOptions)
+                }
+
+                is ProfileListContract.Effect.ShowSnackBar -> {
+                    appState.showSnackBar(effect.message)
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collect { lastVisibleItemIndex ->
+                val totalItems = listState.layoutInfo.totalItemsCount
+                if (lastVisibleItemIndex == totalItems - 1 && !uiState.isTicketListLastPage) {
+                    viewModel.processEvent(ProfileListContract.Event.LoadMoreTicketList)
+                }
+        }
+    }
+
     BackHandler {
         if (bottomSheetState.bottomSheetState.isVisible) {
             bottomSheetState.hideBottomSheet()
@@ -110,6 +107,7 @@ internal fun ProfileTicketListScreen(
             }
         )
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .padding(horizontal = 20.dp)
                 .weight(1f)
@@ -123,7 +121,7 @@ internal fun ProfileTicketListScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "${tickets.size}개의 식권을\n보유하고 있어요.",
+                        "${uiState.ticketList.size}개의 식권을\n보유하고 있어요.",
                         style = OnjungTheme.typography.h1.copy(
                             fontWeight = FontWeight.Bold,
                             color = OnjungTheme.colors.text_1,
@@ -131,7 +129,9 @@ internal fun ProfileTicketListScreen(
                     )
 
                     Image(
-                        modifier = Modifier.width(128.dp).height(87.dp),
+                        modifier = Modifier
+                            .width(128.dp)
+                            .height(87.dp),
                         painter = painterResource(id = R.mipmap.img_meal_ticket),
                         contentDescription = "IMG_MEAL_TICKET",
                     )
@@ -147,20 +147,20 @@ internal fun ProfileTicketListScreen(
                 Spacer(modifier = Modifier.height(20.dp))
             }
 
-            items(tickets) { ticket ->
+            items(uiState.ticketList) { ticket ->
                 MealTicket(
-                    ticket.name,
-                    ticket.imageUrl,
-                    ticket.tag,
-                    ticket.address,
-                    ticket.state,
-                    ticket.date
+                    ticket.storeInfo.name,
+                    ticket.storeInfo.logoImgUrl,
+                    ticket.storeInfo.category,
+                    ticket.storeInfo.address,
+                    ticket.expirationDate,
+                    ticket.isValidate
                 ) {
                     bottomSheetState.showBottomSheet {
                         MealTicketBottomSheet(
-                            name = ticket.name,
-                            address = ticket.address,
-                            expirationDate = ticket.date
+                            name = ticket.storeInfo.name,
+                            address = ticket.storeInfo.address,
+                            expirationDate = ticket.expirationDate
                         )
                     }
                 }
