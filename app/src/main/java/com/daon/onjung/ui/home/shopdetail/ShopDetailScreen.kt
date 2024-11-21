@@ -1,4 +1,4 @@
-package com.daon.onjung.ui.home
+package com.daon.onjung.ui.home.shopdetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -196,7 +196,7 @@ internal fun ShopDetailScreen(
                     )
                 }
                 ShopInfoContainer(
-                    name = uiState.storeInfo.title,
+                    name = uiState.storeInfo.name,
                     imageUrl = uiState.storeInfo.logoImgUrl,
                     category = uiState.storeInfo.category,
                     address = uiState.storeInfo.address,

@@ -1,4 +1,4 @@
-package com.daon.onjung.ui.home
+package com.daon.onjung.ui.home.shopdetail
 
 import androidx.lifecycle.viewModelScope
 import com.daon.onjung.Constants

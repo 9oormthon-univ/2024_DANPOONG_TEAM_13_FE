@@ -10,6 +10,8 @@ import com.daon.onjung.OnjungBottomSheetState
 import com.daon.onjung.Routes
 import com.daon.onjung.ui.home.ocr.OcrCameraScreen
 import com.daon.onjung.ui.home.ocr.OcrCameraViewModel
+import com.daon.onjung.ui.home.shopdetail.ShopDetailScreen
+import com.daon.onjung.ui.home.shopdetail.ShopDetailViewModel
 
 fun NavGraphBuilder.homeGraph(
     appState: OnjungAppState,

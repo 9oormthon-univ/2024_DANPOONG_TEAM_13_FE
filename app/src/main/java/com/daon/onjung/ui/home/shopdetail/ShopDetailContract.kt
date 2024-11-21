@@ -1,4 +1,4 @@
-package com.daon.onjung.ui.home
+package com.daon.onjung.ui.home.shopdetail
 
 import androidx.navigation.NavOptions
 import com.daon.onjung.network.model.StoreCategory
