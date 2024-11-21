@@ -1,6 +1,5 @@
 package com.daon.onjung.ui.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,20 +22,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import com.daon.onjung.MainActivity
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
+import com.daon.onjung.network.model.StoreTag
 import com.daon.onjung.ui.component.ShopInfoContainer
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.component.YoutubeScreen
@@ -44,6 +43,7 @@ import com.daon.onjung.ui.component.button.CircleButton
 import com.daon.onjung.ui.component.button.FilledWidthButton
 import com.daon.onjung.ui.theme.OnjungTheme
 import com.daon.onjung.util.formatCurrencyInTenThousandUnit
+import kotlinx.coroutines.flow.collectLatest
 
 data class ShopNews(
     val newsEntries: List<NewsEntry>
@@ -105,9 +105,28 @@ val news = ShopNews(
 
 @Composable
 internal fun ShopDetailScreen(
-    appState: OnjungAppState
+    appState: OnjungAppState,
+    shopId: Int,
+    viewModel: ShopDetailViewModel
 ) {
-    var isExpanded by remember { mutableStateOf(true) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val effectFlow = viewModel.effect
+
+    LaunchedEffect(Unit) {
+        viewModel.getStoreDetailInfo(shopId)
+
+        effectFlow.collectLatest { effect ->
+            when (effect) {
+                is ShopDetailContract.Effect.NavigateTo -> {
+                    appState.navigate(effect.destination, effect.navOptions)
+                }
+
+                is ShopDetailContract.Effect.ShowSnackBar -> {
+                    appState.showSnackBar(effect.message)
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -133,10 +152,23 @@ internal fun ShopDetailScreen(
                 Box(
                     contentAlignment = Alignment.BottomCenter
                 ) {
+                    val (tag, tagColor) = when (uiState.storeInfo.tags.first()) {
+                        StoreTag.DISABLED_GROUP -> {
+                            "장애우" to Color(0xFF81A5DA).copy(alpha = 0.8f)
+                        }
+                        StoreTag.GOOD_PRICE -> {
+                            "착한 가격" to Color(0xFFF5AB67).copy(alpha = 0.8f)
+                        }
+                        StoreTag.UNDERFED_CHILD -> {
+                            "결식아동" to Color(0xFF83CB82).copy(alpha = 0.8f)
+                        }
+                    }
+
                     ShopDetailHeader(
-                        title = "헌신에 보답하는\n감사의 식탁",
-                        tag = "국가 유공자",
-                        tagColor = Color(0xFF71AAFF)
+                        title = uiState.storeInfo.title,
+                        tag = tag,
+                        tagColor = tagColor,
+                        bannerImgUrl = uiState.storeInfo.bannerImgUrl
                     )
 
                     Spacer(
@@ -153,26 +185,26 @@ internal fun ShopDetailScreen(
                     )
                 }
                 ShopInfoContainer(
-                    name = "한걸음 닭꼬치",
-                    imageUrl = "",
-                    tag = "일식",
-                    address = "송파구 오금로 533 1층 (거여동)",
-                    totalFundsRaised = 121800,
-                    updatePeriod = "D-13",
-                    totalVisitedUsers = 246,
-                    mealTicketUsers = 14,
-                    mealTicketPaymentAmount = 114000,
-                    warmthContributionAmount = 7800,
-                    isExpanded = isExpanded,
+                    name = uiState.storeInfo.title,
+                    imageUrl = uiState.storeInfo.logoImgUrl,
+                    category = uiState.storeInfo.category,
+                    address = uiState.storeInfo.address,
+                    totalFundsRaised = uiState.eventInfo.totalAmount,
+                    restOfDate = uiState.eventInfo.restOfDate,
+                    totalVisitedUsers = uiState.onjungInfo.totalDonatorCount,
+                    totalDonationAmount = uiState.onjungInfo.totalDonationAmount,
+                    mealTicketPaymentAmount = uiState.onjungInfo.totalReceiptAmount,
+                    warmthContributionAmount = uiState.onjungInfo.totalSharedAmount,
+                    isExpanded = uiState.isExpanded,
                 ) {
-                    isExpanded = it
+                    viewModel.processEvent(ShopDetailContract.Event.ToggleExpand(it))
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ShopDetailVideoSection(
                     introduce = "\"더 좋은 가격과 퀄리티를 주도록 노력하겠습니다.\"",
-                    youtubeVideoId = "sHmo2uGcP2Q"
+                    youtubeVideoId = uiState.storeInfo.youtubeUrl
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -216,15 +248,16 @@ internal fun ShopDetailScreen(
 private fun ShopDetailHeader(
     title: String,
     tag: String,
-    tagColor: Color
+    tagColor: Color,
+    bannerImgUrl: String
 ) {
     Box(
         modifier = Modifier.aspectRatio(1.17f),
         contentAlignment = Alignment.BottomStart
     ) {
-        Image(
+        AsyncImage(
             modifier = Modifier.aspectRatio(1.17f),
-            painter = painterResource(id = R.drawable.img_dummy),
+            model = bannerImgUrl,
             contentScale = ContentScale.Crop,
             contentDescription = "IMG_SHOP",
         )

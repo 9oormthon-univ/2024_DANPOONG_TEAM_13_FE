@@ -178,7 +178,7 @@ fun ShopCardPreview() {
         ShopCard(
             shopId = 1,
             imgUrl = "",
-            tag = "국가 유공자",
+            tag = "장애우",
             tagColor = Color(0xFF81A5DA),
             title = "헌신에 보답하는\n감사의 식탁",
             likeCount = 100,

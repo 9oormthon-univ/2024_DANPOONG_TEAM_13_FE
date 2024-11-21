@@ -14,7 +14,7 @@ class HomeContract {
         val isStoreListFetching: Boolean = false,
         val isStoreListLastPage: Boolean = false,
         val storeListCurrentPage: Int = 1,
-        val storeListPageSize: Int = 2,
+        val storeListPageSize: Int = 1,
         val storeList: List<StoreOverviewInfo> = emptyList(),
         val onjungSummary: OnjungSummaryResponse = OnjungSummaryResponse("", 0, 0)
     ) : UiState

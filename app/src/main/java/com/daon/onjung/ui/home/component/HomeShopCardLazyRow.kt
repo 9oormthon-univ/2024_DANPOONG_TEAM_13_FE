@@ -34,8 +34,8 @@ fun HomeShopCardLazyRow(
     ) {
         items(shopList) { shop ->
             val (tag, tagColor) = when (shop.tags.first()) {
-                StoreTag.PATRIOT -> {
-                    "국가 유공자" to Color(0xFF81A5DA).copy(alpha = 0.8f)
+                StoreTag.DISABLED_GROUP -> {
+                    "장애우" to Color(0xFF81A5DA).copy(alpha = 0.8f)
                 }
                 StoreTag.GOOD_PRICE -> {
                     "착한 가격" to Color(0xFFF5AB67).copy(alpha = 0.8f)

@@ -131,7 +131,7 @@ internal fun HomeScreen(
                         viewModel.processEvent(HomeContract.Event.LoadMoreStoreList)
                     },
                     navigateToShopDetail = { id ->
-                        appState.navigate(Routes.Home.SHOP_DETAIL)
+                        appState.navigate("${Routes.Home.SHOP_DETAIL}?shopId=$id")
                     }
                 )
                 Column(

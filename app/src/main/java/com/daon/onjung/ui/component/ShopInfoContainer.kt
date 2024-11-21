@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.daon.onjung.R
+import com.daon.onjung.network.model.StoreCategory
 import com.daon.onjung.ui.theme.OnjungTheme
 import com.daon.onjung.util.formatCurrency
 
@@ -43,12 +44,12 @@ fun ShopInfoContainer(
     modifier: Modifier = Modifier,
     name: String,
     imageUrl: String,
-    tag: String,
+    category: StoreCategory,
     address: String,
     totalFundsRaised: Int,
-    updatePeriod: String,
+    restOfDate: Int,
     totalVisitedUsers: Int,
-    mealTicketUsers: Int,
+    totalDonationAmount: Int,
     mealTicketPaymentAmount: Int,
     warmthContributionAmount: Int,
     isExpanded: Boolean = true,
@@ -66,15 +67,21 @@ fun ShopInfoContainer(
         ShopInfoHeader(
             name = name,
             imageUrl = imageUrl,
-            tag = tag,
+            tag = when (category) {
+                StoreCategory.KOREAN -> "한식"
+                StoreCategory.CHINESE -> "중식"
+                StoreCategory.JAPANESE -> "일식"
+                StoreCategory.WESTERN -> "양식"
+                StoreCategory.ETC -> "기타"
+            },
             address = address,
             totalFundsRaised = totalFundsRaised,
-            updatePeriod = updatePeriod
+            updatePeriod = "D-$restOfDate"
         )
         if (isExpanded) {
             ShopInfoDetail(
                 totalVisitedUsers = totalVisitedUsers,
-                mealTicketUsers = mealTicketUsers,
+                mealTicketUsers = totalDonationAmount,
                 mealTicketPaymentAmount = mealTicketPaymentAmount,
                 warmthContributionAmount = warmthContributionAmount
             )
@@ -244,7 +251,7 @@ private fun ShopInfoDetail(
         ) {
             ShopInfoChip(
                 iconRes = R.drawable.ic_visitor_chip,
-                label = "총 동참인 수"
+                label = "동참인 수"
             )
 
             Text(
@@ -259,8 +266,8 @@ private fun ShopInfoDetail(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             ShopInfoChip(
-                iconRes = R.drawable.ic_meal_ticket_chip,
-                label = "식권 이용자 수"
+                iconRes = R.drawable.ic_coin_chip,
+                label = "동참 금액"
             )
 
             Text(
@@ -276,7 +283,7 @@ private fun ShopInfoDetail(
         ) {
             ShopInfoChip(
                 iconRes = R.drawable.ic_receipt_chip,
-                label = "식권 결제 금액"
+                label = "직접 방문 금액"
             )
 
             Text(
@@ -413,12 +420,12 @@ fun ShopInfoContainerPreview() {
     ShopInfoContainer(
         name = "한걸음 닭꼬치",
         imageUrl = "https://via.placeholder.com/150",
-        tag = "일식",
+        category = StoreCategory.KOREAN,
         address = "송파구 오금로 533 1층 (거여동)",
         totalFundsRaised = 121800,
-        updatePeriod = "D-13",
+        restOfDate = 13,
         totalVisitedUsers = 24,
-        mealTicketUsers = 14,
+        totalDonationAmount = 14,
         mealTicketPaymentAmount = 114000,
         warmthContributionAmount = 78000,
         isExpanded = isExpanded,

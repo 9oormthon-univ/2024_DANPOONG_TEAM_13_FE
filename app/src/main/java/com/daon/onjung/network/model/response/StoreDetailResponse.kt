@@ -1,5 +1,6 @@
 package com.daon.onjung.network.model.response
 
+import com.daon.onjung.network.model.StoreCategory
 import com.daon.onjung.network.model.StoreTag
 import com.google.gson.annotations.SerializedName
 
@@ -10,19 +11,29 @@ data class StoreDetailResponse(
     val eventInfo: EventDetailInfo,
     @SerializedName("onjung_info")
     val onjungInfo: OnjungDetailInfo,
-    @SerializedName("youtube_url")
-    val youtubeUrl: String,
     @SerializedName("store_histories")
     val storeHistories: List<StoreHistory>
 )
 
 data class StoreDetailInfo(
+    @SerializedName("banner_img_url")
+    val bannerImgUrl: String,
+    @SerializedName("tag")
+    val tags: List<StoreTag>,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("youtube_url")
+    val youtubeUrl: String,
     @SerializedName("logo_img_url")
     val logoImgUrl: String,
-    @SerializedName("tag")
-    val tag: StoreTag,
-    @SerializedName("title")
-    val title: String
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("category")
+    val category: StoreCategory,
+    @SerializedName("address")
+    val address: String,
+    @SerializedName("introduction")
+    val introduction: String
 )
 
 data class EventDetailInfo(

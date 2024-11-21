@@ -16,7 +16,7 @@ interface StoreService {
         @Query("size") size: Int
     ): ApiResult<BaseResponse<StoreOverviewResponse>>
 
-    @GET("/api/v1/store/{id}/details")
+    @GET("/api/v1/stores/{id}/details")
     suspend fun getStoreDetail(
         @Path("id") id: Int
     ): ApiResult<BaseResponse<StoreDetailResponse>>
