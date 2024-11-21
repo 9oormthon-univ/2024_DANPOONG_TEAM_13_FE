@@ -1,6 +1,5 @@
 package com.daon.onjung.ui.home.shopdetail
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -214,13 +213,10 @@ internal fun ShopDetailScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Log.d("YoutubeUrl", uiState.storeInfo.youtubeUrl)
-
                 ShopDetailVideoSection(
                     introduce = "\"더 좋은 가격과 퀄리티를 주도록 노력하겠습니다.\"",
                     youtubeVideoId = uiState.storeInfo.youtubeUrl
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ShopDetailNewsSection(newsEntries = news.newsEntries)
@@ -334,6 +330,7 @@ private fun ShopDetailVideoSection(
     introduce: String
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = context as MainActivity
 
     Box(
         modifier = Modifier
@@ -363,10 +360,12 @@ private fun ShopDetailVideoSection(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            YoutubeScreen(
-                youtubeVideoId = youtubeVideoId,
-                lifecycleOwner = context as MainActivity
-            )
+            if (youtubeVideoId.isNotEmpty()) {
+                YoutubeScreen(
+                    youtubeVideoId = youtubeVideoId,
+                    lifecycleOwner = context
+                )
+            }
         }
     }
 }
