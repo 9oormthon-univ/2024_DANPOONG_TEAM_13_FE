@@ -20,7 +20,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,31 +36,6 @@ import com.daon.onjung.ui.home.component.HomeTitleText
 import com.daon.onjung.ui.home.component.SupportBannerRow
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.flow.collectLatest
-
-val iconList = listOf(
-    IconData(
-        icon = R.drawable.ic_nongsim_icon,
-        contentDescription = "ic_nongsim_icon",
-        color = Color(0xFF222222)
-    ),
-    IconData(
-        icon = R.drawable.ic_cj_icon,
-        contentDescription = "ic_cj_icon",
-    ),
-    IconData(
-        icon = R.drawable.ic_goorm_icon,
-        contentDescription = "ic_goorm_icon",
-    ),
-    IconData(
-        icon = R.drawable.ic_kakao_icon,
-        contentDescription = "ic_kakao_icon",
-        color = Color(0xFFFAE100)
-    ),
-    IconData(
-        icon = R.drawable.ic_coupang_icon,
-        contentDescription = "ic_coupang_icon",
-    )
-)
 
 @Composable
 internal fun HomeScreen(
@@ -144,9 +118,7 @@ internal fun HomeScreen(
                         modifier = Modifier.padding(horizontal = 20.dp)
                     )
                     Spacer(modifier = Modifier.height(18.dp))
-                    SupportBannerRow(
-                        iconList
-                    )
+                    SupportBannerRow(uiState.companyImages)
                     Spacer(modifier = Modifier.height(26.dp))
                 }
                 Spacer(modifier = Modifier.height(32.dp))

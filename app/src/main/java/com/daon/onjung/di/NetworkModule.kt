@@ -7,6 +7,7 @@ import com.daon.onjung.network.adapter.ApiResultCallAdapterFactory
 import com.daon.onjung.network.converter.EnumConverterFactory
 import com.daon.onjung.network.interceptor.AuthInterceptor
 import com.daon.onjung.network.service.AuthService
+import com.daon.onjung.network.service.CompanyService
 import com.daon.onjung.network.service.OnjungService
 import com.daon.onjung.network.service.StoreService
 import dagger.Module
@@ -72,4 +73,9 @@ object NetworkModule {
     @Singleton
     fun providesStoreService(retrofit: Retrofit): StoreService =
         retrofit.create(StoreService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesAuthInterceptor(retrofit: Retrofit): CompanyService =
+        retrofit.create(CompanyService::class.java)
 }

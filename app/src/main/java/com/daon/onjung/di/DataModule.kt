@@ -2,6 +2,8 @@ package com.daon.onjung.di
 
 import com.daon.onjung.data.datasource.AuthDataSource
 import com.daon.onjung.data.datasource.AuthDataSourceImpl
+import com.daon.onjung.data.datasource.CompanyDataSource
+import com.daon.onjung.data.datasource.CompanyDataSourceImpl
 import com.daon.onjung.data.datasource.DataStoreDataSource
 import com.daon.onjung.data.datasource.DataStoreDataSourceImpl
 import com.daon.onjung.data.datasource.OnjungDataSource
@@ -10,6 +12,8 @@ import com.daon.onjung.data.datasource.StoreDataSource
 import com.daon.onjung.data.datasource.StoreDataSourceImpl
 import com.daon.onjung.data.repository.AuthRepository
 import com.daon.onjung.data.repository.AuthRepositoryImpl
+import com.daon.onjung.data.repository.CompanyRepository
+import com.daon.onjung.data.repository.CompanyRepositoryImpl
 import com.daon.onjung.data.repository.DataStoreRepository
 import com.daon.onjung.data.repository.DataStoreRepositoryImpl
 import com.daon.onjung.data.repository.OnjungRepository
@@ -64,5 +68,15 @@ abstract class DataModule {
     abstract fun bindsStoreRepository(
         storeRepository: StoreRepositoryImpl
     ): StoreRepository
+
+    @Binds
+    abstract fun bindsCompanyDataSource(
+        companyDataSource: CompanyDataSourceImpl
+    ): CompanyDataSource
+
+    @Binds
+    abstract fun bindsCompanyRepository(
+        companyRepository: CompanyRepositoryImpl
+    ): CompanyRepository
 
 }

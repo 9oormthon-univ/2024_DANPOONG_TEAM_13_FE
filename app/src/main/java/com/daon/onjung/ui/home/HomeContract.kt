@@ -16,6 +16,7 @@ class HomeContract {
         val storeListCurrentPage: Int = 1,
         val storeListPageSize: Int = 1,
         val storeList: List<StoreOverviewInfo> = emptyList(),
+        val companyImages: List<String> = emptyList(),
         val onjungSummary: OnjungSummaryResponse = OnjungSummaryResponse("", 0, 0)
     ) : UiState
 

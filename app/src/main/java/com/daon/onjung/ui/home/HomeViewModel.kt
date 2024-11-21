@@ -2,6 +2,7 @@ package com.daon.onjung.ui.home
 
 import androidx.lifecycle.viewModelScope
 import com.daon.onjung.Constants
+import com.daon.onjung.data.repository.CompanyRepository
 import com.daon.onjung.data.repository.OnjungRepository
 import com.daon.onjung.data.repository.StoreRepository
 import com.daon.onjung.network.adapter.ApiResult
@@ -14,13 +15,15 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val storeRepository: StoreRepository,
-    private val onjungRepository: OnjungRepository
+    private val onjungRepository: OnjungRepository,
+    private val companyRepository: CompanyRepository
 ) : BaseViewModel<HomeContract.State, HomeContract.Event, HomeContract.Effect>(
     initialState = HomeContract.State()
 ) {
     init {
         getStoreList()
         getOnjungSummary()
+        getCompanyImages()
     }
 
     override fun reduceState(event: HomeContract.Event) {
@@ -102,15 +105,24 @@ class HomeViewModel @Inject constructor(
             }
         }
 
-    fun updateIsStoreListFetching(isStoreListFetching: Boolean) {
-        updateState(currentState.copy(isStoreListFetching = isStoreListFetching))
-    }
-
-    fun updateStoreListLastPage(isStoreListLastPage: Boolean) {
-        updateState(currentState.copy(isStoreListLastPage = isStoreListLastPage))
-    }
-
-    fun updateStoreListCurrentPage(storeListCurrentPage: Int) {
-        updateState(currentState.copy(storeListCurrentPage = storeListCurrentPage))
+    private fun getCompanyImages() = viewModelScope.launch {
+        companyRepository.getCompanyBrief()
+            .onStart { updateState(currentState.copy(isLoading = true)) }
+            .collect {
+                updateState(currentState.copy(isLoading = false))
+                when (it) {
+                    is ApiResult.Success -> {
+                        it.data?.data?.let { result ->
+                            updateState(currentState.copy(companyImages = result.companyImages))
+                        }
+                    }
+                    is ApiResult.ApiError -> {
+                        postEffect(HomeContract.Effect.ShowSnackBar(it.message))
+                    }
+                    is ApiResult.NetworkError -> {
+                        postEffect(HomeContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
+                    }
+                }
+            }
     }
 }
