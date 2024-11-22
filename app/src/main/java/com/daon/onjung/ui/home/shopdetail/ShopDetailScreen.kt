@@ -37,6 +37,7 @@ import com.daon.onjung.MainActivity
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
 import com.daon.onjung.network.model.StoreTag
+import com.daon.onjung.network.model.response.StoreHistory
 import com.daon.onjung.ui.component.ShopInfoContainer
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.component.YoutubeScreen
@@ -44,66 +45,7 @@ import com.daon.onjung.ui.component.button.CircleButton
 import com.daon.onjung.ui.component.button.FilledWidthButton
 import com.daon.onjung.ui.home.component.OnjungSuccessDialog
 import com.daon.onjung.ui.theme.OnjungTheme
-import com.daon.onjung.util.formatCurrencyInTenThousandUnit
 import kotlinx.coroutines.flow.collectLatest
-
-data class ShopNews(
-    val newsEntries: List<NewsEntry>
-)
-
-data class NewsEntry(
-    val date: String,
-    val deeds: List<Deed>
-)
-
-data class Deed(
-    val description: String,
-    val contributionAmount: Int
-)
-
-val news = ShopNews(
-    newsEntries = listOf(
-        NewsEntry(
-            date = "2024년 5월",
-            deeds = listOf(
-                Deed(
-                    description = "서초 국가유공자 복합센터",
-                    contributionAmount = 80000
-                ),
-                Deed(
-                    description = "보훈 어울림 행사장",
-                    contributionAmount = 200000
-                ),
-                Deed(
-                    description = "서울 국가유공자 기념 전시관",
-                    contributionAmount = 3200000
-                )
-            )
-        ),
-        NewsEntry(
-            date = "2024년 5월",
-            deeds = listOf(
-                Deed(
-                    description = "서초 국가유공자 복합센터",
-                    contributionAmount = 1000000
-                ),
-                Deed(
-                    description = "보훈 어울림 행사장",
-                    contributionAmount = 200000
-                )
-            )
-        ),
-        NewsEntry(
-            date = "2024년 5월",
-            deeds = listOf(
-                Deed(
-                    description = "한줄",
-                    contributionAmount = 10000000
-                )
-            )
-        )
-    )
-)
 
 @Composable
 internal fun ShopDetailScreen(
@@ -219,7 +161,7 @@ internal fun ShopDetailScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                ShopDetailNewsSection(newsEntries = news.newsEntries)
+                ShopDetailHistorySection(storeHistories = uiState.storeHistories)
 
                 Spacer(modifier = Modifier.height(215.dp))
 
@@ -371,8 +313,8 @@ private fun ShopDetailVideoSection(
 }
 
 @Composable
-private fun ShopDetailNewsSection(
-    newsEntries: List<NewsEntry>,
+private fun ShopDetailHistorySection(
+    storeHistories: List<StoreHistory>,
 ) {
     Box(
         modifier = Modifier.background(
@@ -386,7 +328,7 @@ private fun ShopDetailNewsSection(
                 bottom = 20.dp,
                 start = 20.dp,
                 end = 24.dp
-            )
+            ).fillMaxWidth()
         ) {
             Text(
                 "선행 소식",
@@ -404,11 +346,22 @@ private fun ShopDetailNewsSection(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            newsEntries.forEachIndexed { index, newsEntry ->
-                ShopNewsItem(
-                    newsEntry,
-                    isFirst = index == 0,
-                    isLast = index == newsEntries.size - 1
+            if (storeHistories.isNotEmpty()) {
+                storeHistories.forEachIndexed { index, storeHistory ->
+                    ShopHistoryItem(
+                        storeHistory,
+                        isFirst = index == 0,
+                        isLast = index == storeHistories.size - 1
+                    )
+                }
+            } else {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 20.dp),
+                    text = "아직 선행 내역이 없어요.",
+                    style = OnjungTheme.typography.body2,
+                    color = OnjungTheme.colors.text_2
                 )
             }
         }
@@ -416,8 +369,8 @@ private fun ShopDetailNewsSection(
 }
 
 @Composable
-private fun ShopNewsItem(
-    newsEntry: NewsEntry,
+private fun ShopHistoryItem(
+    history: StoreHistory,
     isFirst: Boolean,
     isLast: Boolean
 ) {
@@ -470,26 +423,26 @@ private fun ShopNewsItem(
 
         Column {
             Text(
-                text = newsEntry.date,
+                text = history.date,
                 style = OnjungTheme.typography.caption,
                 color = OnjungTheme.colors.text_3
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            newsEntry.deeds.forEach { deed ->
+            history.info.forEach { deed ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = deed.description,
+                        text = deed.content,
                         style = OnjungTheme.typography.body2,
                         color = OnjungTheme.colors.text_1
                     )
 
                     Text(
-                        text = formatCurrencyInTenThousandUnit(deed.contributionAmount),
+                        text = deed.amount,
                         style = OnjungTheme.typography.body2,
                         color = OnjungTheme.colors.text_2
                     )

@@ -60,10 +60,10 @@ data class StoreHistory(
     @SerializedName("date")
     val date: String,
     @SerializedName("info")
-    val info: StoreHistoryInfo,
+    val info: List<StoreHistoryContent>,
 )
 
-data class StoreHistoryInfo(
+data class StoreHistoryContent(
     @SerializedName("content")
     val content: String,
     @SerializedName("amount")
