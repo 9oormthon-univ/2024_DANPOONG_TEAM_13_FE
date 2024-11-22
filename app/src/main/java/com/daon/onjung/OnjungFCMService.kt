@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
 
 class OnjungFCMService : FirebaseMessagingService() {
 
@@ -18,6 +19,8 @@ class OnjungFCMService : FirebaseMessagingService() {
     private val CHANNEL_ID = "notification_remote_channel"
 
     private lateinit var notificationManager: NotificationManager
+
+    private val gson = Gson()
 
     // Token 생성
     override fun onNewToken(token: String) {
@@ -35,9 +38,13 @@ class OnjungFCMService : FirebaseMessagingService() {
         Log.d(TAG, "Message data : $messageData")
         Log.d(TAG, "Message noti : ${remoteMessage.notification?.imageUrl}")
 
+        if (remoteMessage.data.isNotEmpty()) {
+            Log.d(TAG, "Message data payload: " + remoteMessage.data)
+        }
+
         if (messageData.isNotEmpty()) {
             //알림 생성
-            sendNotification(remoteMessage)
+            sendNotification(remoteMessage, remoteMessage.data)
         } else {
             Log.e(TAG, "data가 비어있습니다. 메시지를 수신하지 못했습니다.")
         }
@@ -57,8 +64,8 @@ class OnjungFCMService : FirebaseMessagingService() {
     }
 
     // 메세지 알림 생성
-    private fun sendNotification(remoteMessage: RemoteMessage) {
-        val pendingIntent = getFcmPendingIntent(this)
+    private fun sendNotification(remoteMessage: RemoteMessage, ticketData: Map<String, String>) {
+        val pendingIntent = getFcmPendingIntent(this, ticketData)
 
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -74,8 +81,13 @@ class OnjungFCMService : FirebaseMessagingService() {
         notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
     }
 
-    private fun getFcmPendingIntent(context: Context): PendingIntent {
+    private fun getFcmPendingIntent(
+        context: Context,
+        ticketData: Map<String, String>
+    ): PendingIntent {
+        val jsonString = gson.toJson(ticketData)
         val intent = Intent(context, MainActivity::class.java)
+        intent.putExtra(Constants.TICKET, jsonString)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         return PendingIntent.getActivity(
             context,

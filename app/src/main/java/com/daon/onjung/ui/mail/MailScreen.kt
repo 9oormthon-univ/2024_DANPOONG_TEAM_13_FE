@@ -14,12 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +45,8 @@ internal fun MailScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val effectFlow = viewModel.effect
 
+    val listState = rememberLazyListState()
+
     LaunchedEffect(Unit) {
         effectFlow.collectLatest { effect ->
             when (effect) {
@@ -55,6 +59,17 @@ internal fun MailScreen(
                 }
             }
         }
+    }
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collect { lastVisibleItemIndex ->
+                val totalItems = listState.layoutInfo.totalItemsCount
+                if (lastVisibleItemIndex == totalItems - 2 && !uiState.isMailListFetching) {
+                    viewModel.processEvent(MailContract.Event.LoadMoreMailList)
+                }
+            }
+
     }
 
     Column(
@@ -88,14 +103,17 @@ internal fun MailScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            items(listOf(true, false, true)) { isExpanded ->
+            items(uiState.mailList) { mail ->
                 ShopMailContainer(
-                    title = "헌신에 보답하는 감사의 식탁",
-                    name = "한걸음 닭꼬치",
-                    tag = "동참",
-                    isExpanded = isExpanded,
+                    imageUrl = mail.storeInfo.logoImgUrl,
+                    title = mail.storeInfo.title,
+                    name = mail.storeInfo.name,
+                    type = mail.onjungType,
+                    isExpanded = true,
                     onExpandChange = { }
-                )
+                ) { shopId ->
+                    viewModel.processEvent(MailContract.Event.MailClicked(shopId))
+                }
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }

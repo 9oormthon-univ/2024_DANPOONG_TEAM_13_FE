@@ -8,4 +8,6 @@ object Constants {
     const val REFRESH_TOKEN = "refresh_token"
 
     const val NETWORK_ERROR_MESSAGE = "네트워크 에러가 발생하였습니다"
+
+    const val TICKET = "ticket"
 }

@@ -3,6 +3,7 @@ package com.daon.onjung.ui.component
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -48,10 +49,11 @@ import java.time.format.DateTimeFormatter
 fun MealTicket(
     name: String,
     imageUrl: String,
-    tag: StoreCategory,
+    category: StoreCategory,
     address: String,
     expirationDate: String,
     isValidate: Boolean,
+    isButtonVisible: Boolean = true,
     onClick: () -> Unit
 ) {
     Column(
@@ -68,7 +70,7 @@ fun MealTicket(
         MealTicketHeader(
             name = name,
             imageUrl = imageUrl,
-            tag = when (tag) {
+            tag = when (category) {
                 StoreCategory.KOREAN -> "한식"
                 StoreCategory.CHINESE -> "중식"
                 StoreCategory.JAPANESE -> "일식"
@@ -81,6 +83,7 @@ fun MealTicket(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
         )
         MealTicketFooter(
+            isButtonVisible = isButtonVisible,
             expirationDate = expirationDate,
             isValidate = isValidate,
             onClick = onClick
@@ -163,6 +166,7 @@ private fun MealTicketHeader(
 
 @Composable
 fun MealTicketFooter(
+    isButtonVisible: Boolean,
     expirationDate: String,
     isValidate: Boolean,
     onClick: () -> Unit
@@ -180,36 +184,47 @@ fun MealTicketFooter(
         val isExpired = isExpired(expirationDate)
         val availableText = if (isValidate) "$expirationDate 까지" else "$expirationDate 사용 완료"
 
-        Text(
-            text = availableText,
-            style = OnjungTheme.typography.body2,
-            color = OnjungTheme.colors.text_3
-        )
-
-        Button(
-            onClick = onClick,
-            contentPadding = PaddingValues(
-                horizontal = 16.dp, vertical = 6.dp
+        Box(
+            modifier = Modifier.padding(
+                vertical = 8.dp
             ),
-            shape = CircleShape,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = OnjungTheme.colors.main_coral,
-                contentColor = OnjungTheme.colors.white,
-                disabledContainerColor = if (isValidate) OnjungTheme.colors.main_coral else Color(0xFF8B8B8B),
-            ),
-            enabled = !isExpired && isValidate
+            contentAlignment = Alignment.Center
         ) {
-            val statusText = when {
-                isExpired -> "기간 만료"
-                isValidate -> "사용하기"
-                else -> "사용 완료"
-            }
-
             Text(
-                text = statusText,
+                text = availableText,
                 style = OnjungTheme.typography.body2,
-                color = OnjungTheme.colors.white
+                color = OnjungTheme.colors.text_3
             )
+        }
+
+        if (isButtonVisible) {
+            Button(
+                onClick = onClick,
+                contentPadding = PaddingValues(
+                    horizontal = 16.dp, vertical = 6.dp
+                ),
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = OnjungTheme.colors.main_coral,
+                    contentColor = OnjungTheme.colors.white,
+                    disabledContainerColor = if (isValidate) OnjungTheme.colors.main_coral else Color(
+                        0xFF8B8B8B
+                    ),
+                ),
+                enabled = !isExpired && isValidate
+            ) {
+                val statusText = when {
+                    isExpired -> "기간 만료"
+                    isValidate -> "사용하기"
+                    else -> "사용 완료"
+                }
+
+                Text(
+                    text = statusText,
+                    style = OnjungTheme.typography.body2,
+                    color = OnjungTheme.colors.white
+                )
+            }
         }
     }
 }
@@ -223,7 +238,7 @@ fun MealTicketPreview() {
         MealTicket(
             name = "한걸음 닭꼬치",
             imageUrl = "https://via.placeholder.com/150",
-            tag = StoreCategory.KOREAN,
+            category = StoreCategory.KOREAN,
             address = "송파구 오금로 533 1층 (거여동)",
             expirationDate = "2022. 12. 31",
             isValidate = true,
@@ -233,7 +248,7 @@ fun MealTicketPreview() {
         MealTicket(
             name = "한걸음 닭꼬치",
             imageUrl = "https://via.placeholder.com/150",
-            tag = StoreCategory.JAPANESE,
+            category = StoreCategory.JAPANESE,
             address = "송파구 오금로 533 1층 (거여동)",
             expirationDate = "2024. 12. 31",
             isValidate = true,
@@ -243,7 +258,7 @@ fun MealTicketPreview() {
         MealTicket(
             name = "한걸음 닭꼬치",
             imageUrl = "https://via.placeholder.com/150",
-            tag = StoreCategory.CHINESE,
+            category = StoreCategory.CHINESE,
             address = "송파구 오금로 533 1층 (거여동)",
             expirationDate = "2022. 12. 31",
             isValidate = false,

@@ -37,27 +37,32 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.daon.onjung.R
+import com.daon.onjung.network.model.OnjungType
 import com.daon.onjung.ui.theme.OnjungTheme
 
 @Composable
 fun ShopMailContainer(
     modifier: Modifier = Modifier,
+    imageUrl: String,
     title: String,
     name: String,
-    tag: String,
+    type: OnjungType,
     isExpanded: Boolean = true,
-    onExpandChange: (Boolean) -> Unit
+    onExpandChange: (Boolean) -> Unit,
+    onClick: (Int) -> Unit
 ) {
     Column(
         modifier = modifier.background(
             color = OnjungTheme.colors.white,
             shape = RoundedCornerShape(20.dp)
-        ),
+        ).clickable {
+            onClick(1)
+        },
     ) {
         ShopMailHeader(
             title = title,
             name = name,
-            tag = tag,
+            type = type,
             imageUrl = ""
         )
         if (isExpanded) {
@@ -98,8 +103,8 @@ fun ShopMailContainer(
 private fun ShopMailHeader(
     title: String,
     name: String,
-    tag: String,
-    imageUrl: String = ""
+    type: OnjungType,
+    imageUrl: String
 ) {
     val context = LocalContext.current
 
@@ -146,11 +151,7 @@ private fun ShopMailHeader(
             modifier = Modifier
                 .align(Alignment.Top)
                 .offset(x = 0.dp, y = 4.dp),
-            tag = tag,
-            backgroundColor = OnjungTheme.colors.main_coral.copy(
-                alpha = 0.1f
-            ),
-            textColor = OnjungTheme.colors.main_coral
+            type = type
         )
     }
 }
@@ -287,23 +288,25 @@ private fun ExpandButton(
 @Composable
 private fun TagChip(
     modifier: Modifier = Modifier,
-    tag: String,
-    backgroundColor: Color = OnjungTheme.colors.main_coral.copy(
-        alpha = 0.1f
-    ),
-    textColor: Color = OnjungTheme.colors.main_coral
+    type: OnjungType
 ) {
+    val (tag, tagColor) = when (type) {
+        OnjungType.DONATION -> "동참" to Color(0xFFFF7B69)
+        OnjungType.SHARE -> "공유" to Color(0xFF5CA956)
+        OnjungType.RECEIPT -> "방문" to Color(0xFF698AFF)
+    }
+
     Box(
         modifier = modifier
             .background(
-                color = backgroundColor,
+                color = tagColor.copy(alpha = 0.1f),
                 shape = RoundedCornerShape(4.dp)
             )
     ) {
         Text(
             text = tag,
             style = OnjungTheme.typography.caption.copy(
-                color = textColor,
+                color = tagColor,
                 fontWeight = FontWeight.SemiBold
             ),
             modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
@@ -335,12 +338,15 @@ private fun ShopMailContainerPreview() {
     OnjungTheme {
         ShopMailContainer(
             title = "헌신에 보답하는 감사의 식탁",
+            imageUrl = "",
             name = "한걸음 닭꼬치",
-            tag = "동참",
+            type = OnjungType.SHARE,
             isExpanded = isExpanded,
             onExpandChange = {
                 isExpanded = it
             }
-        )
+        ) {
+
+        }
     }
 }
