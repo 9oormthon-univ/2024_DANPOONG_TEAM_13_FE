@@ -2,6 +2,7 @@ package com.daon.onjung.network.service
 
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.response.SharedRestaurantListResponse
 import com.daon.onjung.network.model.response.StoreDetailResponse
 import com.daon.onjung.network.model.response.StoreOverviewResponse
 import retrofit2.http.GET
@@ -26,4 +27,7 @@ interface StoreService {
     suspend fun putStoreOnjungShare(
         @Path("id") id: Int
     ): ApiResult<BaseResponse<Unit>>
+
+    @GET("/api/v1/users/onjungs/overviews")
+    suspend fun getSharedRestaurantList(): ApiResult<BaseResponse<SharedRestaurantListResponse>>
 }

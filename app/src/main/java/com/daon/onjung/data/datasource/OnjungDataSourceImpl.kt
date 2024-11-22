@@ -1,9 +1,13 @@
 package com.daon.onjung.data.datasource
 
 import com.daon.onjung.di.IoDispatcher
+import com.daon.onjung.network.adapter.ApiResult
+import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.PostReceiptRequest
+import com.daon.onjung.network.model.response.MyOnjungBriefResponse
 import com.daon.onjung.network.service.OnjungService
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.MultipartBody
@@ -36,6 +40,10 @@ class OnjungDataSourceImpl @Inject constructor(
 
     override fun postPostDonation(id: Int) = flow {
         emit(onjungService.postDonation(id))
+    }.flowOn(ioDispatcher)
+
+    override fun getMyOnjungBriefs(): Flow<ApiResult<BaseResponse<MyOnjungBriefResponse>>> = flow{
+        emit(onjungService.getMyOnjungBriefs())
     }.flowOn(ioDispatcher)
 
 }

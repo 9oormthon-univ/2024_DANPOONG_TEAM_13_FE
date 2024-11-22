@@ -49,4 +49,6 @@ class OnjungRepositoryImpl @Inject constructor(
     override fun getOnjungBrief() = onjungDataSource.getOnjungBrief()
 
     override fun postDonation(id: Int) = onjungDataSource.postPostDonation(id)
+
+    override fun getMyOnjungBriefs() = onjungDataSource.getMyOnjungBriefs()
 }

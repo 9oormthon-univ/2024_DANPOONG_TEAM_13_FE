@@ -46,14 +46,6 @@ import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
-private val restaurants = listOf(
-    "한걸음 닭꼬치",
-    "행복 국수",
-    "온정 국밥",
-    "너는 이미 단골이다",
-    "보람 돈까스"
-)
-
 @Composable
 internal fun ProfileScreen(
     appState: OnjungAppState,
@@ -109,7 +101,7 @@ internal fun ProfileScreen(
             modifier = Modifier.align(Alignment.Center),
         )
 
-        if (restaurants.isEmpty()) {
+        if (uiState.storeList.isEmpty()) {
             Image(
                 painter = painterResource(id = R.drawable.ic_ballon_no_warmth),
                 contentDescription = "IC_BALLON_NO_WARMTH",
@@ -121,13 +113,13 @@ internal fun ProfileScreen(
 
         Column(modifier = Modifier.align(Alignment.TopCenter)) {
             ProfileAppBar(
-                ticketCount = restaurants.size
+                ticketCount = uiState.ticketCount
             ) {
                 appState.navigate(Routes.Profile.TICKET_LIST)
             }
 
             ProfileHeader(
-                restaurantCount = restaurants.size,
+                restaurantCount = uiState.onjungCount,
                 onShowAll = {
                     appState.navigate(Routes.Profile.RESTAURANT_LIST)
                 }
@@ -144,7 +136,7 @@ internal fun ProfileScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            restaurants.forEachIndexed { index, restaurant ->
+            uiState.storeList.forEachIndexed { index, restaurant ->
                 when (index) {
                     0 -> {
                         ProfileRestaurantItem(
@@ -180,7 +172,7 @@ internal fun ProfileScreen(
             }
 
             Text(
-                "+${restaurants.size}",
+                "+${uiState.remainCount}",
                 modifier = Modifier.offset(
                     y = 50.dp,
                 ),

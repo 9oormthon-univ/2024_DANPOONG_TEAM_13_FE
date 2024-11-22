@@ -10,7 +10,11 @@ class ProfileContract {
 
     data class State(
         val isLoading: Boolean = false,
-        val onjungBrief: OnjungBriefResponse = OnjungBriefResponse(0, 0)
+        val onjungBrief: OnjungBriefResponse = OnjungBriefResponse(0, 0),
+        val onjungCount: Int = 0,
+        val ticketCount: Int = 0,
+        val storeList: List<String> = emptyList(),
+        val remainCount: Int = 0
     ) : UiState
 
     sealed class Event : UiEvent

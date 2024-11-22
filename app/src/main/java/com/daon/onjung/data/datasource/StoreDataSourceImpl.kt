@@ -3,6 +3,7 @@ package com.daon.onjung.data.datasource
 import com.daon.onjung.di.IoDispatcher
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.response.SharedRestaurantListResponse
 import com.daon.onjung.network.model.response.StoreDetailResponse
 import com.daon.onjung.network.model.response.StoreOverviewResponse
 import com.daon.onjung.network.service.StoreService
@@ -34,6 +35,10 @@ class StoreDataSourceImpl @Inject constructor(
         id: Int
     ): Flow<ApiResult<BaseResponse<Unit>>> = flow {
         emit(storeService.putStoreOnjungShare(id))
+    }.flowOn(ioDispatcher)
+
+    override suspend fun getSharedRestaurantList(): Flow<ApiResult<BaseResponse<SharedRestaurantListResponse>>> = flow {
+        emit(storeService.getSharedRestaurantList())
     }.flowOn(ioDispatcher)
 
 }

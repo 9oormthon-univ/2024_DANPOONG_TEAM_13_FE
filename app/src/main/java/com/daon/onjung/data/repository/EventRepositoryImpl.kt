@@ -14,4 +14,7 @@ class EventRepositoryImpl @Inject constructor(
 
     override suspend fun getTicketBrief(id: Int) =
         eventDataSource.getTicketBrief(id)
+
+    override suspend fun getTicketCount() =
+        eventDataSource.getTicketCount()
 }

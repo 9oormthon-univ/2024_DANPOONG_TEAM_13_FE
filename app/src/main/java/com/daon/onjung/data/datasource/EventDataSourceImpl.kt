@@ -5,6 +5,7 @@ import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.response.MealTicketListResponse
 import com.daon.onjung.network.model.response.QRCodeResponse
+import com.daon.onjung.network.model.response.TicketCountResponse
 import com.daon.onjung.network.service.EventService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,10 @@ class EventDataSourceImpl @Inject constructor(
 
     override suspend fun getTicketBrief(id: Int): Flow<ApiResult<BaseResponse<QRCodeResponse>>> = flow {
         emit(eventService.getTicketBrief(id))
+    }.flowOn(ioDispatcher)
+
+    override suspend fun getTicketCount(): Flow<ApiResult<BaseResponse<TicketCountResponse>>> = flow {
+        emit(eventService.getTicketCount())
     }.flowOn(ioDispatcher)
 
 }
