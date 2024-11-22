@@ -4,6 +4,7 @@ import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.DeviceTokenRequest
 import com.daon.onjung.network.model.request.LoginRequest
+import com.daon.onjung.network.model.response.NotificationAllowedResponse
 import com.daon.onjung.network.model.response.ProfileResponse
 import com.daon.onjung.network.model.response.UserTokenResponse
 import retrofit2.Response
@@ -36,4 +37,7 @@ interface AuthService {
 
     @GET("/api/v1/users/overviews")
     suspend fun getUserProfile(): ApiResult<BaseResponse<ProfileResponse>>
+
+    @GET("/api/v1/users/notification-allowed")
+    suspend fun patchNotificationAllowed(): ApiResult<BaseResponse<NotificationAllowedResponse>>
 }

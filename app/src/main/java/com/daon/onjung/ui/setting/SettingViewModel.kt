@@ -10,6 +10,7 @@ import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.util.BaseViewModel
 import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,6 +24,7 @@ class SettingViewModel @Inject constructor(
     override fun reduceState(event: SettingContract.Event) {
         viewModelScope.launch {
             when (event) {
+                is SettingContract.Event.ToggleNotification -> toggleNotification()
                 is SettingContract.Event.LogoutDialogDismissed -> logoutDialogDismissed()
                 is SettingContract.Event.LogoutDialogOpen -> logoutDialogOpen()
                 is SettingContract.Event.DeleteAccountDialogDismissed -> deleteAccountDialogDismissed()
@@ -82,8 +84,31 @@ class SettingViewModel @Inject constructor(
                     }
 
                     is ApiResult.NetworkError -> {
-                        postEffect(SettingContract.Effect.ShowSnackBar("네트워크 에러가 발생했습니다."))
+                        postEffect(SettingContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
                     }
+                }
+            }
+        }
+    }
+
+    private fun toggleNotification() = viewModelScope.launch {
+        authRepository.patchNotificationAllowed().onStart {
+            updateState(currentState.copy(isLoading = true))
+        }.collect {
+            updateState(currentState.copy(isLoading = false))
+            when (it) {
+                is ApiResult.Success -> {
+                    it.data?.data?.let { result ->
+                        updateState(currentState.copy(notificationAllowed = result.notificationAllowed))
+                    }
+                }
+
+                is ApiResult.ApiError -> {
+                    postEffect(SettingContract.Effect.ShowSnackBar("알림 설정 변경에 실패했습니다."))
+                }
+
+                is ApiResult.NetworkError -> {
+                    postEffect(SettingContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
                 }
             }
         }
@@ -126,8 +151,4 @@ class SettingViewModel @Inject constructor(
     private fun deleteAccountDialogOpen() {
         updateState(currentState.copy(isDeleteAccountDialogVisible = true))
     }
-
-
-
-
 }

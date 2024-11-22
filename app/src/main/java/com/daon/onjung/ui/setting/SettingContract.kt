@@ -16,6 +16,7 @@ class SettingContract {
     ) : UiState
 
     sealed class Event : UiEvent {
+        data object ToggleNotification : Event()
         data object LogoutDialogDismissed : Event()
         data object LogoutDialogOpen : Event()
         data object DeleteAccountDialogDismissed : Event()

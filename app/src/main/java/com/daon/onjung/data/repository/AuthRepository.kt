@@ -3,6 +3,7 @@ package com.daon.onjung.data.repository
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.LoginProvider
+import com.daon.onjung.network.model.response.NotificationAllowedResponse
 import com.daon.onjung.network.model.response.ProfileResponse
 import com.daon.onjung.network.model.response.UserTokenResponse
 import kotlinx.coroutines.flow.Flow
@@ -23,4 +24,6 @@ interface AuthRepository {
     suspend fun deleteAccount() : Flow<ApiResult<BaseResponse<Any>>>
 
     suspend fun getUserProfile(): Flow<ApiResult<BaseResponse<ProfileResponse>>>
+
+    suspend fun patchNotificationAllowed(): Flow<ApiResult<BaseResponse<NotificationAllowedResponse>>>
 }

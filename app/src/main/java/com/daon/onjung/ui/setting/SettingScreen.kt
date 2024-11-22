@@ -1,5 +1,12 @@
 package com.daon.onjung.ui.setting
 
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import android.provider.Settings
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,9 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
@@ -41,6 +51,7 @@ import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.flow.collectLatest
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 internal fun SettingScreen(
     appState: OnjungAppState,
@@ -48,6 +59,8 @@ internal fun SettingScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val effectFlow = viewModel.effect
+
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         effectFlow.collectLatest { effect ->
@@ -92,7 +105,20 @@ internal fun SettingScreen(
             modifier = Modifier.padding(horizontal = 20.dp),
             isChecked = uiState.notificationAllowed
         ) {
+            if (!uiState.notificationAllowed) {
+                val isPermissionGranted = isNotificationPermissionGranted(context)
 
+                if (!isPermissionGranted) {
+                    Intent().apply {
+                        // 알림 권한 설정 or 권한 설정 페이지로 이동
+                        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                        context.startActivity(this)
+                    }
+                    return@NotificationSettingSection
+                }
+            }
+            viewModel.processEvent(SettingContract.Event.ToggleNotification)
         }
         Spacer(modifier = Modifier.height(33.dp))
         SettingTitleText(
@@ -133,7 +159,7 @@ internal fun SettingScreen(
 private fun NotificationSettingSection(
     modifier: Modifier = Modifier,
     isChecked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onToggle: () -> Unit
 ) {
     Column (
         modifier = modifier
@@ -159,13 +185,13 @@ private fun NotificationSettingSection(
                 )
                 Switch(
                     checked = isChecked,
-                    onCheckedChange = { onCheckedChange(!isChecked) },
+                    onCheckedChange = { onToggle() },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = OnjungTheme.colors.white,
                         checkedTrackColor = OnjungTheme.colors.main_coral,
                         uncheckedThumbColor = OnjungTheme.colors.gray_1,
                         uncheckedTrackColor = OnjungTheme.colors.gray_1.copy(alpha = 0.5f),
-                        uncheckedBorderColor = OnjungTheme.colors.gray_1
+                        uncheckedBorderColor = Color.Transparent
                     )
                 )
             }
@@ -241,5 +267,16 @@ private fun AccountSettingSection(
                 )
             }
         }
+    }
+}
+
+private fun isNotificationPermissionGranted(context: Context): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val postNotificationsPermission = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.POST_NOTIFICATIONS
+        )
+        postNotificationsPermission == PackageManager.PERMISSION_GRANTED
+    } else {
+        NotificationManagerCompat.from(context).areNotificationsEnabled()
     }
 }

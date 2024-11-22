@@ -5,6 +5,7 @@ import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.DeviceTokenRequest
 import com.daon.onjung.network.model.request.LoginRequest
+import com.daon.onjung.network.model.response.NotificationAllowedResponse
 import com.daon.onjung.network.model.response.ProfileResponse
 import com.daon.onjung.network.model.response.UserTokenResponse
 import com.daon.onjung.network.service.AuthService
@@ -43,5 +44,9 @@ class AuthDataSourceImpl @Inject constructor(
 
     override suspend fun getUserProfile(): Flow<ApiResult<BaseResponse<ProfileResponse>>> = flow {
         emit(authService.getUserProfile())
+    }.flowOn(ioDispatcher)
+
+    override suspend fun patchNotificationAllowed(): Flow<ApiResult<BaseResponse<NotificationAllowedResponse>>> = flow {
+        emit(authService.patchNotificationAllowed())
     }.flowOn(ioDispatcher)
 }
