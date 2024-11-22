@@ -24,4 +24,6 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAccount(
     ) = authDataSource.deleteAccount()
+
+    override suspend fun getUserProfile() = authDataSource.getUserProfile()
 }

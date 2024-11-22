@@ -4,6 +4,7 @@ import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.DeviceTokenRequest
 import com.daon.onjung.network.model.request.LoginRequest
+import com.daon.onjung.network.model.response.ProfileResponse
 import com.daon.onjung.network.model.response.UserTokenResponse
 import kotlinx.coroutines.flow.Flow
 
@@ -20,4 +21,6 @@ interface AuthDataSource {
     suspend fun logout(): Flow<ApiResult<BaseResponse<Any>>>
 
     suspend fun deleteAccount(): Flow<ApiResult<BaseResponse<Any>>>
+
+    suspend fun getUserProfile(): Flow<ApiResult<BaseResponse<ProfileResponse>>>
 }

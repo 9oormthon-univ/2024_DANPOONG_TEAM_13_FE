@@ -10,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.daon.onjung.ui.theme.OnjungTheme
@@ -19,8 +18,7 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Composable
 fun Profile(
     name: String = "온정이",
-    email: String = "example@example.com",
-    imageUrl: String? = null,
+    imageUrl: String = "",
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -35,8 +33,7 @@ fun Profile(
         )
         Spacer(modifier = Modifier.width(18.dp))
         ProfileInfo(
-            name = name,
-            email = email
+            name = name
         )
     }
 }
@@ -44,21 +41,12 @@ fun Profile(
 @Composable
 private fun ProfileInfo(
     name: String,
-    email: String
 ) {
    Column {
-        Text(
-            name,
-            style = OnjungTheme.typography.caption.copy(
-                color = OnjungTheme.colors.text_2,
-                fontWeight = FontWeight.Bold
-            )
-        )
        Text(
-           email,
+           name,
            style = OnjungTheme.typography.body1.copy(
-               color = OnjungTheme.colors.text_3,
-               fontWeight = FontWeight.Normal
+               color = OnjungTheme.colors.text_2
            )
        )
    }

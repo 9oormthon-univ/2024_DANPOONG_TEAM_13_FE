@@ -1,6 +1,8 @@
 package com.daon.onjung.ui.setting
 
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.navOptions
+import com.daon.onjung.Constants
 import com.daon.onjung.Routes
 import com.daon.onjung.data.repository.AuthRepository
 import com.daon.onjung.data.repository.DataStoreRepository
@@ -32,7 +34,33 @@ class SettingViewModel @Inject constructor(
     }
 
     init {
-        // 사용자 정보 데이터 가져오는 부분
+        fetchUserProfile()
+    }
+
+    private fun fetchUserProfile() {
+        viewModelScope.launch {
+            authRepository.getUserProfile().collect {
+                when (it) {
+                    is ApiResult.Success -> {
+                        it.data?.data?.let { result ->
+                            updateState(currentState.copy(
+                                userName = result.userName,
+                                profileImgUrl = result.profileImgUrl,
+                                notificationAllowed = result.notificationAllowed
+                            ))
+                        }
+                    }
+
+                    is ApiResult.ApiError -> {
+                        postEffect(SettingContract.Effect.ShowSnackBar(it.message))
+                    }
+
+                    is ApiResult.NetworkError -> {
+                        postEffect(SettingContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
+                    }
+                }
+            }
+        }
     }
 
     private fun handleLogout() {
@@ -41,7 +69,11 @@ class SettingViewModel @Inject constructor(
                 when (result) {
                     is ApiResult.Success -> {
                         dataStoreRepository.deleteTokens()
-                        postEffect(SettingContract.Effect.NavigateTo(Routes.Auth.LOGIN))
+                        postEffect(SettingContract.Effect.NavigateTo(Routes.Auth.LOGIN, navOptions{
+                            popUpTo(Routes.Auth.LOGIN) {
+                                inclusive = true
+                            }
+                        }))
                         UserApiClient.instance.logout {}
                     }
 

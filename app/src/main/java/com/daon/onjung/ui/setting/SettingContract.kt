@@ -10,6 +10,9 @@ class SettingContract {
         val isLoading: Boolean = false,
         val isLogoutDialogVisible: Boolean = false,
         val isDeleteAccountDialogVisible: Boolean = false,
+        val userName: String = "",
+        val profileImgUrl: String = "",
+        val notificationAllowed: Boolean = false
     ) : UiState
 
     sealed class Event : UiEvent {

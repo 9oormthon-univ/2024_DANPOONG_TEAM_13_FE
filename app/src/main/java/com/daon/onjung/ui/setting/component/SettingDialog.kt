@@ -1,24 +1,27 @@
 package com.daon.onjung.ui.setting.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.daon.onjung.ui.component.button.FilledWidthButton
 import com.daon.onjung.ui.theme.OnjungTheme
 
 
@@ -54,26 +57,49 @@ fun SettingDialog (
                     )
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                Row {
-                    FilledWidthButton(
-                        "취소",
-                        modifier = Modifier
-                            .weight(1f),
-                        isEnabled = false,
-                        fontSize = 16,
-                        onClick = onDismissRequest
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    ActionButton(
+                        text = "취소",
+                        modifier = Modifier.weight(1f),
+                        onClick = onDismissRequest,
+                        backgroundColor = OnjungTheme.colors.gray_2,
+                        contentColor = OnjungTheme.colors.text_3
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    FilledWidthButton(
-                        "확인",
-                        modifier = Modifier
-                            .weight(1f),
-                        fontSize = 16,
-                        onClick = onConfirm
+
+                    ActionButton(
+                        text = "확인",
+                        modifier = Modifier.weight(1f),
+                        onClick = { onConfirm() },
+                        backgroundColor = OnjungTheme.colors.main_coral,
+                        contentColor = OnjungTheme.colors.white
                     )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ActionButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    backgroundColor: Color,
+    contentColor: Color
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = backgroundColor,
+            contentColor = contentColor
+        ),
+        contentPadding = PaddingValues(vertical = 16.dp),
+        modifier = modifier
+    ) {
+        Text(
+            text = text,
+            style = OnjungTheme.typography.h2.copy(fontWeight = FontWeight.SemiBold)
+        )
     }
 }
 

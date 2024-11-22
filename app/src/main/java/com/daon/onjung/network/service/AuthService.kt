@@ -4,10 +4,12 @@ import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.DeviceTokenRequest
 import com.daon.onjung.network.model.request.LoginRequest
+import com.daon.onjung.network.model.response.ProfileResponse
 import com.daon.onjung.network.model.response.UserTokenResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 
@@ -31,4 +33,7 @@ interface AuthService {
 
     @DELETE("/api/v1/auth")
     suspend fun deleteAccount(): ApiResult<BaseResponse<Any>>
+
+    @GET("/api/v1/users/overviews")
+    suspend fun getUserProfile(): ApiResult<BaseResponse<ProfileResponse>>
 }

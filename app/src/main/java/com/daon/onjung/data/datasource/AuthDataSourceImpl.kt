@@ -5,6 +5,7 @@ import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.DeviceTokenRequest
 import com.daon.onjung.network.model.request.LoginRequest
+import com.daon.onjung.network.model.response.ProfileResponse
 import com.daon.onjung.network.model.response.UserTokenResponse
 import com.daon.onjung.network.service.AuthService
 import kotlinx.coroutines.CoroutineDispatcher
@@ -38,5 +39,9 @@ class AuthDataSourceImpl @Inject constructor(
     override suspend fun deleteAccount(
     ): Flow<ApiResult<BaseResponse<Any>>> = flow {
         emit(authService.deleteAccount())
+    }.flowOn(ioDispatcher)
+
+    override suspend fun getUserProfile(): Flow<ApiResult<BaseResponse<ProfileResponse>>> = flow {
+        emit(authService.getUserProfile())
     }.flowOn(ioDispatcher)
 }
