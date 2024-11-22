@@ -118,7 +118,7 @@ internal fun HomeScreen(
                         modifier = Modifier.padding(horizontal = 20.dp)
                     )
                     Spacer(modifier = Modifier.height(18.dp))
-                    SupportBannerRow(uiState.companyImages)
+                    SupportBannerRow(uiState.supportCompanies)
                     Spacer(modifier = Modifier.height(26.dp))
                 }
                 Spacer(modifier = Modifier.height(32.dp))

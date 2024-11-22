@@ -8,12 +8,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.daon.onjung.ui.home.IconData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun SupportBannerRow(
-    items: List<String>,
+    items: List<IconData>,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
@@ -45,7 +46,9 @@ fun SupportBannerRow(
         items(items.size * 3) { index ->
             val item = items[index % items.size]
             SupportBannerIcon(
-                imageUrl = item
+                icon = item.icon,
+                contentDescription = item.contentDescription,
+                color = item.color
             )
         }
     }

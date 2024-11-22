@@ -23,7 +23,7 @@ class HomeViewModel @Inject constructor(
     init {
         getStoreList()
         getOnjungSummary()
-        getCompanyImages()
+        //getCompanyImages() 화질 이슈로 프론트에서 관리
     }
 
     override fun reduceState(event: HomeContract.Event) {
@@ -114,9 +114,9 @@ class HomeViewModel @Inject constructor(
                 updateState(currentState.copy(isLoading = false))
                 when (it) {
                     is ApiResult.Success -> {
-                        it.data?.data?.let { result ->
+                        /*it.data?.data?.let { result ->
                             updateState(currentState.copy(companyImages = result.companyImages))
-                        }
+                        }*/
                     }
                     is ApiResult.ApiError -> {
                         postEffect(HomeContract.Effect.ShowSnackBar(it.message))

@@ -1,6 +1,5 @@
 package com.daon.onjung.ui.component
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
 import coil3.request.ImageRequest
 import com.daon.onjung.R
 import com.daon.onjung.ui.theme.OnjungTheme
@@ -48,10 +47,11 @@ fun ShopCard(
     onClick: (Int) -> Unit
 ) {
     val context = LocalContext.current
+    val itemWidth = 236.dp
 
     Surface(
         modifier = Modifier
-            .width(236.dp),
+            .width(itemWidth),
         onClick = { onClick(shopId) },
         color = OnjungTheme.colors.white,
         shape = RoundedCornerShape(10.dp)
@@ -146,6 +146,7 @@ fun ShopCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
+                    modifier = Modifier.weight(1f),
                     text = name,
                     style = OnjungTheme.typography.body1.copy(
                         fontWeight = FontWeight.SemiBold,
@@ -165,6 +166,10 @@ fun ShopCard(
                 )
 
                 Text(
+                    modifier = Modifier.widthIn(
+                        min = itemWidth * 0.1f,
+                        max = itemWidth * 0.3f
+                    ),
                     text = address,
                     style = OnjungTheme.typography.caption.copy(
                         color = OnjungTheme.colors.text_3
@@ -188,8 +193,8 @@ fun ShopCardPreview() {
             tagColor = Color(0xFF81A5DA),
             title = "헌신에 보답하는\n감사의 식탁",
             likeCount = 100,
-            name = "한걸음 닭꼬치",
-            address = "송파구",
+            name = "한걸음 닭꼬치dkdjsalkfjsadlkfjasjdlk",
+            address = "송파구asdfsdafsdafsda",
             onClick = {}
         )
     }
