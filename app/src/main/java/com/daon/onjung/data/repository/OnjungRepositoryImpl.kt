@@ -8,7 +8,7 @@ import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.PostReceiptRequest
 import com.daon.onjung.network.model.response.OcrResponse
 import com.daon.onjung.util.fileFromContentUri
-import com.daon.onjung.util.resizeAndSaveImage
+import com.daon.onjung.util.saveImageWithoutCompressionOrResizing
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType.Companion.toMediaType
@@ -25,7 +25,7 @@ class OnjungRepositoryImpl @Inject constructor(
 
     override fun postReceiptOcr(receiptImageUri: Uri): Flow<ApiResult<BaseResponse<OcrResponse>>> {
         val originalFile = fileFromContentUri(context, receiptImageUri)
-        val compressedFile = resizeAndSaveImage(context, originalFile)
+        val compressedFile = saveImageWithoutCompressionOrResizing(context, originalFile)
 
         val requestBody = compressedFile.asRequestBody("image/*".toMediaType())
         val receiptFile = MultipartBody.Part.createFormData("file", compressedFile.name, requestBody)

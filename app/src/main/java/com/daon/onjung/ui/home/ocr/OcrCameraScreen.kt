@@ -7,16 +7,22 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.util.Size
+import android.view.MotionEvent
 import androidx.activity.compose.BackHandler
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -54,6 +60,7 @@ import com.daon.onjung.ui.home.component.OnjungSuccessDialog
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -71,11 +78,45 @@ internal fun OcrCameraScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
     val preview = Preview.Builder().build()
-    val previewView = remember { PreviewView(context) }
+    var camera: androidx.camera.core.Camera? = null
+
     val cameraxSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
-    val imageCapture = remember { ImageCapture.Builder().build() }
+    val resolutionSelector = ResolutionSelector.Builder()
+        .setResolutionStrategy(
+            ResolutionStrategy(
+                Size(4000, 3000), // 최대 해상도
+                ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER
+            )
+        ).build()
+
+    val imageCapture = remember {
+        ImageCapture.Builder()
+            .setResolutionSelector(resolutionSelector)
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+            .build()
+    }
 
     var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
+
+    val previewView = remember {
+        PreviewView(context).apply {
+            setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    val factory = meteringPointFactory
+                    val point = factory.createPoint(event.x, event.y)
+
+                    val action = FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF)
+                        .setAutoCancelDuration(3, TimeUnit.SECONDS) // 초점 유지 시간
+                        .build()
+
+                    camera?.cameraControl?.startFocusAndMetering(action)
+
+                    return@setOnTouchListener true
+                }
+                return@setOnTouchListener false
+            }
+        }
+    }
 
     DisposableEffect(Unit) {
         bottomSheetState.setOnHideBottomSheet {
@@ -146,7 +187,7 @@ internal fun OcrCameraScreen(
     LaunchedEffect(lensFacing) {
         cameraProvider = context.getCameraProvider().apply {
             unbindAll()
-            bindToLifecycle(lifecycleOwner, cameraxSelector, preview, imageCapture)
+            camera = bindToLifecycle(lifecycleOwner, cameraxSelector, preview, imageCapture)
             preview.setSurfaceProvider(previewView.surfaceProvider)
         }
     }
@@ -185,7 +226,50 @@ internal fun OcrCameraScreen(
             .fillMaxSize()
             .statusBarsPadding()
     ) {
-        AndroidView(factory = { previewView }, modifier = Modifier.fillMaxSize())
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(86.dp)
+                    .background(color = Color.Black)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_close),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clickable { appState.navController.navigateUp() }
+                        .align(Alignment.TopEnd)
+                        .padding(top = 16.dp, end = 20.dp),
+                    tint = Color.White
+                )
+            }
+
+            AndroidView(factory = { previewView }, modifier = Modifier.fillMaxWidth().weight(1f))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(86.dp)
+                    .background(color = Color.Black),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clickable {
+                            captureImage(imageCapture, context) { uri ->
+                                viewModel.processEvent(OcrCameraContract.Event.ImageCaptured(uri))
+                            }
+                        },
+                    painter = painterResource(id = R.drawable.ic_capture),
+                    contentDescription = "IC_CAPTURE",
+                    tint = Color.White
+                )
+            }
+        }
+
 
         if (uiState.isGuideTextVisible) {
             Text(
@@ -203,47 +287,6 @@ internal fun OcrCameraScreen(
                     .align(Alignment.Center),
                 color = OnjungTheme.colors.main_coral,
                 trackColor = Color(0xFFECECEC)
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(86.dp)
-                .background(color = Color.Black)
-                .align(Alignment.TopCenter),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_close),
-                contentDescription = null,
-                modifier = Modifier
-                    .clickable { appState.navController.navigateUp() }
-                    .align(Alignment.TopEnd)
-                    .padding(top = 16.dp, end = 20.dp),
-                tint = Color.White
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(86.dp)
-                .background(color = Color.Black)
-                .align(Alignment.BottomCenter),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clickable {
-                        captureImage(imageCapture, context) { uri ->
-                            viewModel.processEvent(OcrCameraContract.Event.ImageCaptured(uri))
-                        }
-                    },
-                painter = painterResource(id = R.drawable.ic_capture),
-                contentDescription = "IC_CAPTURE",
-                tint = Color.White
             )
         }
     }
@@ -268,7 +311,7 @@ private fun captureImage(
         put(MediaStore.MediaColumns.DISPLAY_NAME, name)
         put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
+            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/onjung")
             put(MediaStore.Images.Media.IS_PENDING, 1) // 임시 상태로 설정
         }
     }

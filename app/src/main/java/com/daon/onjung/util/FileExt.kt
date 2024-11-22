@@ -84,6 +84,31 @@ fun resizeAndSaveImage(context: Context, originalFile: File): File {
     }
 }
 
+fun saveImageWithoutCompressionOrResizing(context: Context, originalFile: File): File {
+    return try {
+        // EXIF 데이터를 읽어 회전 정보를 확인
+        val exif = ExifInterface(originalFile.absolutePath)
+        val rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+
+        // 원본 파일 그대로 복사
+        val outputFile = createFile(context)
+        originalFile.copyTo(outputFile, overwrite = true)
+
+        // 이미지 회전 정보 수정
+        if (rotation != ExifInterface.ORIENTATION_NORMAL) {
+            val updatedExif = ExifInterface(outputFile.absolutePath)
+            updatedExif.setAttribute(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL.toString())
+            updatedExif.saveAttributes()
+        }
+
+        outputFile
+    } catch (e: IOException) {
+        e.printStackTrace()
+        originalFile
+    }
+}
+
+
 private fun createFile(context: Context): File {
     val fileName = generateRandomFileName(10) // 10자리의 임의 파일명 생성
 
