@@ -45,7 +45,7 @@ import kotlinx.coroutines.flow.collectLatest
 internal fun ProfileTicketListScreen(
     appState: OnjungAppState,
     bottomSheetState: OnjungBottomSheetState,
-    viewModel: ProfileListViewModel
+    viewModel: ProfileTicketListViewModel
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val effectFlow = viewModel.effect
@@ -55,12 +55,25 @@ internal fun ProfileTicketListScreen(
     LaunchedEffect(Unit) {
         effectFlow.collectLatest { effect ->
             when (effect) {
-                is ProfileListContract.Effect.NavigateTo -> {
+                is ProfileTicketListContract.Effect.NavigateTo -> {
                     appState.navigate(effect.destination, effect.navOptions)
                 }
 
-                is ProfileListContract.Effect.ShowSnackBar -> {
+                is ProfileTicketListContract.Effect.ShowSnackBar -> {
                     appState.showSnackBar(effect.message)
+                }
+
+                is ProfileTicketListContract.Effect.ShowTicketBottomSheet -> {
+                    bottomSheetState.showBottomSheet(
+                        content = {
+                            MealTicketBottomSheet(
+                                effect.name,
+                                effect.address,
+                                effect.qrCodeImgUrl,
+                                effect.expirationDate
+                            )
+                        }
+                    )
                 }
             }
         }
@@ -71,7 +84,7 @@ internal fun ProfileTicketListScreen(
             .collect { lastVisibleItemIndex ->
                 val totalItems = listState.layoutInfo.totalItemsCount
                 if (lastVisibleItemIndex == totalItems - 1 && !uiState.isTicketListLastPage) {
-                    viewModel.processEvent(ProfileListContract.Event.LoadMoreTicketList)
+                    viewModel.processEvent(ProfileTicketListContract.Event.LoadMoreTicketList)
                 }
         }
     }
@@ -156,13 +169,7 @@ internal fun ProfileTicketListScreen(
                     ticket.expirationDate,
                     ticket.isValidate
                 ) {
-                    bottomSheetState.showBottomSheet {
-                        MealTicketBottomSheet(
-                            name = ticket.storeInfo.name,
-                            address = ticket.storeInfo.address,
-                            expirationDate = ticket.expirationDate
-                        )
-                    }
+                    viewModel.processEvent(ProfileTicketListContract.Event.MealTicketClicked(ticket.id))
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }

@@ -11,23 +11,23 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileListViewModel @Inject constructor(
+class ProfileTicketListViewModel @Inject constructor(
     private val eventRepository: EventRepository
-) : BaseViewModel<ProfileListContract.State, ProfileListContract.Event, ProfileListContract.Effect>(
-    initialState = ProfileListContract.State()
+) : BaseViewModel<ProfileTicketListContract.State, ProfileTicketListContract.Event, ProfileTicketListContract.Effect>(
+    initialState = ProfileTicketListContract.State()
 ) {
     init {
         getTicketList()
     }
 
-    override fun reduceState(event: ProfileListContract.Event) {
+    override fun reduceState(event: ProfileTicketListContract.Event) {
         when (event) {
-            is ProfileListContract.Event.LoadMoreTicketList -> {
+            is ProfileTicketListContract.Event.LoadMoreTicketList -> {
                 getTicketList()
             }
 
-            is ProfileListContract.Event.MealTicketClicked -> {
-
+            is ProfileTicketListContract.Event.MealTicketClicked -> {
+                getQrCode(event.id)
             }
         }
     }
@@ -73,14 +73,47 @@ class ProfileListViewModel @Inject constructor(
                         }
 
                         is ApiResult.ApiError -> {
-                            postEffect(ProfileListContract.Effect.ShowSnackBar(it.message))
+                            postEffect(ProfileTicketListContract.Effect.ShowSnackBar(it.message))
                         }
 
                         is ApiResult.NetworkError -> {
-                            postEffect(ProfileListContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
+                            postEffect(ProfileTicketListContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
                         }
                     }
                 }
+        }
+    }
+
+    private fun getQrCode(id: Int) = viewModelScope.launch {
+        eventRepository.getTicketBrief(id = id).onStart {
+            updateState(currentState.copy(isLoading = true))
+        }.collect {
+            updateState(currentState.copy(isLoading = false))
+            when (it) {
+                is ApiResult.Success -> {
+                    it.data?.data?.let { result ->
+                        val selectedTicket = currentState.ticketList.find { it.id == id }
+                        selectedTicket?.let { ticket ->
+                            postEffect(
+                                ProfileTicketListContract.Effect.ShowTicketBottomSheet(
+                                    ticket.storeInfo.name,
+                                    ticket.storeInfo.address,
+                                    result.qrBase64,
+                                    ticket.expirationDate
+                                )
+                            )
+                        }
+                    }
+                }
+
+                is ApiResult.ApiError -> {
+                    postEffect(ProfileTicketListContract.Effect.ShowSnackBar(it.message))
+                }
+
+                is ApiResult.NetworkError -> {
+                    postEffect(ProfileTicketListContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
+                }
+            }
         }
     }
 

@@ -6,7 +6,7 @@ import com.daon.onjung.util.UiEffect
 import com.daon.onjung.util.UiEvent
 import com.daon.onjung.util.UiState
 
-class ProfileListContract {
+class ProfileTicketListContract {
 
     data class State(
         val isLoading: Boolean = false,
@@ -28,5 +28,11 @@ class ProfileListContract {
             val navOptions: NavOptions? = null
         ) : Effect()
         data class ShowSnackBar(val message: String) : Effect()
+        data class ShowTicketBottomSheet(
+            val name: String,
+            val address: String,
+            val qrCodeImgUrl: String,
+            val expirationDate: String
+        ) : Effect()
     }
 }

@@ -3,10 +3,13 @@ package com.daon.onjung.ui.profile.component
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Base64
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +34,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +54,7 @@ import java.io.OutputStream
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalComposeApi::class)
 @Composable
 internal fun MealTicketBottomSheet(
+    qrCodeImgUrl: String,
     name: String,
     address: String,
     expirationDate: String
@@ -115,14 +120,23 @@ internal fun MealTicketBottomSheet(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
+                val bitmap = decodeBase64ToBitmap(qrCodeImgUrl)
+
                 Box(
                     modifier = Modifier
                         .background(OnjungTheme.colors.white)
                         .padding(6.dp),
                 ) {
-                    Icon(
+                    bitmap?.asImageBitmap()?.let {
+                        Image(
+                            bitmap = it,
+                            contentDescription = "IC_DUMMY_QR_CODE",
+                            modifier = Modifier.size(166.dp)
+                        )
+                    } ?: Icon(
+                        modifier = Modifier.size(166.dp),
                         painter = painterResource(id = R.drawable.ic_dummy_qr_code),
-                        contentDescription = "IC_DUMMY_QR_CODE",
+                        contentDescription = "IC_QR_CODE",
                         tint = Color.Unspecified
                     )
                 }
@@ -319,8 +333,19 @@ private fun saveBitmapToGallery(context: Context, bitmap: Bitmap) {
 @Composable
 internal fun MealTicket() {
     MealTicketBottomSheet(
+        qrCodeImgUrl = "",
         name = "한걸음 닭꼬치",
         address = "송파구 오금로 533 1층 (거여동)",
         expirationDate = "2024년 11월 30일"
     )
+}
+
+private fun decodeBase64ToBitmap(base64String: String): Bitmap? {
+    return try {
+        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+        BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+    } catch (e: IllegalArgumentException) {
+        e.printStackTrace()
+        null
+    }
 }
