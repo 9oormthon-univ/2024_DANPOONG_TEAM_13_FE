@@ -11,10 +11,14 @@ data class SharedRestaurantListResponse(
 data class SharedRestaurantResponse(
     @SerializedName("onjung_type")
     val onjungType: OnjungType,
+    @SerializedName("store_id")
+    val storeId: Int,
     @SerializedName("store_name")
     val storeName: String,
     @SerializedName("store_title")
     val storeTitle: String,
+    @SerializedName("logo_img_url")
+    val logoImgUrl: String,
     @SerializedName("amount")
     val amount: Int,
     @SerializedName("date")

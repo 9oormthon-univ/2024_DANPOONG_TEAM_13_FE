@@ -25,8 +25,11 @@ fun NavGraphBuilder.profileGraph(
     composable(
         route = Routes.Profile.RESTAURANT_LIST
     ) {
+        val viewModel: ProfileRestaurantListViewModel = hiltViewModel()
+
         ProfileRestaurantListScreen(
-            appState = appState
+            appState = appState,
+            viewModel = viewModel
         )
     }
 

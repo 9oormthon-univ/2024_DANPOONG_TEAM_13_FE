@@ -171,15 +171,17 @@ internal fun ProfileScreen(
                 }
             }
 
-            Text(
-                "+${uiState.remainCount}",
-                modifier = Modifier.offset(
-                    y = 50.dp,
-                ),
-                style = OnjungTheme.typography.body2.copy(
-                    color = OnjungTheme.colors.main_coral
+            if (uiState.remainCount > 0) {
+                Text(
+                    "+${uiState.remainCount}",
+                    modifier = Modifier.offset(
+                        y = 50.dp,
+                    ),
+                    style = OnjungTheme.typography.body2.copy(
+                        color = OnjungTheme.colors.main_coral
+                    )
                 )
-            )
+            }
         }
     }
 }

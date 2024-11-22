@@ -17,4 +17,7 @@ class EventRepositoryImpl @Inject constructor(
 
     override suspend fun getTicketCount() =
         eventDataSource.getTicketCount()
+
+    override suspend fun getOnjungMailList(page: Int, size: Int) =
+        eventDataSource.getOnjungMailList(page, size)
 }

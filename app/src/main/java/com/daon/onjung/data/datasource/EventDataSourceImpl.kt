@@ -4,6 +4,7 @@ import com.daon.onjung.di.IoDispatcher
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.response.MealTicketListResponse
+import com.daon.onjung.network.model.response.OnjungMailListResponse
 import com.daon.onjung.network.model.response.QRCodeResponse
 import com.daon.onjung.network.model.response.TicketCountResponse
 import com.daon.onjung.network.service.EventService
@@ -31,6 +32,10 @@ class EventDataSourceImpl @Inject constructor(
 
     override suspend fun getTicketCount(): Flow<ApiResult<BaseResponse<TicketCountResponse>>> = flow {
         emit(eventService.getTicketCount())
+    }.flowOn(ioDispatcher)
+
+    override suspend fun getOnjungMailList(page: Int, size: Int): Flow<ApiResult<BaseResponse<OnjungMailListResponse>>> = flow {
+        emit(eventService.getOnjungMailList(page, size))
     }.flowOn(ioDispatcher)
 
 }
