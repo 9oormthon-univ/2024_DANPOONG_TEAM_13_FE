@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.donation.donationResult
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +28,9 @@ import com.daon.onjung.ui.donation.component.DonationResultCard
 import com.daon.onjung.ui.donation.component.KakaoShare
 import com.daon.onjung.ui.theme.OnjungTheme
 import com.daon.onjung.util.formatCurrency
+import com.kakao.sdk.common.util.KakaoCustomTabsClient
+import com.kakao.sdk.share.ShareClient
+import com.kakao.sdk.share.WebSharerClient
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -38,6 +43,9 @@ fun DonationResultScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val effectFlow = viewModel.effect
+
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.getStoreDetailInfo(shopId)
 
@@ -84,7 +92,17 @@ fun DonationResultScreen(
             modifier = Modifier.padding(horizontal = 50.dp)
         )
         Spacer(modifier = Modifier.height(27.dp))
-        KakaoShare()
+        KakaoShare(
+            onClick = {
+                shareNoteWithKakaoLink(
+                    context,
+                    uiState.storeInfo.title,
+                    "선한 영향력, 지금 이 식당과 함께 시작해보세요!",
+                    uiState.storeInfo.bannerImgUrl,
+                    appState::showSnackBar
+                )
+            }
+        )
         Spacer(modifier = Modifier.weight(1f))
         FilledWidthButton(
             "확인",
@@ -114,5 +132,52 @@ fun DonationResultScreenPreview() {
             issueDate = "2024. 10. 31",
             viewModel = viewModel
         )
+    }
+}
+
+private fun shareNoteWithKakaoLink(
+    context: Context,
+    title: String,
+    description: String,
+    imageUrl: String,
+    showErrorMessage: (String) -> Unit
+) {
+    if (ShareClient.instance.isKakaoTalkSharingAvailable(context)) {
+        ShareClient.instance.shareCustom(
+            context,
+            114585L,
+            templateArgs = mapOf(
+                "title" to title,
+                "description" to description,
+                "image" to imageUrl
+            )
+        ) { sharingResult, error ->
+            if (error != null) {
+                showErrorMessage("카카오톡 공유 실패")
+            } else {
+                context.startActivity(sharingResult?.intent)
+            }
+        }
+    } else {
+        val shareUrl = WebSharerClient.instance.makeCustomUrl(
+            114585L,
+            templateArgs = mapOf(
+                "title" to title,
+                "description" to description,
+                "image" to imageUrl
+            )
+        )
+
+        try {
+            KakaoCustomTabsClient.openWithDefault(context, shareUrl)
+        } catch (e: Exception) {
+            showErrorMessage("카카오톡 공유 실패")
+        }
+
+        try {
+            KakaoCustomTabsClient.openWithDefault(context, shareUrl)
+        } catch (e: Exception) {
+            showErrorMessage("카카오톡 공유 실패")
+        }
     }
 }
