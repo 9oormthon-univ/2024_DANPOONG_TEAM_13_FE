@@ -7,14 +7,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,6 +49,12 @@ fun CelebrationScreen(
                 color = Color(0xFFFFF0EF)
             )
     ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_bg_celeb),
+            contentDescription = "ic_bg_celeb",
+            modifier = Modifier.fillMaxSize(),
+            tint = Color.Unspecified
+        )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -84,20 +94,53 @@ fun CelebrationScreen(
             )
             OnjungAnimation()
 
-            MealTicket(
-                name = name,
-                imageUrl = logoImgUrl,
-                address = address,
-                category = category,
-                expirationDate = expirationDate,
-                isValidate = true,
-                isButtonVisible = false
+            Box(
+                modifier = Modifier.fillMaxSize()
             ) {
+                MealTicket(
+                    name = name,
+                    imageUrl = logoImgUrl,
+                    address = address,
+                    category = category,
+                    expirationDate = expirationDate,
+                    isValidate = true,
+                    isButtonVisible = false
+                ) {}
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = (6).dp, y = (-28).dp)
+                        .shadow(
+                            elevation = 4.dp,
+                            shape = CircleShape,
+                            clip = false
+                        )
+                        .clip(CircleShape)
+                        .background(Color(0xFF3F3F3F))
+                ) {
+                    Text(
+                        "무료\n식권",
+                        style = OnjungTheme.typography.body1.copy(
+                            fontSize = 16.sp,
+                            lineHeight = 15.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color.White
+                        ),
+                        modifier = Modifier
+                            .padding(vertical = 11.dp, horizontal = 15.dp)
 
+                    )
+                }
             }
 
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                "식권은 가게에서 무료로 사용이 가능해요.",
+                style = OnjungTheme.typography.caption,
+                color = OnjungTheme.colors.text_3
+            )
             Spacer(modifier = Modifier.height(30.dp))
-
             FilledWidthButton(
                 "식권 보러가기",
                 modifier = Modifier.padding(bottom = 24.dp)

@@ -40,7 +40,7 @@ fun OnjungAnimation (
             composition = twinkleComposition,
             clipSpec = LottieClipSpec.Frame(0, 1200),
             initialProgress = 0f,
-//            iterations = LottieConstants.IterateForever
+            iterations = 3
         )
     }
 
@@ -49,7 +49,7 @@ fun OnjungAnimation (
             composition = confettiComposition,
             clipSpec = LottieClipSpec.Frame(0, 1200),
             initialProgress = 0f,
-//            iterations = LottieConstants.IterateForever
+            iterations = 3
         )
     }
 
@@ -58,7 +58,7 @@ fun OnjungAnimation (
             composition = toryCelebrationComposition,
             clipSpec = LottieClipSpec.Frame(0, 1200),
             initialProgress = 0f,
-//            iterations = LottieConstants.IterateForever
+            iterations = 3
         )
     }
     Box (

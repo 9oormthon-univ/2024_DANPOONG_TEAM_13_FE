@@ -1,0 +1,39 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="360dp"
+    android:height="652dp"
+    android:viewportWidth="360"
+    android:viewportHeight="652">
+  <path
+      android:pathData="M137.5,325.63C180.28,297.58 232.69,297.42 274.18,319.81C274.18,319.81 274.31,319.8 274.44,319.79C274.03,274.42 296.85,230.04 338.4,204.68C402.59,165.53 486.81,188.74 524.72,253.68C560.55,315.13 564.32,367.14 547.24,446.48C538.84,485.48 517.39,527.29 497.36,560.27C472.81,600.75 429.88,626.73 382.47,629.51C343.75,631.89 296.61,631.26 258.21,620.48C180.06,598.36 136.07,570.44 98.62,509.89C60.89,448.98 77.62,364.98 137.51,325.76L137.5,325.63Z"
+      android:strokeAlpha="0.1"
+      android:fillAlpha="0.1">
+    <aapt:attr name="android:fillColor">
+      <gradient 
+          android:startX="318.69"
+          android:startY="163.99"
+          android:endX="345.31"
+          android:endY="568.82"
+          android:type="linear">
+        <item android:offset="0" android:color="#FFFF7B69"/>
+        <item android:offset="1" android:color="#33FF7B69"/>
+      </gradient>
+    </aapt:attr>
+  </path>
+  <path
+      android:pathData="M-9.23,77.04C19.23,84.01 39.77,105.92 46.58,132.05C46.58,132.05 46.64,132.1 46.69,132.15C65.55,114.26 93.07,106.5 119.92,114.01C161.4,125.63 184.56,170 172.15,211.25C160.38,250.26 140.05,272.15 100.13,295.98C80.5,307.69 54.6,315.03 32.95,319.51C6.4,325.03 -21.26,317.18 -40.94,298.39C-57.06,283.09 -75.2,263.09 -85.68,242.78C-106.93,201.38 -112.4,172.04 -101.65,132.7C-90.86,93.09 -49.12,67.3 -9.28,77.09L-9.23,77.04Z"
+      android:strokeAlpha="0.1"
+      android:fillAlpha="0.1">
+    <aapt:attr name="android:fillColor">
+      <gradient 
+          android:startX="129.28"
+          android:startY="89.86"
+          android:endX="-30.01"
+          android:endY="259.11"
+          android:type="linear">
+        <item android:offset="0" android:color="#FFFF7B69"/>
+        <item android:offset="1" android:color="#33FF7B69"/>
+      </gradient>
+    </aapt:attr>
+  </path>
+</vector>
