@@ -67,10 +67,10 @@ internal fun ProfileTicketListScreen(
                     bottomSheetState.showBottomSheet(
                         content = {
                             MealTicketBottomSheet(
-                                effect.name,
-                                effect.address,
-                                effect.qrCodeImgUrl,
-                                effect.expirationDate
+                                qrCodeImgUrl = effect.qrCodeImgUrl,
+                                name = effect.name,
+                                address = effect.address,
+                                expirationDate = effect.expirationDate
                             )
                         }
                     )
