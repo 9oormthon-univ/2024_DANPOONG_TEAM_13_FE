@@ -1,15 +1,14 @@
 package com.daon.onjung.ui.component
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieClipSpec
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -62,13 +61,14 @@ fun OnjungAnimation (
 //            iterations = LottieConstants.IterateForever
         )
     }
-    Box {
+    Box (
+        contentAlignment = Alignment.Center
+    ) {
         LottieAnimation(
             composition = twinkleComposition,
             progress = twinkleLottieAnimatable.progress,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp),
+                .fillMaxSize(1f),
             contentScale = ContentScale.Crop
         )
 
@@ -76,8 +76,7 @@ fun OnjungAnimation (
             composition = confettiComposition,
             progress = confettiLottieAnimatable.progress,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(330.dp),
+                .fillMaxSize(0.8f),
             contentScale = ContentScale.Crop
         )
 
@@ -85,8 +84,7 @@ fun OnjungAnimation (
             composition = toryCelebrationComposition,
             progress = toryCelebrationLottieAnimatable.progress,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(330.dp),
+                .fillMaxSize(1f),
             contentScale = ContentScale.Crop
         )
     }
