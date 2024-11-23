@@ -1,5 +1,7 @@
 package com.daon.onjung
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -31,6 +33,7 @@ import com.daon.onjung.ui.setting.settingGraph
 import com.daon.onjung.ui.theme.OnjungTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OnjungNavHost(

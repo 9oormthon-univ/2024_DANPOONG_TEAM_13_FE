@@ -21,7 +21,9 @@ class SplashViewModel @Inject constructor(
             checkNotificationPermission()
             delay(1500)
             postEffect(SplashContract.Effect.NavigateTo(
-                Routes.Auth.LOGIN,
+                if(dataStoreRepository.getAccessToken().isEmpty()) {
+                    Routes.Auth.LOGIN
+                } else Routes.Home.ROUTE,
                 navOptions {
                     popUpTo(Routes.Auth.ROUTE) { inclusive = true }
                 }
