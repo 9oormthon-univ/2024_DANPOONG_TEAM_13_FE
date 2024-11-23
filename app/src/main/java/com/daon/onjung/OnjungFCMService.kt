@@ -11,6 +11,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.daon.onjung.network.model.response.TicketFcmResponse
+import com.google.firebase.messaging.Constants.MessageNotificationKeys
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
@@ -44,14 +45,9 @@ class OnjungFCMService : FirebaseMessagingService() {
             "${it.title} ${it.body}"
         }}"
         Log.d(TAG, "Message data : $messageData")
-        Log.d(TAG, "Message noti : ${remoteMessage.notification?.imageUrl}")
+        Log.d(TAG, "Message noti : ${remoteMessage.notification}")
 
-        if (messageData.isNotEmpty()) {
-            //알림 생성
-            sendNotification(remoteMessage, remoteMessage.data)
-        } else {
-            Log.e(TAG, "data가 비어있습니다. 메시지를 수신하지 못했습니다.")
-        }
+        sendNotification(remoteMessage, remoteMessage.data)
     }
 
     private fun createNotificationChannel() {
@@ -69,17 +65,26 @@ class OnjungFCMService : FirebaseMessagingService() {
 
     // 메세지 알림 생성
     private fun sendNotification(remoteMessage: RemoteMessage, ticketData: Map<String, String>) {
+        Log.d(TAG, "sendNotification: ${remoteMessage.notification?.title}")
+        Log.d(TAG, "sendNotification: ${remoteMessage.notification?.body}")
+        Log.d(TAG, "sendNotification: ${ticketData.toList()}")
         val pendingIntent = getFcmPendingIntent(this, ticketData)
 
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSmallIcon(R.mipmap.ic_launcher) // 아이콘 설정
-            .setContentTitle(remoteMessage.notification?.title) // 제목
-            .setContentText(remoteMessage.notification?.body) // 메시지 내용
-            .setAutoCancel(true) // 알람클릭시 삭제여부
+            .setContentTitle(
+                remoteMessage.notification?.title.orEmpty()
+                    .ifEmpty { ticketData["title"] ?: "\uD83C\uDF89 1만원 금액 식권 당첨" } // 제목 설정
+            )
+            .setContentText(
+                remoteMessage.notification?.body.orEmpty()
+                    .ifEmpty { ticketData["body"] ?: "지금 바로 클릭해서 따뜻한 한 끼를 확인해 보세요!" } // 메시지 내용 설정
+            )
+            .setAutoCancel(true) // 알람 클릭 시 삭제
             .setDefaults(Notification.DEFAULT_ALL) // 진동, 소리, 불빛 설정
-            .setPriority(NotificationCompat.PRIORITY_HIGH) // 헤드업 알림
             .setContentIntent(pendingIntent) // 알림 실행 시 Intent
+
 
         notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
     }
@@ -98,7 +103,8 @@ class OnjungFCMService : FirebaseMessagingService() {
         // URI 쿼리 파라미터를 안전하게 인코딩
         val encodedStoreName = URLEncoder.encode(ticket.store_name, "UTF-8")
         val encodedAddress = URLEncoder.encode(ticket.address, "UTF-8")
-        val encodedCategory = URLEncoder.encode(ticket.category.toString(), "UTF-8") // Enum to String
+        val encodedCategory =
+            URLEncoder.encode(ticket.category.toString(), "UTF-8") // Enum to String
         val encodedUserName = URLEncoder.encode(ticket.user_name, "UTF-8")
 
         val encodedExpirationDate = URLEncoder.encode(ticket.expiration_date, "UTF-8")
@@ -125,4 +131,28 @@ class OnjungFCMService : FirebaseMessagingService() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
+
+
+    private fun keyWithOldPrefix(key: String): String {
+        if (!key.startsWith(MessageNotificationKeys.NOTIFICATION_PREFIX)) {
+            return key
+        }
+
+        return key.replaceFirst(
+            MessageNotificationKeys.NOTIFICATION_PREFIX,
+            MessageNotificationKeys.NOTIFICATION_PREFIX_OLD
+        )
+    }
+
+    override fun handleIntent(intent: Intent?) {
+        val new = intent?.apply {
+            val temp = extras?.apply {
+                remove(MessageNotificationKeys.ENABLE_NOTIFICATION)
+                remove(keyWithOldPrefix(MessageNotificationKeys.ENABLE_NOTIFICATION))
+            }
+            replaceExtras(temp)
+        }
+        super.handleIntent(new)
+    }
+
 }

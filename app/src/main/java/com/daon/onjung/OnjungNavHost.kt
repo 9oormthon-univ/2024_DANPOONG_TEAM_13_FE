@@ -154,12 +154,12 @@ fun OnjungNavHost(
                         }
                     )
                 ) { entry ->
-                    val storeName = entry.arguments?.getString("storeName") ?: ""
-                    val address = entry.arguments?.getString("address") ?: ""
+                    val storeName = entry.arguments?.getString("storeName")?.replace("+", " ") ?: ""
+                    val address = entry.arguments?.getString("address")?.replace("+", " ") ?: ""
                     val categoryString = entry.arguments?.getString("category") ?: ""
                     val category = runCatching { StoreCategory.valueOf(categoryString) }.getOrElse { StoreCategory.KOREAN }
-                    val userName = entry.arguments?.getString("userName") ?: ""
-                    val expirationDate = entry.arguments?.getString("expirationDate") ?: ""
+                    val userName = entry.arguments?.getString("userName")?.replace("+", " ") ?: ""
+                    val expirationDate = entry.arguments?.getString("expirationDate")?.replace("+", " ") ?: ""
                     val logoImgUrl = entry.arguments?.getString("logoImgUrl") ?: ""
 
                     CelebrationScreen(
