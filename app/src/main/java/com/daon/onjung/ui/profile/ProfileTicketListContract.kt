@@ -14,6 +14,7 @@ class ProfileTicketListContract {
         val isTicketListLastPage: Boolean = false,
         val ticketListCurrentPage: Int = 1,
         val ticketListPageSize: Int = 20,
+        val ticketTotalCount: Int = 0,
         val ticketList: List<MealTicketStoreResponse> = emptyList()
     ) : UiState
 
