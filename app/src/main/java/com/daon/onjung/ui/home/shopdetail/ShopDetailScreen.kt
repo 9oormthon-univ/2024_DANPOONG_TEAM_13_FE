@@ -92,9 +92,7 @@ internal fun ShopDetailScreen(
             leftIconOnClick = {
                 appState.navController.navigateUp()
             },
-            rightIconOnClick = {
-                appState.navController.navigateUp()
-            }
+            rightIcon = null
         )
         Box(
             modifier = Modifier.weight(1f),
