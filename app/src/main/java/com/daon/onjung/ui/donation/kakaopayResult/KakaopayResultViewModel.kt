@@ -44,7 +44,6 @@ class KakaopayResultViewModel @Inject constructor(
                                 updateState(
                                     currentState.copy(
                                         issueDate = result.issueDate,
-                                        donationStoreInfo = result.storeInfo
                                     )
                                 )
                             }

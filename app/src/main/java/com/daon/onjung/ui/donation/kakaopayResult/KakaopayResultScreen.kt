@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +37,7 @@ import com.daon.onjung.ui.donation.component.DonationCompleteDialog
 import com.daon.onjung.ui.donation.component.KakaopayButton
 import com.daon.onjung.ui.donation.component.KakaopayTopBar
 import com.daon.onjung.ui.theme.OnjungTheme
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun KakaopayResultScreen (
@@ -46,13 +48,26 @@ fun KakaopayResultScreen (
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val effectFlow = viewModel.effect
+    LaunchedEffect(Unit) {
 
+        effectFlow.collectLatest { effect ->
+            when (effect) {
+                is KakaopayResultContract.Effect.NavigateTo -> {
+                    appState.navigate(effect.destination, effect.navOptions)
+                }
+
+                is KakaopayResultContract.Effect.ShowSnackBar -> {
+                    appState.showSnackBar(effect.message)
+                }
+            }
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(OnjungTheme.colors.gray_2),
     ) {
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         KakaopayTopBar(
             modifier = Modifier.padding(
                 end = 4.dp
@@ -109,7 +124,7 @@ fun KakaopayResultScreen (
         if (uiState.isDonationCompleteDialogVisible) {
             DonationCompleteDialog {
                 viewModel.processEvent(KakaopayResultContract.Event.DonationCompleteDialogDismissed)
-                appState.navigate("${Routes.Donation.DONDATIONRESULT}?shopId=$shopId&amount=$amount&issueDate=${uiState.issueDate}&donationStoreInfo=${uiState.donationStoreInfo}")
+                appState.navigate("${Routes.Donation.DONDATIONRESULT}?shopId=$shopId&amount=$amount&issueDate=${uiState.issueDate}")
             }
         }
     }

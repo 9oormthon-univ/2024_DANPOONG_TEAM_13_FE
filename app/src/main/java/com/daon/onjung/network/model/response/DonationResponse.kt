@@ -16,7 +16,7 @@ data class DonationStoreInfo(
     @SerializedName("logo_img_url")
     val logoImgUrl: String,
     @SerializedName("tag")
-    val tag: StoreTag,
+    val tag: List<StoreTag>,
     @SerializedName("name")
     val name: String
 )

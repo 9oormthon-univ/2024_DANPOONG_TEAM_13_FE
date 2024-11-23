@@ -10,6 +10,8 @@ import com.daon.onjung.OnjungBottomSheetState
 import com.daon.onjung.Routes
 import com.daon.onjung.ui.donation.donation.DonationScreen
 import com.daon.onjung.ui.donation.donation.DonationViewModel
+import com.daon.onjung.ui.donation.donationResult.DonationResultScreen
+import com.daon.onjung.ui.donation.donationResult.DonationResultViewModel
 import com.daon.onjung.ui.donation.kakaopayPayment.KakaopayPaymentScreen
 import com.daon.onjung.ui.donation.kakaopayPayment.KakaopayPaymentViewModel
 import com.daon.onjung.ui.donation.kakaopayResult.KakaopayResultScreen
@@ -115,10 +117,34 @@ fun NavGraphBuilder.donationGraph(
     }
 
     composable(
-        route = Routes.Donation.DONDATIONRESULT
-    ) {
+        route = "${Routes.Donation.DONDATIONRESULT}?shopId={shopId}&amount={amount}&issueDate={issueDate}",
+        arguments = listOf(
+            navArgument("shopId") {
+                type = NavType.StringType
+                defaultValue = ""
+            },
+            navArgument("amount") {
+                type = NavType.StringType
+                defaultValue = ""
+            },
+            navArgument("issueDate") {
+                type = NavType.StringType
+                defaultValue = ""
+            },
+        )
+    ) { entry ->
+        val viewModel: DonationResultViewModel = hiltViewModel()
+        val shopIdString = entry.arguments?.getString("shopId") ?: "0"
+        val shopId = shopIdString.toInt()
+        val amountString = entry.arguments?.getString("amount") ?: "0"
+        val amount = amountString.toInt()
+        val issueDate = entry.arguments?.getString("issueDate") ?: "2024 .10 .11"
         DonationResultScreen(
-            appState = appState
+            appState = appState,
+            shopId = shopId,
+            amount = amount,
+            issueDate = issueDate,
+            viewModel = viewModel
         )
     }
 }

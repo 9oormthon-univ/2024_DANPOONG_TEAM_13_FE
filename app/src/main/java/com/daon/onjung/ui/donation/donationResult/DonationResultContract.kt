@@ -1,21 +1,21 @@
-package com.daon.onjung.ui.donation.kakaopayResult
+package com.daon.onjung.ui.donation.donationResult
 
 import androidx.navigation.NavOptions
+import com.daon.onjung.network.model.StoreCategory
+import com.daon.onjung.network.model.StoreTag
+import com.daon.onjung.network.model.response.StoreDetailInfo
 import com.daon.onjung.util.UiEffect
 import com.daon.onjung.util.UiEvent
 import com.daon.onjung.util.UiState
 
-class KakaopayResultContract {
+
+class DonationResultContract {
     data class State(
         val isLoading: Boolean = false,
-        val isDonationCompleteDialogVisible: Boolean = false,
-        val issueDate: String = "",
+        val storeInfo: StoreDetailInfo = StoreDetailInfo("", listOf(StoreTag.DISABLED_GROUP), "", "", "", "", StoreCategory.KOREAN, "", ""),
     ) : UiState
 
-    sealed class Event : UiEvent {
-        data class DonationCompleteClicked(val shopId: Int, val amount: Int) : Event()
-        data object DonationCompleteDialogDismissed : Event()
-    }
+    sealed class Event : UiEvent
 
     sealed class Effect : UiEffect {
         data class NavigateTo(

@@ -1,4 +1,4 @@
-package com.daon.onjung.ui.donation
+package com.daon.onjung.ui.donation.donationResult
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -8,26 +8,51 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.rememberOnjungAppState
 import com.daon.onjung.ui.component.button.FilledWidthButton
 import com.daon.onjung.ui.donation.component.DonationResultCard
 import com.daon.onjung.ui.donation.component.KakaoShare
 import com.daon.onjung.ui.theme.OnjungTheme
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun DonationResultScreen(
     appState: OnjungAppState,
+    shopId: Int,
+    amount: Int,
+    issueDate: String,
+    viewModel : DonationResultViewModel,
 ) {
-    val price by remember { mutableStateOf(30000) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val effectFlow = viewModel.effect
+    LaunchedEffect(Unit) {
+        viewModel.getStoreDetailInfo(shopId)
+
+        effectFlow.collectLatest { effect ->
+            when (effect) {
+                is DonationResultContract.Effect.NavigateTo -> {
+                    appState.navigate(effect.destination, effect.navOptions)
+                }
+
+                is DonationResultContract.Effect.ShowSnackBar -> {
+                    appState.showSnackBar(effect.message)
+                }
+            }
+        }
+    }
+
+    appState.showSnackBar("shopId $shopId amount $amount issueDate $issueDate")
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -36,7 +61,7 @@ fun DonationResultScreen(
     ){
         Spacer(modifier = Modifier.height(77.dp))
         Text(
-            "${price}원 후원 완료",
+            "${amount}원 후원 완료",
             style = OnjungTheme.typography.h1.copy(
                 color = OnjungTheme.colors.text_1,
                 fontWeight = FontWeight.SemiBold
@@ -52,6 +77,10 @@ fun DonationResultScreen(
         )
         Spacer(modifier = Modifier.height(37.dp))
         DonationResultCard(
+            date = issueDate,
+            imageUrl = uiState.storeInfo.logoImgUrl,
+            tag = uiState.storeInfo.tags.first(),
+            name = uiState.storeInfo.name,
             modifier = Modifier.padding(horizontal = 50.dp)
         )
         Spacer(modifier = Modifier.height(27.dp))
@@ -61,7 +90,9 @@ fun DonationResultScreen(
             "확인",
             modifier = Modifier
                 .padding(horizontal = 20.dp),
-        )
+        ) {
+
+        }
         Spacer(modifier = Modifier.height(40.dp))
     }
 }
@@ -69,10 +100,15 @@ fun DonationResultScreen(
 @Preview
 @Composable
 fun DonationResultScreenPreview() {
+    val viewModel : DonationResultViewModel = hiltViewModel()
     val appState = rememberOnjungAppState()
     OnjungTheme {
         DonationResultScreen(
-            appState = appState
+            appState = appState,
+            shopId = 1,
+            amount = 10000,
+            issueDate = "2024. 10. 31",
+            viewModel = viewModel
         )
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,9 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,17 +25,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.daon.onjung.R
+import com.daon.onjung.network.model.StoreTag
 import com.daon.onjung.ui.theme.OnjungTheme
 
 @Composable
 fun DonationResultCard (
     modifier: Modifier = Modifier,
+    imageUrl: String = "",
+    tag: StoreTag = StoreTag.UNDERFED_CHILD,
+    name: String = "한걸음 닭꼬치",
     date: String = "2024. 10. 31"
 ) {
     Column (
@@ -74,6 +79,9 @@ fun DonationResultCard (
         HorizontalDashedLineCanvas()
         Spacer(modifier = Modifier.height(16.dp))
         DonationStoreCard(
+            tag = tag,
+            name = name,
+            imageUrl = imageUrl,
             modifier = Modifier.padding(start = 18.dp)
         )
     }
@@ -96,7 +104,7 @@ private fun HorizontalDashedLineCanvas(
 
 @Composable
 private fun DonationStoreCard(
-    tag: String = "국가유공자",
+    tag: StoreTag = StoreTag.UNDERFED_CHILD,
     name: String = "한걸음 닭꼬치",
     modifier: Modifier = Modifier,
     imageUrl: String = ""
@@ -125,17 +133,35 @@ private fun DonationStoreCard(
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            Text(
-                text = tag,
-                style = OnjungTheme.typography.caption.copy(
-                    fontWeight = FontWeight.SemiBold,
-                    color = OnjungTheme.colors.white
-                ),
+            val (tagName, tagColor) = when (tag) {
+                StoreTag.DISABLED_GROUP -> {
+                    "장애우" to Color(0xFF81A5DA).copy(alpha = 0.8f)
+                }
+                StoreTag.GOOD_PRICE -> {
+                    "착한 가격" to Color(0xFFF5AB67).copy(alpha = 0.8f)
+                }
+                StoreTag.UNDERFED_CHILD -> {
+                    "결식아동" to Color(0xFF83CB82).copy(alpha = 0.8f)
+                }
+            }
+            Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(color = Color(0xFF81A5DA))
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
-            )
+                    .background(
+                        color = tagColor,
+                        shape = CircleShape
+                    )
+                    .padding(
+                        horizontal = 12.dp,
+                        vertical = 6.dp
+                    )
+            ) {
+                Text(
+                    tagName,
+                    style = OnjungTheme.typography.caption.copy(
+                        color = OnjungTheme.colors.white
+                    ),
+                )
+            }
             Text(
                 text = name,
                 style = OnjungTheme.typography.h2.copy(
