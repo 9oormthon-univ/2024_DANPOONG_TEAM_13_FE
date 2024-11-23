@@ -84,7 +84,7 @@ internal fun OcrCameraScreen(
     val resolutionSelector = ResolutionSelector.Builder()
         .setResolutionStrategy(
             ResolutionStrategy(
-                Size(4000, 3000), // 최대 해상도
+                Size(2000, 1500), // 최대 해상도
                 ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER
             )
         ).build()
