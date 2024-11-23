@@ -1,8 +1,8 @@
 package com.daon.onjung
 
+import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
-import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -54,6 +54,9 @@ fun OnjungNavHost(
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = Color.White
+        )
+        systemUiController.setNavigationBarColor(
+            color = Color.Black
         )
     }
 
