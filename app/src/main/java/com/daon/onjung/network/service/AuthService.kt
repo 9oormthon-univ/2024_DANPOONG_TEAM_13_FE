@@ -38,6 +38,6 @@ interface AuthService {
     @GET("/api/v1/users/overviews")
     suspend fun getUserProfile(): ApiResult<BaseResponse<ProfileResponse>>
 
-    @GET("/api/v1/users/notification-allowed")
+    @PATCH("/api/v1/users/notification-allowed")
     suspend fun patchNotificationAllowed(): ApiResult<BaseResponse<NotificationAllowedResponse>>
 }
