@@ -1,6 +1,5 @@
 package com.daon.onjung.ui.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -8,10 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieClipSpec
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieAnimatable
@@ -21,7 +21,7 @@ import com.daon.onjung.R
 
 @Preview
 @Composable
-fun LottiAnimation (
+fun OnjungAnimation (
 
 ) {
     val twinkleComposition by rememberLottieComposition(
@@ -40,6 +40,7 @@ fun LottiAnimation (
     LaunchedEffect(twinkleComposition) {
         twinkleLottieAnimatable.animate(
             composition = twinkleComposition,
+            clipSpec = LottieClipSpec.Frame(0, 1200),
             initialProgress = 0f,
             iterations = LottieConstants.IterateForever
         )
@@ -48,6 +49,7 @@ fun LottiAnimation (
     LaunchedEffect(confettiComposition) {
         confettiLottieAnimatable.animate(
             composition = confettiComposition,
+            clipSpec = LottieClipSpec.Frame(0, 1200),
             initialProgress = 0f,
             iterations = LottieConstants.IterateForever
         )
@@ -56,22 +58,19 @@ fun LottiAnimation (
     LaunchedEffect(toryCelebrationComposition) {
         toryCelebrationLottieAnimatable.animate(
             composition = toryCelebrationComposition,
+            clipSpec = LottieClipSpec.Frame(0, 1200),
             initialProgress = 0f,
             iterations = LottieConstants.IterateForever
         )
     }
-
-
-    Box(
-        modifier = Modifier
-            .background(color = Color(0xFFFFF0EF)),
-    ) {
+    Box {
         LottieAnimation(
             composition = twinkleComposition,
             progress = twinkleLottieAnimatable.progress,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp),
+            contentScale = ContentScale.Crop
         )
 
         LottieAnimation(
@@ -79,7 +78,8 @@ fun LottiAnimation (
             progress = confettiLottieAnimatable.progress,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp),
+                .height(330.dp),
+            contentScale = ContentScale.Crop
         )
 
         LottieAnimation(
@@ -87,7 +87,8 @@ fun LottiAnimation (
             progress = toryCelebrationLottieAnimatable.progress,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp),
+                .height(330.dp),
+            contentScale = ContentScale.Crop
         )
     }
 }

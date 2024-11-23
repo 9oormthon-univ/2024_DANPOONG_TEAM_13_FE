@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.daon.onjung.R
 import com.daon.onjung.network.model.StoreCategory
 import com.daon.onjung.ui.component.MealTicket
+import com.daon.onjung.ui.component.OnjungAnimation
 import com.daon.onjung.ui.component.button.FilledWidthButton
 import com.daon.onjung.ui.theme.OnjungTheme
 
@@ -79,8 +80,7 @@ fun CelebrationScreen(
                 color = Color(0xFF808080),
                 textAlign = TextAlign.Center
             )
-
-            Spacer(modifier = Modifier.weight(1f))
+            OnjungAnimation()
 
             MealTicket(
                 name = name,
