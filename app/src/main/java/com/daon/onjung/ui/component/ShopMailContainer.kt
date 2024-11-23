@@ -120,7 +120,7 @@ fun ShopMailContainer(
                     ) {
                         ShopMailItem(
                             title = "식권 발송",
-                            description = "온정인 ${Random.nextInt(30, 50)}에게 식권이 전달되어 더 큰 선한 영향력을 만들었어요!",
+                            description = "온정인 ${Random.nextInt(30, 50)}명에게 식권이 전달되어 더 큰 선한 영향력을 만들었어요!",
                             date = ticketIssueDate ?: "",
                             iconRes = R.drawable.ic_meal_ticket_send
                         )
