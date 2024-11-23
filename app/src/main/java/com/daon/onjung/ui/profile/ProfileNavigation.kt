@@ -2,9 +2,7 @@ package com.daon.onjung.ui.profile
 
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.OnjungBottomSheetState
 import com.daon.onjung.Routes
@@ -36,22 +34,14 @@ fun NavGraphBuilder.profileGraph(
     }
 
     composable(
-        route = "${Routes.Profile.TICKET_LIST}?ticketCount={ticketCount}",
-        arguments = listOf(
-            navArgument("shopId") {
-                type = NavType.StringType
-                defaultValue = ""
-            }
-        )
-    ) { entry ->
+        route = Routes.Profile.TICKET_LIST,
+    ) {
         val viewModel: ProfileTicketListViewModel = hiltViewModel()
-        val ticketCountString = entry.arguments?.getString("ticketCount") ?: "0"
-        val ticketCount = ticketCountString.toInt()
+
         ProfileTicketListScreen(
             appState = appState,
             bottomSheetState = bottomSheetState,
-            viewModel = viewModel,
-            ticketCount = ticketCount
+            viewModel = viewModel
         )
     }
 }

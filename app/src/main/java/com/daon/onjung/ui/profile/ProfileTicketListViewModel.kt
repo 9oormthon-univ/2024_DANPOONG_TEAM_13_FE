@@ -17,6 +17,7 @@ class ProfileTicketListViewModel @Inject constructor(
     initialState = ProfileTicketListContract.State()
 ) {
     init {
+        getTicketCount()
         getTicketList()
     }
 
@@ -28,6 +29,27 @@ class ProfileTicketListViewModel @Inject constructor(
 
             is ProfileTicketListContract.Event.MealTicketClicked -> {
                 getQrCode(event.id)
+            }
+        }
+    }
+
+    private fun getTicketCount() = viewModelScope.launch {
+        eventRepository.getTicketCount().onStart {
+            updateState(currentState.copy(isLoading = true))
+        }.collect {
+            updateState(currentState.copy(isLoading = false))
+            when (it) {
+                is ApiResult.Success -> {
+                    it.data?.data?.let { result ->
+                        updateState(currentState.copy(ticketTotalCount = result.ticketCount))
+                    }
+                }
+                is ApiResult.ApiError -> {
+                    postEffect(ProfileTicketListContract.Effect.ShowSnackBar(it.message))
+                }
+                is ApiResult.NetworkError -> {
+                    postEffect(ProfileTicketListContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
+                }
             }
         }
     }
