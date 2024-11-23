@@ -77,7 +77,8 @@ fun BottomNavigationBarItem(
     Surface(
         modifier = modifier,
         color = Color.Transparent,
-        onClick = onClick
+        onClick = onClick,
+        interactionSource = NoRippleInteractionSource()
     ) {
         Box(
             contentAlignment = Alignment.Center

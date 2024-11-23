@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -255,6 +256,7 @@ private fun ProfileAppBar(
         Box(
             modifier = modifier
                 .fillMaxWidth()
+                .shadow(elevation = 5.dp)
                 .background(OnjungTheme.colors.white)
                 .height(60.dp)
                 .padding(horizontal = 20.dp)

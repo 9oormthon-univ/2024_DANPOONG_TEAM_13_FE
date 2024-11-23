@@ -39,7 +39,7 @@ fun TopBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(elevation = 10.dp)
+            .shadow(elevation = 5.dp)
             .background(OnjungTheme.colors.white)
             .height(60.dp)
             .statusBarsPadding(),

@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +31,7 @@ fun HomeAppBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .shadow(elevation = 5.dp)
             .background(color = OnjungTheme.colors.white)
             .padding(
                 start = 30.dp,
