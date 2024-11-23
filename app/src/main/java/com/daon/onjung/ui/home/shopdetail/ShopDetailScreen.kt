@@ -259,7 +259,7 @@ private fun ShopDetailHeader(
 
             Text(
                 title,
-                style = OnjungTheme.typography.title.copy(
+                style = OnjungTheme.typography.h1.copy(
                     color = OnjungTheme.colors.white
                 ),
             )

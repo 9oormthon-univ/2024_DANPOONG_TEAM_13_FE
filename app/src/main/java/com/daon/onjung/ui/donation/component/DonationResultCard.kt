@@ -71,7 +71,7 @@ fun DonationResultCard (
         }
         Spacer(modifier = Modifier.height(20.dp))
         Icon(
-            painter = painterResource(id = R.drawable.ic_donation_char),
+            painter = painterResource(id = R.mipmap.ic_donation_char),
             contentDescription = "App Logo",
             tint = Color.Unspecified
         )

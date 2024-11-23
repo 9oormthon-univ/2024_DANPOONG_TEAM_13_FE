@@ -32,7 +32,7 @@ fun CircleButton(
             .size(80.dp),
         shadowElevation = 10.dp,
         shape = CircleShape,
-        color = OnjungTheme.colors.sub_ivory,
+        color = OnjungTheme.colors.white,
         onClick = onClick
     ) {
         Box(
