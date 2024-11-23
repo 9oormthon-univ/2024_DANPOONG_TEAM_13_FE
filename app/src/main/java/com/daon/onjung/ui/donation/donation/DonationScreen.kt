@@ -83,6 +83,7 @@ fun DonationScreen(
         Spacer(modifier = Modifier.weight(1f))
         FilledWidthButton(
             "카카오페이로 결제하기",
+            isEnabled = uiState.isEnabled,
             modifier = Modifier
                 .padding(horizontal = 20.dp),
             fontSize = 18

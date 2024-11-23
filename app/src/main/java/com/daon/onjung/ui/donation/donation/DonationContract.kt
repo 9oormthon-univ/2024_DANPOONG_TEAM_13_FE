@@ -14,6 +14,7 @@ class DonationContract {
         val isLoading: Boolean = false,
         val storeInfo: StoreDetailInfo = StoreDetailInfo("", listOf(StoreTag.DISABLED_GROUP), "", "", "", "", StoreCategory.KOREAN, "", ""),
         val amount: Int = 0,
+        val isEnabled: Boolean = false
     ) : UiState
 
     sealed class Event : UiEvent {
