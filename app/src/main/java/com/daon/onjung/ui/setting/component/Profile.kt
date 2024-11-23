@@ -45,7 +45,7 @@ private fun ProfileInfo(
    Column {
        Text(
            name,
-           style = OnjungTheme.typography.body1.copy(
+           style = OnjungTheme.typography.title.copy(
                color = OnjungTheme.colors.text_2
            )
        )
