@@ -44,6 +44,7 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Composable
 fun ShopMailContainer(
     modifier: Modifier = Modifier,
+    shopId: Int,
     imageUrl: String,
     title: String,
     name: String,
@@ -62,7 +63,7 @@ fun ShopMailContainer(
             color = OnjungTheme.colors.white,
             shape = RoundedCornerShape(20.dp)
         ).clickable {
-            onClick(1)
+            onClick(shopId)
         },
     ) {
         ShopMailHeader(
@@ -375,6 +376,7 @@ private fun ShopMailContainerPreview() {
     OnjungTheme {
         ShopMailContainer(
             title = "헌신에 보답하는 감사의 식탁",
+            shopId = 1,
             imageUrl = "",
             name = "한걸음 닭꼬치",
             type = OnjungType.DONATION,

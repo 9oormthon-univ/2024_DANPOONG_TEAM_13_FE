@@ -44,6 +44,7 @@ import kotlinx.coroutines.flow.collectLatest
 val mailList = listOf(
     OnjungMailResponse(
         storeInfo = OnjungMailStoreInfo(
+            id = 1,
             logoImgUrl = "https://daonjung.s3.ap-northeast-2.amazonaws.com/account_dummy3/logo_e2083312-ddba-4e23-9257-4f35d95f3c8c",
             title = "온기를 나누는 식당",
             name = "식당 이름"
@@ -57,6 +58,7 @@ val mailList = listOf(
     ),
     OnjungMailResponse(
         storeInfo = OnjungMailStoreInfo(
+            id = 1,
             logoImgUrl = "https://daonjung.s3.ap-northeast-2.amazonaws.com/account_dummy3/logo_e2083312-ddba-4e23-9257-4f35d95f3c8c",
             title = "온기를 나누는 식당",
             name = "식당 이름"
@@ -70,6 +72,7 @@ val mailList = listOf(
     ),
     OnjungMailResponse(
         storeInfo = OnjungMailStoreInfo(
+            id = 1,
             logoImgUrl = "https://daonjung.s3.ap-northeast-2.amazonaws.com/account_dummy3/logo_e2083312-ddba-4e23-9257-4f35d95f3c8c",
             title = "온기를 나누는 식당",
             name = "식당 이름"
@@ -83,6 +86,7 @@ val mailList = listOf(
     ),
     OnjungMailResponse(
         storeInfo = OnjungMailStoreInfo(
+            id = 1,
             logoImgUrl = "https://daonjung.s3.ap-northeast-2.amazonaws.com/account_dummy3/logo_e2083312-ddba-4e23-9257-4f35d95f3c8c",
             title = "온기를 나누는 식당",
             name = "식당 이름"
@@ -96,6 +100,7 @@ val mailList = listOf(
     ),
     OnjungMailResponse(
         storeInfo = OnjungMailStoreInfo(
+            id = 1,
             logoImgUrl = "https://daonjung.s3.ap-northeast-2.amazonaws.com/account_dummy3/logo_e2083312-ddba-4e23-9257-4f35d95f3c8c",
             title = "온기를 나누는 식당",
             name = "식당 이름"
@@ -177,6 +182,7 @@ internal fun MailScreen(
 
             items(uiState.mailList) { mail ->
                 ShopMailContainer(
+                    shopId = mail.storeInfo.id,
                     imageUrl = mail.storeInfo.logoImgUrl,
                     title = mail.storeInfo.title,
                     name = mail.storeInfo.name,

@@ -29,6 +29,8 @@ data class OnjungMailResponse(
 )
 
 data class OnjungMailStoreInfo(
+    @SerializedName("id")
+    val id: Int,
     @SerializedName("logo_img_url")
     val logoImgUrl: String,
     @SerializedName("title")
