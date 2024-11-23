@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.navOptions
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.Routes
 import com.daon.onjung.rememberOnjungAppState
@@ -70,7 +71,13 @@ fun KakaopayPaymentScreen(
             modifier = Modifier.padding(
                 end = 4.dp
             )
-        ) { println("닫기") }
+        ) {
+            appState.navigate("${Routes.Donation.ROUTE}?shopId=$shopId", navOptions{
+                popUpTo(Routes.Donation.ROUTE) {
+                    inclusive = true
+                }
+            })
+        }
         Spacer(modifier = Modifier.height(18.dp))
         Text(
             "${uiState.storeInfo.name} - ${uiState.storeInfo.title}",

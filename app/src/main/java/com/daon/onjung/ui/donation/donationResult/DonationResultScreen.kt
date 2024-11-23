@@ -17,7 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.navOptions
 import com.daon.onjung.OnjungAppState
+import com.daon.onjung.Routes
 import com.daon.onjung.rememberOnjungAppState
 import com.daon.onjung.ui.component.button.FilledWidthButton
 import com.daon.onjung.ui.donation.component.DonationResultCard
@@ -50,9 +52,6 @@ fun DonationResultScreen(
             }
         }
     }
-
-    appState.showSnackBar("shopId $shopId amount $amount issueDate $issueDate")
-
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -91,7 +90,11 @@ fun DonationResultScreen(
             modifier = Modifier
                 .padding(horizontal = 20.dp),
         ) {
-
+            appState.navigate("${Routes.Home.SHOP_DETAIL}?shopId=$shopId", navOptions{
+                popUpTo(Routes.Home.SHOP_DETAIL) {
+                    inclusive = true
+                }
+            })
         }
         Spacer(modifier = Modifier.height(40.dp))
     }

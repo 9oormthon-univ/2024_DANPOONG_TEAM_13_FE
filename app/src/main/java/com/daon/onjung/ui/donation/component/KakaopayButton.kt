@@ -30,12 +30,13 @@ fun KakaopayButton(
             .fillMaxWidth()
             .clip(shape = CircleShape)
             .background(color = Color(0xFFFFEB00))
-            .padding(vertical = 14.dp)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(
             text,
+            modifier = Modifier
+                .padding(vertical = 14.dp),
             style = OnjungTheme.typography.title.copy(
                 color = Color.Black,
                 fontWeight = FontWeight.SemiBold

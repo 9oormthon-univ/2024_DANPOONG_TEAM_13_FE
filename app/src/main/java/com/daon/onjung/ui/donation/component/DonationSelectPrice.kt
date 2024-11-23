@@ -124,7 +124,6 @@ private fun DonationSelectPriceButton (
         modifier = Modifier
             .width(101.dp)
             .border(width = 1.dp, color = OnjungTheme.colors.gray_2, shape = RoundedCornerShape(6.dp))
-            .padding(vertical = 12.dp)
             .clickable{ onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -132,7 +131,9 @@ private fun DonationSelectPriceButton (
             "+ ${price}만원",
             style = OnjungTheme.typography.body2.copy(
                 color = OnjungTheme.colors.text_2,
-            )
+            ),
+            modifier = Modifier
+                .padding(vertical = 12.dp)
         )
     }
 }

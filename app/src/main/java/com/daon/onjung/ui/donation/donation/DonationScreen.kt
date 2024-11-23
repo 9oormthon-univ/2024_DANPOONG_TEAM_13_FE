@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.navOptions
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.Routes
 import com.daon.onjung.rememberOnjungAppState
@@ -56,7 +57,14 @@ fun DonationScreen(
     ) {
         TopBar(
             "동참하기",
-            rightIcon = null
+            rightIcon = null,
+            leftIconOnClick = {
+                appState.navigate("${Routes.Home.SHOP_DETAIL}?shopId=$shopId", navOptions{
+                    popUpTo(Routes.Home.SHOP_DETAIL) {
+                        inclusive = true
+                    }
+                })
+            }
         )
         DonationStore(
             shopInfo = uiState.storeInfo
