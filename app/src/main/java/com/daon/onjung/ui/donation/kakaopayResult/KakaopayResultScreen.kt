@@ -130,8 +130,7 @@ fun KakaopayResultScreen (
         }
         if (uiState.isDonationCompleteDialogVisible) {
             DonationCompleteDialog {
-                viewModel.processEvent(KakaopayResultContract.Event.DonationCompleteDialogDismissed)
-                appState.navigate("${Routes.Donation.DONDATIONRESULT}?shopId=$shopId&amount=$amount&issueDate=${uiState.issueDate}")
+                viewModel.processEvent(KakaopayResultContract.Event.DonationCompleteDialogDismissed(shopId, amount, uiState.issueDate))
             }
         }
     }

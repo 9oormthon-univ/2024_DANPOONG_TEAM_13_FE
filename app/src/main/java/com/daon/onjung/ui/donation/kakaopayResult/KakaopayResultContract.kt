@@ -14,7 +14,7 @@ class KakaopayResultContract {
 
     sealed class Event : UiEvent {
         data class DonationCompleteClicked(val shopId: Int, val amount: Int) : Event()
-        data object DonationCompleteDialogDismissed : Event()
+        data class DonationCompleteDialogDismissed(val shopId: Int, val amount: Int, val issueDate: String) : Event()
     }
 
     sealed class Effect : UiEffect {

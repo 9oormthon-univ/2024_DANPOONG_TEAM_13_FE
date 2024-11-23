@@ -142,7 +142,7 @@ internal fun HomeScreen(
                     bottom = 25.dp
                 ),
             text = "영수증 인증",
-            icon = R.drawable.ic_heart
+            icon = R.drawable.ic_invoice,
         ) {
             if (context.checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 appState.navigate(Routes.Home.OCR_CAMERA)

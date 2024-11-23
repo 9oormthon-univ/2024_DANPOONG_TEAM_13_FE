@@ -2,6 +2,7 @@ package com.daon.onjung.ui.donation.kakaopayResult
 
 import androidx.lifecycle.viewModelScope
 import com.daon.onjung.Constants
+import com.daon.onjung.Routes
 import com.daon.onjung.data.repository.OnjungRepository
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.request.DonationRequest
@@ -22,10 +23,14 @@ class KakaopayResultViewModel @Inject constructor(
         when (event) {
             is KakaopayResultContract.Event.DonationCompleteDialogDismissed -> {
                 updateState(currentState.copy(isDonationCompleteDialogVisible = false))
+                postEffect(
+                    KakaopayResultContract.Effect.NavigateTo(
+                        "${Routes.Donation.DONDATIONRESULT}?shopId=${event.shopId}&amount=${event.amount}&issueDate=${event.issueDate}",
+                ))
             }
             is KakaopayResultContract.Event.DonationCompleteClicked -> {
-                postDonation(event.shopId, event.amount)
                 updateState(currentState.copy(isDonationCompleteDialogVisible = true))
+                postDonation(event.shopId, event.amount)
             }
         }
     }
