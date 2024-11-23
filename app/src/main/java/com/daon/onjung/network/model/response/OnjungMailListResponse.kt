@@ -14,6 +14,8 @@ data class OnjungMailListResponse(
 data class OnjungMailResponse(
     @SerializedName("store_info")
     val storeInfo: OnjungMailStoreInfo,
+    @SerializedName("created_date")
+    val createdDate: String,
     @SerializedName("onjung_type")
     val onjungType: OnjungType,
     @SerializedName("status")

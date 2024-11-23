@@ -54,7 +54,8 @@ val mailList = listOf(
         eventPeriod = "2024. 9. 16 ~ 9. 30",
         storeDeliveryDate = null,
         ticketIssueDate = null,
-        reportDate = null
+        reportDate = null,
+        createdDate = "2024년 11월 24일"
     ),
     OnjungMailResponse(
         storeInfo = OnjungMailStoreInfo(
@@ -68,7 +69,8 @@ val mailList = listOf(
         eventPeriod = "2024. 9. 30",
         storeDeliveryDate = null,
         ticketIssueDate = null,
-        reportDate = null
+        reportDate = null,
+        createdDate = "2024년 11월 24일"
     ),
     OnjungMailResponse(
         storeInfo = OnjungMailStoreInfo(
@@ -82,7 +84,8 @@ val mailList = listOf(
         eventPeriod = "2024. 9. 30",
         storeDeliveryDate = "2024. 10. 5",
         ticketIssueDate = null,
-        reportDate = null
+        reportDate = null,
+        createdDate ="2024년 11월 24일"
     ),
     OnjungMailResponse(
         storeInfo = OnjungMailStoreInfo(
@@ -96,7 +99,8 @@ val mailList = listOf(
         eventPeriod = "2024. 9. 30",
         storeDeliveryDate = "2024. 10. 5",
         ticketIssueDate = "2024. 10. 7",
-        reportDate = null
+        reportDate = null,
+        createdDate = "2024년 11월 24일"
     ),
     OnjungMailResponse(
         storeInfo = OnjungMailStoreInfo(
@@ -110,7 +114,8 @@ val mailList = listOf(
         eventPeriod = "2024. 9. 30",
         storeDeliveryDate = "2024. 10. 5",
         ticketIssueDate = "2024. 10. 7",
-        reportDate = "2024. 10. 31"
+        reportDate = "2024. 10. 31",
+        createdDate = "2024년 11월 24일"
     )
 )
 
@@ -185,6 +190,7 @@ internal fun MailScreen(
                     shopId = mail.storeInfo.id,
                     imageUrl = mail.storeInfo.logoImgUrl,
                     title = mail.storeInfo.title,
+                    date = mail.createdDate,
                     name = mail.storeInfo.name,
                     type = mail.onjungType,
                     status = mail.status,
