@@ -118,7 +118,7 @@ internal fun ProfileScreen(
             ProfileAppBar(
                 ticketCount = uiState.ticketCount
             ) {
-                appState.navigate("${Routes.Profile.TICKET_LIST}?ticketCount=${uiState.ticketCount}")
+                appState.navigate(Routes.Profile.TICKET_LIST)
             }
 
             ProfileHeader(

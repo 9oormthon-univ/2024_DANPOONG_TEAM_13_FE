@@ -163,6 +163,7 @@ fun OnjungNavHost(
                     val logoImgUrl = entry.arguments?.getString("logoImgUrl") ?: ""
 
                     CelebrationScreen(
+                        appState = appState,
                         name = storeName,
                         logoImgUrl = logoImgUrl,
                         address = address,
