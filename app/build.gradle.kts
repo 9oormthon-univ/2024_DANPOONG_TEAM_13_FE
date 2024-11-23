@@ -106,6 +106,7 @@ dependencies {
     implementation(libs.chucker.library)
 
     implementation(libs.kakao.sdk.user)
+    implementation(libs.kakao.sdk.share)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.common)
