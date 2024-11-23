@@ -45,7 +45,8 @@ import kotlinx.coroutines.flow.collectLatest
 internal fun ProfileTicketListScreen(
     appState: OnjungAppState,
     bottomSheetState: OnjungBottomSheetState,
-    viewModel: ProfileTicketListViewModel
+    viewModel: ProfileTicketListViewModel,
+    ticketCount: Int
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val effectFlow = viewModel.effect
@@ -134,7 +135,7 @@ internal fun ProfileTicketListScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "${uiState.ticketList.size}개의 식권을\n보유하고 있어요.",
+                        "${ticketCount}개의 식권을\n보유하고 있어요.",
                         style = OnjungTheme.typography.h1.copy(
                             fontWeight = FontWeight.Bold,
                             color = OnjungTheme.colors.text_1,
