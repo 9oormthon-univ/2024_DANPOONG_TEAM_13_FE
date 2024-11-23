@@ -109,7 +109,7 @@ fun KakaopayPaymentScreen(
         )
         Spacer(modifier = Modifier.height(48.dp))
         KakaoPrivateCheck(
-            isChecked = isChecked,
+            isChecked = true,
             onCheckBtnClick = { isChecked = !isChecked },
             modifier = Modifier.padding(horizontal = 25.dp)
         )

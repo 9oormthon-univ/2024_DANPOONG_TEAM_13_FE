@@ -20,9 +20,11 @@ class DonationViewModel @Inject constructor(
     override fun reduceState(event: DonationContract.Event) {
         when (event) {
             is DonationContract.Event.AmountChangedClicked -> {
+                updateState(currentState.copy(isEnabled = true))
                 updateState(currentState.copy(amount = currentState.amount + event.price))
             }
             is DonationContract.Event.ResetAmountClicked -> {
+                updateState(currentState.copy(isEnabled = false))
                 updateState(currentState.copy(amount = 0))
             }
         }
