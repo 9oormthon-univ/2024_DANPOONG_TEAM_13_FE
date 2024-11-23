@@ -37,12 +37,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
 import com.daon.onjung.Routes
 import com.daon.onjung.ui.theme.OnjungTheme
+import com.daon.onjung.util.formatCurrency
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
@@ -327,6 +330,10 @@ private fun ProfileRestaurantItem(
 
         Text(
             text = name,
+            modifier = Modifier.width(90.dp),
+            maxLines = 1,
+            textAlign = TextAlign.Center,
+            overflow = TextOverflow.Ellipsis,
             style = OnjungTheme.typography.caption.copy(
                 color = Color(0xFF616161)
             )
@@ -401,7 +408,7 @@ private fun ProfileSummary(
                     )
 
                     Text(
-                        text = "$totalWarmthDonationAmount 원",
+                        text = formatCurrency(totalWarmthDonationAmount),
                         style = OnjungTheme.typography.body2.copy(
                             fontWeight = FontWeight.SemiBold,
                             color = OnjungTheme.colors.text_1
