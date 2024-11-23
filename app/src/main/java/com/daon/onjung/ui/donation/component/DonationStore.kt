@@ -22,14 +22,15 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.daon.onjung.R
+import com.daon.onjung.network.model.StoreCategory
+import com.daon.onjung.network.model.StoreTag
+import com.daon.onjung.network.model.response.StoreDetailInfo
 import com.daon.onjung.ui.theme.OnjungTheme
 
 @Preview(showBackground = true)
 @Composable
 fun DonationStore(
-    title: String = "헌신에 보답하는 \n감사의 식탁",
-    name: String = "한걸음 닭꼬치",
-    imageUrl: String = ""
+    shopInfo : StoreDetailInfo = StoreDetailInfo("", listOf(StoreTag.DISABLED_GROUP), "", "", "", "", StoreCategory.KOREAN, "", "")
 ) {
     val context = LocalContext.current
 
@@ -49,7 +50,7 @@ fun DonationStore(
                     shape = RoundedCornerShape(10.dp)
                 )
                 .clip(RoundedCornerShape(10.dp)),
-            model = ImageRequest.Builder(context).data(imageUrl).build(),
+            model = ImageRequest.Builder(context).data(shopInfo.logoImgUrl).build(),
             contentDescription = "IMG_SHOP",
             placeholder = painterResource(id = R.drawable.img_dummy)
         )
@@ -59,15 +60,15 @@ fun DonationStore(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = title,
+                text = shopInfo.title,
                 style = OnjungTheme.typography.h2,
                 color = OnjungTheme.colors.text_1,
-                maxLines = 2, // 최대 2줄로 설정
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
 
             Text(
-                text = name,
+                text = shopInfo.name,
                 style = OnjungTheme.typography.body2.copy(
                     fontWeight = FontWeight.SemiBold,
                     color = OnjungTheme.colors.text_3

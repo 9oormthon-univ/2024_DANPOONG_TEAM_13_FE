@@ -36,6 +36,7 @@ import coil3.request.ImageRequest
 import com.daon.onjung.MainActivity
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
+import com.daon.onjung.Routes
 import com.daon.onjung.network.model.StoreTag
 import com.daon.onjung.network.model.response.StoreHistory
 import com.daon.onjung.ui.component.ShopInfoContainer
@@ -189,7 +190,7 @@ internal fun ShopDetailScreen(
                         bottom = 20.dp
                     )
                 ) {
-
+                    appState.navigate("${Routes.Donation.ROUTE}?shopId=$shopId")
                 }
             }
         }

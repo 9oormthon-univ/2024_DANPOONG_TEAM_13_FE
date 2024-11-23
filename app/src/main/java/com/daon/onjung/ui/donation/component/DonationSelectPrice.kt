@@ -30,14 +30,14 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Composable
 fun DonationSelectPrice (
     price : Int = 10000,
-    modifier : Modifier = Modifier
+    modifier : Modifier = Modifier,
+    onPriceClick : (Int) -> Unit = {},
 ) {
     Column (
         modifier = modifier
             .fillMaxWidth()
             .background(color = OnjungTheme.colors.white)
             .padding(vertical = 28.dp, horizontal = 20.dp)
-
     ){
         Row(
             modifier = Modifier
@@ -78,13 +78,13 @@ fun DonationSelectPrice (
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             DonationSelectPriceButton(1) {
-                // 클릭 이벤트 처리
+                onPriceClick(10000)
             }
             DonationSelectPriceButton(3) {
-                // 클릭 이벤트 처리
+                onPriceClick(30000)
             }
             DonationSelectPriceButton(5) {
-                // 클릭 이벤트 처리
+                onPriceClick(50000)
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -94,13 +94,13 @@ fun DonationSelectPrice (
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             DonationSelectPriceButton(10) {
-                // 클릭 이벤트 처리
+                onPriceClick(100000)
             }
             DonationSelectPriceButton(50) {
-                // 클릭 이벤트 처리
+                onPriceClick(500000)
             }
             DonationSelectPriceButton(100) {
-                // 클릭 이벤트 처리
+                onPriceClick(1000000)
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
