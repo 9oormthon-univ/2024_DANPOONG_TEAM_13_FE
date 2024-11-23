@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieClipSpec
 import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.daon.onjung.R
@@ -42,7 +41,7 @@ fun OnjungAnimation (
             composition = twinkleComposition,
             clipSpec = LottieClipSpec.Frame(0, 1200),
             initialProgress = 0f,
-            iterations = LottieConstants.IterateForever
+//            iterations = LottieConstants.IterateForever
         )
     }
 
@@ -51,7 +50,7 @@ fun OnjungAnimation (
             composition = confettiComposition,
             clipSpec = LottieClipSpec.Frame(0, 1200),
             initialProgress = 0f,
-            iterations = LottieConstants.IterateForever
+//            iterations = LottieConstants.IterateForever
         )
     }
 
@@ -60,7 +59,7 @@ fun OnjungAnimation (
             composition = toryCelebrationComposition,
             clipSpec = LottieClipSpec.Frame(0, 1200),
             initialProgress = 0f,
-            iterations = LottieConstants.IterateForever
+//            iterations = LottieConstants.IterateForever
         )
     }
     Box {
