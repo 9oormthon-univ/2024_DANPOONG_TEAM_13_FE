@@ -23,6 +23,7 @@ import com.daon.onjung.ui.component.button.FilledWidthButton
 import com.daon.onjung.ui.donation.component.DonationSelectPrice
 import com.daon.onjung.ui.donation.component.DonationStore
 import com.daon.onjung.ui.theme.OnjungTheme
+import com.daon.onjung.util.formatCurrency
 import kotlinx.coroutines.flow.collectLatest
 
 
@@ -72,7 +73,7 @@ fun DonationScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
         DonationSelectPrice(
-            price = uiState.amount,
+            price = formatCurrency(uiState.amount),
             onResetAmountClick = {
                 viewModel.processEvent(DonationContract.Event.ResetAmountClicked)
             }

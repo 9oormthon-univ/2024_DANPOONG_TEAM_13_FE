@@ -29,7 +29,7 @@ import com.daon.onjung.ui.theme.OnjungTheme
 
 @Composable
 fun DonationSelectPrice (
-    price : Int = 10000,
+    price : String = "0 원",
     modifier : Modifier = Modifier,
     onResetAmountClick : () -> Unit = {},
     onPriceClick : (Int) -> Unit = {},
@@ -58,7 +58,7 @@ fun DonationSelectPrice (
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "$price 원",
+                    price,
                     style = OnjungTheme.typography.h2.copy(
                         color = OnjungTheme.colors.text_1,
                         fontWeight = FontWeight.SemiBold

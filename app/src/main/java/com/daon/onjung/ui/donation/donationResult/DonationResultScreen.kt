@@ -61,7 +61,7 @@ fun DonationResultScreen(
     ){
         Spacer(modifier = Modifier.height(77.dp))
         Text(
-            "${formatCurrency(amount)}원 후원 완료",
+            "${formatCurrency(amount)} 후원 완료",
             style = OnjungTheme.typography.h1.copy(
                 color = OnjungTheme.colors.text_1,
                 fontWeight = FontWeight.SemiBold
