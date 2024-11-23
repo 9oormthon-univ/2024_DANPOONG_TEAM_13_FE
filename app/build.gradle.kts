@@ -124,7 +124,9 @@ dependencies {
     implementation(libs.camera.lifecycle)
 
     implementation(libs.accompanist.systemui)
-    
+
+    implementation(libs.lottie.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
