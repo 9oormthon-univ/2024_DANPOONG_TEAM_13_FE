@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.donation.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -19,10 +20,14 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Preview(showBackground = true)
 @Composable
 fun KakaoShare (
-    text: String = "나의 온기 공유하기"
+    text: String = "나의 온기 공유하기",
+    onClick: () -> Unit = { }
 ) {
     Row(
-      verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.clickable {
+            onClick()
+        },
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text,
