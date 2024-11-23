@@ -22,6 +22,9 @@ class DonationViewModel @Inject constructor(
             is DonationContract.Event.AmountChangedClicked -> {
                 updateState(currentState.copy(amount = currentState.amount + event.price))
             }
+            is DonationContract.Event.ResetAmountClicked -> {
+                updateState(currentState.copy(amount = 0))
+            }
         }
     }
 

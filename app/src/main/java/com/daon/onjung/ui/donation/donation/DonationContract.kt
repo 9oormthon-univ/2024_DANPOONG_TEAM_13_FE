@@ -18,6 +18,7 @@ class DonationContract {
 
     sealed class Event : UiEvent {
         data class AmountChangedClicked(val price: Int) : Event()
+        data object ResetAmountClicked : Event()
     }
 
     sealed class Effect : UiEffect {

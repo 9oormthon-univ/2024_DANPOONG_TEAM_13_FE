@@ -55,6 +55,7 @@ fun DonationScreen(
             .fillMaxSize()
             .background(OnjungTheme.colors.gray_2),
     ) {
+        Spacer(modifier = Modifier.height(20.dp))
         TopBar(
             "동참하기",
             rightIcon = null,
@@ -71,7 +72,10 @@ fun DonationScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
         DonationSelectPrice(
-            price = uiState.amount
+            price = uiState.amount,
+            onResetAmountClick = {
+                viewModel.processEvent(DonationContract.Event.ResetAmountClicked)
+            }
         ) { price ->
             viewModel.processEvent(DonationContract.Event.AmountChangedClicked(price))
         }

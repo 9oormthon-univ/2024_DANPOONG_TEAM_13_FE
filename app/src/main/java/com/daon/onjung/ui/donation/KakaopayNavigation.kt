@@ -138,7 +138,7 @@ fun NavGraphBuilder.donationGraph(
         val shopId = shopIdString.toInt()
         val amountString = entry.arguments?.getString("amount") ?: "0"
         val amount = amountString.toInt()
-        val issueDate = entry.arguments?.getString("issueDate") ?: "2024 .10 .11"
+        val issueDate = entry.arguments?.getString("issueDate") ?: "2024.10.11"
         DonationResultScreen(
             appState = appState,
             shopId = shopId,

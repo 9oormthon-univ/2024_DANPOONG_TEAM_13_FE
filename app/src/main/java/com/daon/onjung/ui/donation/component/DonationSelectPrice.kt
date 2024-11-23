@@ -31,6 +31,7 @@ import com.daon.onjung.ui.theme.OnjungTheme
 fun DonationSelectPrice (
     price : Int = 10000,
     modifier : Modifier = Modifier,
+    onResetAmountClick : () -> Unit = {},
     onPriceClick : (Int) -> Unit = {},
 ) {
     Column (
@@ -67,6 +68,9 @@ fun DonationSelectPrice (
                 Icon(
                     painter = painterResource(id = R.drawable.ic_x_button),
                     contentDescription = "X Button",
+                    modifier = Modifier.clickable {
+                        onResetAmountClick()
+                    },
                     tint = Color.Unspecified
                 )
             }
@@ -75,15 +79,24 @@ fun DonationSelectPrice (
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            DonationSelectPriceButton(1) {
+            DonationSelectPriceButton(
+                1,
+                modifier = Modifier.weight(1f)
+            ) {
                 onPriceClick(10000)
             }
-            DonationSelectPriceButton(3) {
+            DonationSelectPriceButton(
+                3,
+                modifier = Modifier.weight(1f)
+            ) {
                 onPriceClick(30000)
             }
-            DonationSelectPriceButton(5) {
+            DonationSelectPriceButton(
+                5,
+                modifier = Modifier.weight(1f)
+            ) {
                 onPriceClick(50000)
             }
         }
@@ -91,15 +104,24 @@ fun DonationSelectPrice (
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            DonationSelectPriceButton(10) {
+            DonationSelectPriceButton(
+                10,
+                modifier = Modifier.weight(1f)
+            ) {
                 onPriceClick(100000)
             }
-            DonationSelectPriceButton(50) {
+            DonationSelectPriceButton(
+                50,
+                modifier = Modifier.weight(1f)
+            ) {
                 onPriceClick(500000)
             }
-            DonationSelectPriceButton(100) {
+            DonationSelectPriceButton(
+                100,
+                modifier = Modifier.weight(1f)
+            ) {
                 onPriceClick(1000000)
             }
         }
@@ -118,11 +140,11 @@ fun DonationSelectPrice (
 @Composable
 private fun DonationSelectPriceButton (
     price : Int = 1,
+    modifier: Modifier = Modifier,
     onClick : () -> Unit = {}
 ) {
     Box(
-        modifier = Modifier
-            .width(101.dp)
+        modifier = modifier
             .border(width = 1.dp, color = OnjungTheme.colors.gray_2, shape = RoundedCornerShape(6.dp))
             .clickable{ onClick() },
         contentAlignment = Alignment.Center
