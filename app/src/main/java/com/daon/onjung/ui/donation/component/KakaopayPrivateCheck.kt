@@ -25,7 +25,7 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Composable
 fun KakaoPrivateCheck(
     modifier: Modifier = Modifier,
-    idChecked: Boolean = false,
+    isChecked: Boolean = false,
     onCheckBtnClick: () -> Unit = {},
     onPrivateClick: () -> Unit = {},
 ) {
@@ -35,18 +35,18 @@ fun KakaoPrivateCheck(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row (
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clickable(
+                indication = null, // 클릭 시 시각적 피드백을 제거
+                interactionSource = remember { MutableInteractionSource() } // 상호작용 상태를 기억합니다
+            ) {
+                onCheckBtnClick()
+            }
         ){
             Icon(
-                painter = if (idChecked) painterResource(id = R.drawable.ic_checked) else painterResource(id = R.drawable.ic_unchecked),
+                painter = if (isChecked) painterResource(id = R.drawable.ic_checked) else painterResource(id = R.drawable.ic_unchecked),
                 contentDescription = "checked Icon",
                 tint = Color.Unspecified,
-                modifier = Modifier.clickable(
-                    indication = null, // 클릭 시 시각적 피드백을 제거
-                    interactionSource = remember { MutableInteractionSource() } // 상호작용 상태를 기억합니다
-                ) {
-                    onCheckBtnClick()
-                }
             )
             Spacer(modifier = Modifier.width(25.dp))
             Text(

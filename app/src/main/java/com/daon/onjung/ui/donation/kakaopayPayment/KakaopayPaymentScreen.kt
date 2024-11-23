@@ -66,7 +66,7 @@ fun KakaopayPaymentScreen(
             .fillMaxSize()
             .background(OnjungTheme.colors.gray_2),
     ){
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(45.dp))
         KakaopayTopBar(
             modifier = Modifier.padding(
                 end = 4.dp
@@ -87,9 +87,9 @@ fun KakaopayPaymentScreen(
             ),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(start = 18.dp)
+            modifier = Modifier.padding(horizontal = 18.dp)
         )
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(14.dp))
         Text(
             formatCurrency(amount),
             style = OnjungTheme.typography.h1.copy(
@@ -98,18 +98,18 @@ fun KakaopayPaymentScreen(
             ),
             modifier = Modifier.padding(start = 18.dp)
         )
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(14.dp))
         KakaopayPayPoint(
             modifier = Modifier.padding(horizontal = 18.dp)
         )
         Spacer(modifier = Modifier.height(25.dp))
         KakaopayCardview(
-            money = 1000000,
+            money = formatCurrency(1000000),
             modifier = Modifier.padding(horizontal = 38.dp)
         )
         Spacer(modifier = Modifier.height(48.dp))
         KakaoPrivateCheck(
-            idChecked = isChecked,
+            isChecked = isChecked,
             onCheckBtnClick = { isChecked = !isChecked },
             modifier = Modifier.padding(horizontal = 25.dp)
         )

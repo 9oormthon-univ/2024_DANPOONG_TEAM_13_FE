@@ -25,6 +25,7 @@ import com.daon.onjung.ui.component.button.FilledWidthButton
 import com.daon.onjung.ui.donation.component.DonationResultCard
 import com.daon.onjung.ui.donation.component.KakaoShare
 import com.daon.onjung.ui.theme.OnjungTheme
+import com.daon.onjung.util.formatCurrency
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -60,7 +61,7 @@ fun DonationResultScreen(
     ){
         Spacer(modifier = Modifier.height(77.dp))
         Text(
-            "${amount}원 후원 완료",
+            "${formatCurrency(amount)}원 후원 완료",
             style = OnjungTheme.typography.h1.copy(
                 color = OnjungTheme.colors.text_1,
                 fontWeight = FontWeight.SemiBold

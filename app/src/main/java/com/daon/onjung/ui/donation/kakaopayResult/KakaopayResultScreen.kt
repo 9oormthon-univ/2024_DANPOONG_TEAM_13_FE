@@ -68,7 +68,7 @@ fun KakaopayResultScreen (
             .fillMaxSize()
             .background(OnjungTheme.colors.gray_2),
     ) {
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(45.dp))
         KakaopayTopBar(
             modifier = Modifier.padding(
                 end = 4.dp

@@ -45,7 +45,7 @@ fun KakaopayTopBar (
 
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_kakaopay_close),
+                painter = painterResource(id = R.drawable.ic_donation_close),
                 contentDescription = "IC_CLOSE",
                 tint = Color(0xFF5E5E5E),
             )
