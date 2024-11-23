@@ -41,8 +41,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="@string/KAKAO_APP_KEY_FULL" />
-                <data android:host="kakaolink" />
+                <data android:scheme="app" android:host="daon.onjung" />
             </intent-filter>
         </activity>
 

@@ -2,6 +2,7 @@ package com.daon.onjung
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -21,7 +22,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
+import com.daon.onjung.network.model.StoreCategory
+import com.daon.onjung.ui.CelebrationScreen
 import com.daon.onjung.ui.auth.authGraph
 import com.daon.onjung.ui.component.BottomNavigationBar
 import com.daon.onjung.ui.component.BottomNavigationBarItem
@@ -38,7 +45,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun OnjungNavHost(
     appState: OnjungAppState,
-    bottomSheetState: OnjungBottomSheetState
+    bottomSheetState: OnjungBottomSheetState,
 ) {
     val navController = appState.navController
 
@@ -108,6 +115,59 @@ fun OnjungNavHost(
                     appState = appState,
                     bottomSheetState = bottomSheetState
                 )
+
+                composable(
+                    route = Routes.CELEBRATION,
+                    arguments = listOf(
+                        navArgument("storeName") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        },
+                        navArgument("address") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        },
+                        navArgument("category") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        },
+                        navArgument("userName") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        },
+                        navArgument("expirationDate") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        },
+                        navArgument("logoImgUrl") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        }
+                    ),
+                    deepLinks = listOf(
+                        navDeepLink {
+                            uriPattern = "app://daon.onjung?storeName={storeName}&address={address}&category={category}&userName={userName}&expirationDate={expirationDate}&logoImgUrl={logoImgUrl}"
+                            action = Intent.ACTION_VIEW
+                        }
+                    )
+                ) { entry ->
+                    val storeName = entry.arguments?.getString("storeName") ?: ""
+                    val address = entry.arguments?.getString("address") ?: ""
+                    val categoryString = entry.arguments?.getString("category") ?: ""
+                    val category = runCatching { StoreCategory.valueOf(categoryString) }.getOrElse { StoreCategory.KOREAN }
+                    val userName = entry.arguments?.getString("userName") ?: ""
+                    val expirationDate = entry.arguments?.getString("expirationDate") ?: ""
+                    val logoImgUrl = entry.arguments?.getString("logoImgUrl") ?: ""
+
+                    CelebrationScreen(
+                        name = storeName,
+                        logoImgUrl = logoImgUrl,
+                        address = address,
+                        category = category,
+                        userName = userName,
+                        expirationDate = expirationDate
+                    )
+                }
             }
         }
     }

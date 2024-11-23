@@ -7,6 +7,6 @@ data class TicketFcmResponse(
     val address: String,
     val category: StoreCategory,
     val user_name: String,
-    val expiraton_date: String,
+    val expiration_date: String,
     val logo_img_url: String
 )

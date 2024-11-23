@@ -38,4 +38,6 @@ object Routes {
         const val KAKAOPAYRESULT = "kakaopayResult"
         const val DONDATIONRESULT = "donationResult"
     }
+
+    const val CELEBRATION = "celebration"
 }

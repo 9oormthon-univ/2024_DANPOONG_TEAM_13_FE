@@ -6,12 +6,15 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.daon.onjung.network.model.response.TicketFcmResponse
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
+import java.net.URLEncoder
 
 class OnjungFCMService : FirebaseMessagingService() {
 
@@ -21,6 +24,11 @@ class OnjungFCMService : FirebaseMessagingService() {
     private lateinit var notificationManager: NotificationManager
 
     private val gson = Gson()
+
+    override fun onCreate() {
+        super.onCreate()
+        createNotificationChannel()
+    }
 
     // Token 생성
     override fun onNewToken(token: String) {
@@ -37,10 +45,6 @@ class OnjungFCMService : FirebaseMessagingService() {
         }}"
         Log.d(TAG, "Message data : $messageData")
         Log.d(TAG, "Message noti : ${remoteMessage.notification?.imageUrl}")
-
-        if (remoteMessage.data.isNotEmpty()) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.data)
-        }
 
         if (messageData.isNotEmpty()) {
             //알림 생성
@@ -77,7 +81,6 @@ class OnjungFCMService : FirebaseMessagingService() {
             .setPriority(NotificationCompat.PRIORITY_HIGH) // 헤드업 알림
             .setContentIntent(pendingIntent) // 알림 실행 시 Intent
 
-        createNotificationChannel()
         notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
     }
 
@@ -85,10 +88,36 @@ class OnjungFCMService : FirebaseMessagingService() {
         context: Context,
         ticketData: Map<String, String>
     ): PendingIntent {
+        Log.d(TAG, "Received Ticket Data: $ticketData")
+
         val jsonString = gson.toJson(ticketData)
-        val intent = Intent(context, MainActivity::class.java)
-        intent.putExtra(Constants.TICKET, jsonString)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val ticket = gson.fromJson(jsonString, TicketFcmResponse::class.java)
+
+        Log.d(TAG, "Received Ticket: $ticket")
+
+        // URI 쿼리 파라미터를 안전하게 인코딩
+        val encodedStoreName = URLEncoder.encode(ticket.store_name, "UTF-8")
+        val encodedAddress = URLEncoder.encode(ticket.address, "UTF-8")
+        val encodedCategory = URLEncoder.encode(ticket.category.toString(), "UTF-8") // Enum to String
+        val encodedUserName = URLEncoder.encode(ticket.user_name, "UTF-8")
+
+        val encodedExpirationDate = URLEncoder.encode(ticket.expiration_date, "UTF-8")
+        val encodedLogoImgUrl = URLEncoder.encode(ticket.logo_img_url, "UTF-8")
+
+        // Deeplink 생성
+        val deeplink = "app://daon.onjung?storeName=$encodedStoreName" +
+                "&address=$encodedAddress" +
+                "&category=$encodedCategory" +
+                "&userName=$encodedUserName" +
+                "&expirationDate=$encodedExpirationDate" +
+                "&logoImgUrl=$encodedLogoImgUrl"
+
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(deeplink)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        // PendingIntent 생성
         return PendingIntent.getActivity(
             context,
             System.currentTimeMillis().toInt(),
