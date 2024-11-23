@@ -1,4 +1,4 @@
-package com.daon.onjung.ui.donation
+package com.daon.onjung.ui.donation.kakaopayResult
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,9 +26,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
+import com.daon.onjung.Routes
 import com.daon.onjung.rememberOnjungAppState
+import com.daon.onjung.ui.donation.component.DonationCompleteDialog
 import com.daon.onjung.ui.donation.component.KakaopayButton
 import com.daon.onjung.ui.donation.component.KakaopayTopBar
 import com.daon.onjung.ui.theme.OnjungTheme
@@ -35,7 +40,13 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Composable
 fun KakaopayResultScreen (
     appState: OnjungAppState,
+    shopId: Int,
+    amount: Int,
+    viewModel: KakaopayResultViewModel
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val effectFlow = viewModel.effect
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,8 +79,11 @@ fun KakaopayResultScreen (
             )
         }
         KakaopayButton(
-        "확인"
-        )
+        "확인",
+            modifier = Modifier.padding(horizontal = 14.dp)
+        ) {
+            viewModel.processEvent(KakaopayResultContract.Event.DonationCompleteClicked(shopId, amount))
+        }
         Spacer(modifier = Modifier.height(11.dp))
         Row(
             modifier = Modifier
@@ -92,6 +106,12 @@ fun KakaopayResultScreen (
                 ),
             )
         }
+        if (uiState.isDonationCompleteDialogVisible) {
+            DonationCompleteDialog {
+                viewModel.processEvent(KakaopayResultContract.Event.DonationCompleteDialogDismissed)
+                appState.navigate("${Routes.Donation.DONDATIONRESULT}?shopId=$shopId&amount=$amount&issueDate=${uiState.issueDate}&donationStoreInfo=${uiState.donationStoreInfo}")
+            }
+        }
     }
 }
 
@@ -99,9 +119,15 @@ fun KakaopayResultScreen (
 @Composable
 fun KakaopayResultScreenPreview() {
     OnjungTheme {
+        val viewModel: KakaopayResultViewModel = hiltViewModel()
         val appState = rememberOnjungAppState()
+        val shopId = 1
+        val amount = 10000
         KakaopayResultScreen(
-            appState = appState
+            appState = appState,
+            shopId = shopId,
+            amount = amount,
+            viewModel = viewModel
         )
     }
 }

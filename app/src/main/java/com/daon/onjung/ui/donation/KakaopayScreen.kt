@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daon.onjung.OnjungAppState
+import com.daon.onjung.Routes
 import com.daon.onjung.rememberOnjungAppState
 import com.daon.onjung.ui.donation.component.KakaopayButton
 import com.daon.onjung.ui.donation.component.KakaopayIcon
@@ -30,6 +31,8 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Composable
 fun KakaopayScreen(
     appState: OnjungAppState,
+    shopId: Int,
+    amount: Int
 ) {
     Box(
         modifier = Modifier
@@ -53,7 +56,9 @@ fun KakaopayScreen(
             KakaopayButton(
                 modifier = Modifier
                     .padding(horizontal = 52.dp)
-            )
+            ) {
+                appState.navigate("${Routes.Donation.KAKAOPAYPAYMENT}?shopId=$shopId&amount=$amount")
+            }
         }
 
     }
@@ -78,8 +83,12 @@ fun KakaopayText(
 fun KakaopayScreenPreview() {
     OnjungTheme {
         val appState = rememberOnjungAppState()
+        val shopId = 1
+        val amount = 10000
         KakaopayScreen(
-            appState = appState
+            appState = appState,
+            shopId = shopId,
+            amount = amount
         )
     }
 }

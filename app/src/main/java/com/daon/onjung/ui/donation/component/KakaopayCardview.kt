@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daon.onjung.R
 import com.daon.onjung.ui.theme.OnjungTheme
+import com.daon.onjung.util.formatCurrency
 
 @Preview(showBackground = true)
 @Composable
@@ -85,7 +86,7 @@ fun KakaopayCardview(
                         )
                     )
                     Text(
-                        "10,000원",
+                        formatCurrency(money),
                         style = OnjungTheme.typography.title.copy(
                             fontWeight = FontWeight.Normal,
                             color = OnjungTheme.colors.text_1

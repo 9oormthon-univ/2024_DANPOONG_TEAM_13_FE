@@ -74,7 +74,7 @@ fun DonationScreen(
                 .padding(horizontal = 20.dp),
             fontSize = 18
         ) {
-            appState.navigate(Routes.Donation.KAKAOPAY)
+            appState.navigate("${Routes.Donation.KAKAOPAY}?shopId=$shopId&amount=${uiState.amount}")
         }
         Spacer(modifier = Modifier.height(40.dp))
     }

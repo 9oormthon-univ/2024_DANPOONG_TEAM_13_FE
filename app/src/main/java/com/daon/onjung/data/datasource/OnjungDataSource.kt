@@ -2,6 +2,7 @@ package com.daon.onjung.data.datasource
 
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.request.DonationRequest
 import com.daon.onjung.network.model.request.PostReceiptRequest
 import com.daon.onjung.network.model.response.DonationResponse
 import com.daon.onjung.network.model.response.MyOnjungBriefResponse
@@ -28,7 +29,7 @@ interface OnjungDataSource {
 
     fun getOnjungBrief(): Flow<ApiResult<BaseResponse<OnjungBriefResponse>>>
 
-    fun postPostDonation(id: Int): Flow<ApiResult<BaseResponse<DonationResponse>>>
+    fun postPostDonation(id: Int, donationRequest: DonationRequest): Flow<ApiResult<BaseResponse<DonationResponse>>>
 
     fun getMyOnjungBriefs(): Flow<ApiResult<BaseResponse<MyOnjungBriefResponse>>>
 }

@@ -3,6 +3,7 @@ package com.daon.onjung.data.repository
 import android.net.Uri
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.request.DonationRequest
 import com.daon.onjung.network.model.response.DonationResponse
 import com.daon.onjung.network.model.response.MyOnjungBriefResponse
 import com.daon.onjung.network.model.response.OcrResponse
@@ -28,7 +29,7 @@ interface OnjungRepository {
 
     fun getOnjungBrief() : Flow<ApiResult<BaseResponse<OnjungBriefResponse>>>
 
-    fun postDonation(id: Int) : Flow<ApiResult<BaseResponse<DonationResponse>>>
+    fun postDonation(id: Int, donationRequest: DonationRequest) : Flow<ApiResult<BaseResponse<DonationResponse>>>
 
     fun getMyOnjungBriefs() : Flow<ApiResult<BaseResponse<MyOnjungBriefResponse>>>
 

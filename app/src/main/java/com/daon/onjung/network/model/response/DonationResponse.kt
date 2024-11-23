@@ -8,6 +8,8 @@ data class DonationResponse(
     val donationAmount: Int,
     @SerializedName("issue_date")
     val issueDate: String,
+    @SerializedName("store_info")
+    val storeInfo: DonationStoreInfo
 )
 
 data class DonationStoreInfo(

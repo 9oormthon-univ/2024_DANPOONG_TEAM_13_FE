@@ -1,6 +1,7 @@
 package com.daon.onjung.ui.donation.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,7 +30,8 @@ fun KakaopayButton(
             .fillMaxWidth()
             .clip(shape = CircleShape)
             .background(color = Color(0xFFFFEB00))
-            .padding(vertical = 14.dp),
+            .padding(vertical = 14.dp)
+            .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(

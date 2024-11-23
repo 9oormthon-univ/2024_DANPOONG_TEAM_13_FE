@@ -5,6 +5,7 @@ import android.net.Uri
 import com.daon.onjung.data.datasource.OnjungDataSource
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.request.DonationRequest
 import com.daon.onjung.network.model.request.PostReceiptRequest
 import com.daon.onjung.network.model.response.OcrResponse
 import com.daon.onjung.util.fileFromContentUri
@@ -48,7 +49,7 @@ class OnjungRepositoryImpl @Inject constructor(
 
     override fun getOnjungBrief() = onjungDataSource.getOnjungBrief()
 
-    override fun postDonation(id: Int) = onjungDataSource.postPostDonation(id)
+    override fun postDonation(id: Int, donationRequest: DonationRequest) = onjungDataSource.postPostDonation(id, donationRequest)
 
     override fun getMyOnjungBriefs() = onjungDataSource.getMyOnjungBriefs()
 }

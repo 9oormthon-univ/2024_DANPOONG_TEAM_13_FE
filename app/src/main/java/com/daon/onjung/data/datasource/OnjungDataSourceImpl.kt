@@ -3,6 +3,7 @@ package com.daon.onjung.data.datasource
 import com.daon.onjung.di.IoDispatcher
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.request.DonationRequest
 import com.daon.onjung.network.model.request.PostReceiptRequest
 import com.daon.onjung.network.model.response.MyOnjungBriefResponse
 import com.daon.onjung.network.service.OnjungService
@@ -38,8 +39,8 @@ class OnjungDataSourceImpl @Inject constructor(
         emit(onjungService.getOnjungBrief())
     }.flowOn(ioDispatcher)
 
-    override fun postPostDonation(id: Int) = flow {
-        emit(onjungService.postDonation(id))
+    override fun postPostDonation(id: Int, donationRequest: DonationRequest) = flow {
+        emit(onjungService.postDonation(id, donationRequest))
     }.flowOn(ioDispatcher)
 
     override fun getMyOnjungBriefs(): Flow<ApiResult<BaseResponse<MyOnjungBriefResponse>>> = flow{

@@ -2,6 +2,7 @@ package com.daon.onjung.network.service
 
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.request.DonationRequest
 import com.daon.onjung.network.model.request.PostReceiptRequest
 import com.daon.onjung.network.model.response.DonationResponse
 import com.daon.onjung.network.model.response.MyOnjungBriefResponse
@@ -41,7 +42,8 @@ interface OnjungService {
 
     @POST("/api/v1/stores/{id}/donations")
     suspend fun postDonation(
-        @Path("id") id: Int
+        @Path("id") id: Int,
+        @Body donationRequest: DonationRequest
     ): ApiResult<BaseResponse<DonationResponse>>
 
     @GET("/api/v1/users/onjungs/briefs")
