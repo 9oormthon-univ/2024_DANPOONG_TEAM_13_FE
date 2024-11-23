@@ -32,10 +32,82 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
+import com.daon.onjung.network.model.OnjungMailStatus
+import com.daon.onjung.network.model.OnjungType
+import com.daon.onjung.network.model.response.OnjungMailResponse
+import com.daon.onjung.network.model.response.OnjungMailStoreInfo
 import com.daon.onjung.ui.component.ShopMailContainer
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.flow.collectLatest
+
+val mailList = listOf(
+    OnjungMailResponse(
+        storeInfo = OnjungMailStoreInfo(
+            logoImgUrl = "https://daonjung.s3.ap-northeast-2.amazonaws.com/account_dummy3/logo_e2083312-ddba-4e23-9257-4f35d95f3c8c",
+            title = "온기를 나누는 식당",
+            name = "식당 이름"
+        ),
+        onjungType = OnjungType.SHARE,
+        status = OnjungMailStatus.IN_PROGRESS,
+        eventPeriod = "2024. 9. 16 ~ 9. 30",
+        storeDeliveryDate = null,
+        ticketIssueDate = null,
+        reportDate = null
+    ),
+    OnjungMailResponse(
+        storeInfo = OnjungMailStoreInfo(
+            logoImgUrl = "https://daonjung.s3.ap-northeast-2.amazonaws.com/account_dummy3/logo_e2083312-ddba-4e23-9257-4f35d95f3c8c",
+            title = "온기를 나누는 식당",
+            name = "식당 이름"
+        ),
+        onjungType = OnjungType.SHARE,
+        status = OnjungMailStatus.COMPLETED,
+        eventPeriod = "2024. 9. 30",
+        storeDeliveryDate = null,
+        ticketIssueDate = null,
+        reportDate = null
+    ),
+    OnjungMailResponse(
+        storeInfo = OnjungMailStoreInfo(
+            logoImgUrl = "https://daonjung.s3.ap-northeast-2.amazonaws.com/account_dummy3/logo_e2083312-ddba-4e23-9257-4f35d95f3c8c",
+            title = "온기를 나누는 식당",
+            name = "식당 이름"
+        ),
+        onjungType = OnjungType.SHARE,
+        status = OnjungMailStatus.STORE_DELIVERY,
+        eventPeriod = "2024. 9. 30",
+        storeDeliveryDate = "2024. 10. 5",
+        ticketIssueDate = null,
+        reportDate = null
+    ),
+    OnjungMailResponse(
+        storeInfo = OnjungMailStoreInfo(
+            logoImgUrl = "https://daonjung.s3.ap-northeast-2.amazonaws.com/account_dummy3/logo_e2083312-ddba-4e23-9257-4f35d95f3c8c",
+            title = "온기를 나누는 식당",
+            name = "식당 이름"
+        ),
+        onjungType = OnjungType.SHARE,
+        status = OnjungMailStatus.TICKET_ISSUE,
+        eventPeriod = "2024. 9. 30",
+        storeDeliveryDate = "2024. 10. 5",
+        ticketIssueDate = "2024. 10. 7",
+        reportDate = null
+    ),
+    OnjungMailResponse(
+        storeInfo = OnjungMailStoreInfo(
+            logoImgUrl = "https://daonjung.s3.ap-northeast-2.amazonaws.com/account_dummy3/logo_e2083312-ddba-4e23-9257-4f35d95f3c8c",
+            title = "온기를 나누는 식당",
+            name = "식당 이름"
+        ),
+        onjungType = OnjungType.SHARE,
+        status = OnjungMailStatus.REPORT,
+        eventPeriod = "2024. 9. 30",
+        storeDeliveryDate = "2024. 10. 5",
+        ticketIssueDate = "2024. 10. 7",
+        reportDate = "2024. 10. 31"
+    )
+)
 
 @Composable
 internal fun MailScreen(
@@ -109,8 +181,11 @@ internal fun MailScreen(
                     title = mail.storeInfo.title,
                     name = mail.storeInfo.name,
                     type = mail.onjungType,
-                    isExpanded = true,
-                    onExpandChange = { }
+                    status = mail.status,
+                    eventPeriod = mail.eventPeriod,
+                    storeDeliveryDate = mail.storeDeliveryDate,
+                    ticketIssueDate = mail.ticketIssueDate,
+                    reportDate = mail.reportDate
                 ) { shopId ->
                     viewModel.processEvent(MailContract.Event.MailClicked(shopId))
                 }

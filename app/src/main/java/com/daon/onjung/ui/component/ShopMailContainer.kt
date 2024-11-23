@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.daon.onjung.R
+import com.daon.onjung.network.model.OnjungMailStatus
 import com.daon.onjung.network.model.OnjungType
 import com.daon.onjung.ui.theme.OnjungTheme
 
@@ -47,10 +48,15 @@ fun ShopMailContainer(
     title: String,
     name: String,
     type: OnjungType,
-    isExpanded: Boolean = true,
-    onExpandChange: (Boolean) -> Unit,
+    status: OnjungMailStatus,
+    eventPeriod: String?,
+    storeDeliveryDate: String?,
+    ticketIssueDate: String?,
+    reportDate: String?,
     onClick: (Int) -> Unit
 ) {
+    var isExpanded by remember { mutableStateOf(true) }
+
     Column(
         modifier = modifier.background(
             color = OnjungTheme.colors.white,
@@ -63,39 +69,74 @@ fun ShopMailContainer(
             title = title,
             name = name,
             type = type,
-            imageUrl = ""
+            imageUrl = imageUrl
         )
+
         if (isExpanded) {
             Column {
-                ShopMailItem(
-                    title = "모금완료",
-                    description = "모금이 완료되었어요.",
-                    date = "2024. 9. 31",
-                    iconRes = R.drawable.ic_fundraising_complete
-                )
-                ShopMailItem(
-                    title = "식당 전달",
-                    description = "모금된 금액을 식당에 전달했어요.",
-                    date = "2024. 9. 31",
-                    iconRes = R.drawable.ic_restaurant_delivery,
-                )
-                ShopMailItem(
-                    title = "식권 발송",
-                    description = "온정을 나눠준 분들께\n식당이 발송 되었어요.",
-                    date = "2024. 9. 31",
-                    iconRes = R.drawable.ic_meal_ticket_send
-                )
-                ShopMailItem(
-                    title = "보고",
-                    description = "가게에서 음식을 나누어 주고 있어요.",
-                    date = "2024. 9. 31",
-                    iconRes = R.drawable.ic_report
-                )
+                if (status == OnjungMailStatus.IN_PROGRESS) {
+                    ShopMailItem(
+                        title = "모금중",
+                        description = "모금이 진행 중이에요.",
+                        date = eventPeriod ?: "",
+                        iconRes = R.drawable.ic_fundraising_complete
+                    )
+                } else if (
+                    status == OnjungMailStatus.COMPLETED ||
+                    status == OnjungMailStatus.STORE_DELIVERY ||
+                    status == OnjungMailStatus.TICKET_ISSUE ||
+                    status == OnjungMailStatus.REPORT
+                ) {
+                    ShopMailItem(
+                        title = "모금완료",
+                        description = "모금이 완료되었어요.",
+                        date = eventPeriod ?: "",
+                        iconRes = R.drawable.ic_fundraising_complete
+                    )
+                }
+
+                if (
+                    status == OnjungMailStatus.STORE_DELIVERY ||
+                    status == OnjungMailStatus.TICKET_ISSUE ||
+                    status == OnjungMailStatus.REPORT
+                ) {
+                    ShopMailItem(
+                        title = "식당 전달",
+                        description = "모금된 금액을 식당에 전달했어요.",
+                        date = storeDeliveryDate ?: "",
+                        iconRes = R.drawable.ic_restaurant_delivery,
+                    )
+                }
+
+                if (
+                    status == OnjungMailStatus.TICKET_ISSUE ||
+                    status == OnjungMailStatus.REPORT
+                ) {
+                    ShopMailItem(
+                        title = "식권 발송",
+                        description = "온정을 나눠준 분들께\n식당이 발송 되었어요.",
+                        date = ticketIssueDate ?: "",
+                        iconRes = R.drawable.ic_meal_ticket_send
+                    )
+                }
+
+                if (
+                    status == OnjungMailStatus.REPORT
+                ) {
+                    ShopMailItem(
+                        title = "보고",
+                        description = "가게에서 음식을 나누어 주고 있어요.",
+                        date = reportDate ?: "",
+                        iconRes = R.drawable.ic_report
+                    )
+                }
             }
         }
-        ExpandButton(isExpanded = isExpanded, onClick = {
-            onExpandChange(it)
-        })
+        if (status != OnjungMailStatus.IN_PROGRESS && status != OnjungMailStatus.COMPLETED) {
+            ExpandButton(isExpanded = isExpanded, onClick = {
+                isExpanded = it
+            })
+        }
     }
 }
 
@@ -206,9 +247,7 @@ private fun ShopMailItem(
 
                 Text(
                     text = date,
-                    style = OnjungTheme.typography.body1.copy(
-                        fontWeight = FontWeight.SemiBold
-                    ),
+                    style = OnjungTheme.typography.caption,
                     color = OnjungTheme.colors.gray_1
                 )
             }
@@ -250,7 +289,7 @@ private fun ExpandButton(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp),
+                .padding(vertical = 12.dp),
             contentAlignment = Alignment.Center,
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -333,18 +372,17 @@ private fun ShopMailItemPreview() {
 @Preview
 @Composable
 private fun ShopMailContainerPreview() {
-    var isExpanded by remember { mutableStateOf(true) }
-
     OnjungTheme {
         ShopMailContainer(
             title = "헌신에 보답하는 감사의 식탁",
             imageUrl = "",
             name = "한걸음 닭꼬치",
-            type = OnjungType.SHARE,
-            isExpanded = isExpanded,
-            onExpandChange = {
-                isExpanded = it
-            }
+            type = OnjungType.DONATION,
+            status = OnjungMailStatus.COMPLETED,
+            eventPeriod = "2024. 9. 10",
+            storeDeliveryDate = null,
+            ticketIssueDate = null,
+            reportDate = null
         ) {
 
         }
