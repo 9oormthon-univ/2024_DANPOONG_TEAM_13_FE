@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -48,6 +49,7 @@ fun CelebrationScreen(
             .background(
                 color = Color(0xFFFFF0EF)
             )
+            .statusBarsPadding()
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_bg_celeb),

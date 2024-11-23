@@ -25,10 +25,6 @@ class ShopDetailViewModel @Inject constructor(
             is ShopDetailContract.Event.OnjungShareClicked -> {
                 shareOnjung(event.id)
             }
-
-            is ShopDetailContract.Event.OnjungShareDialogDismissed -> {
-                updateState(currentState.copy(isOnjungShareDialogVisible = false))
-            }
         }
     }
 
@@ -73,7 +69,7 @@ class ShopDetailViewModel @Inject constructor(
                 updateState(currentState.copy(isLoading = false))
                 when (it) {
                     is ApiResult.Success -> {
-                        updateState(currentState.copy(isOnjungShareDialogVisible = true))
+                        postEffect(ShopDetailContract.Effect.KakaoShare)
                     }
                     is ApiResult.ApiError -> {
                         postEffect(ShopDetailContract.Effect.ShowSnackBar(it.message))

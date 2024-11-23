@@ -203,8 +203,20 @@ internal fun OcrCameraScreen(
     if (uiState.isOcrErrorDialogVisible) {
         cameraProvider?.unbindAll()
 
-        OcrFailedDialog {
+        OcrFailedDialog(
+            title = "인식 실패",
+            description = "영수증을 다시 촬영해 주세요.",
+        ) {
             viewModel.processEvent(OcrCameraContract.Event.OcrErrorDialogDismissed)
+        }
+    }
+
+    if (uiState.isOcrPostErrorDialogVisible) {
+        OcrFailedDialog(
+            title = "일치 오류",
+            description = "영수증과 일치하는 매장이 존재하지 않습니다.",
+        ) {
+            viewModel.processEvent(OcrCameraContract.Event.OcrPostErrorDialogDismissed)
         }
     }
 

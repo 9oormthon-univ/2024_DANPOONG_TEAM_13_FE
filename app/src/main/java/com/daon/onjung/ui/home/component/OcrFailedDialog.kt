@@ -26,6 +26,8 @@ import com.daon.onjung.ui.theme.OnjungTheme
 
 @Composable
 fun OcrFailedDialog(
+    title: String,
+    description: String,
     onDismissRequest: () -> Unit
 ) {
     Dialog(
@@ -56,7 +58,7 @@ fun OcrFailedDialog(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    "인식 실패",
+                    title,
                     style = OnjungTheme.typography.h2.copy(
                         fontWeight = FontWeight.Bold,
                         color = OnjungTheme.colors.text_1
@@ -66,7 +68,7 @@ fun OcrFailedDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    "영수증 전체를 다시 촬영해주세요",
+                    description,
                     style = OnjungTheme.typography.body2.copy(
                         color = OnjungTheme.colors.text_2
                     )
@@ -88,6 +90,9 @@ fun OcrFailedDialog(
 @Composable
 fun OcrFailedDialogPreview() {
     OnjungTheme {
-        OcrFailedDialog(onDismissRequest = {})
+        OcrFailedDialog(
+            title = "인식 실패",
+            description = "영수증 전체를 다시 촬영해주세요",
+            onDismissRequest = {})
     }
 }

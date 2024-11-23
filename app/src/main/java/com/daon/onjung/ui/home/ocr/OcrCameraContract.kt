@@ -16,6 +16,7 @@ class OcrCameraContract {
         val paymentDate: String = "",
         val paymentAmount: String = "",
         val isOcrErrorDialogVisible: Boolean = false,
+        val isOcrPostErrorDialogVisible: Boolean = false,
         val isPostReceiptSuccessDialogVisible: Boolean = false
     ) : UiState
 
@@ -28,6 +29,7 @@ class OcrCameraContract {
             val paymentAmount: String
         ) : Event()
         data object OcrErrorDialogDismissed : Event()
+        data object OcrPostErrorDialogDismissed: Event()
         data object PostReceiptSuccessDialogDismissed : Event()
     }
 
