@@ -240,7 +240,7 @@ private fun AccountSettingSection(
             }
         }
 
-        Surface(
+        /*Surface(
             color = OnjungTheme.colors.gray_3,
             onClick = { onWithdrawal() },
             interactionSource = NoRippleInteractionSource()
@@ -266,7 +266,7 @@ private fun AccountSettingSection(
                     tint = OnjungTheme.colors.text_1
                 )
             }
-        }
+        }*/
     }
 }
 
