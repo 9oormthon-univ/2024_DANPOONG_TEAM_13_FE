@@ -97,8 +97,8 @@ internal fun SettingScreen(
         Spacer(modifier = Modifier.height(12.dp))
         SettingTitleText(
             title = "알림 설정",
-            color = OnjungTheme.colors.text_3,
-            modifier = Modifier.padding(start = 21.dp)
+            color = OnjungTheme.colors.text_2,
+            modifier = Modifier.padding(start = 20.dp)
         )
         Spacer(modifier = Modifier.height(12.dp))
         NotificationSettingSection(
