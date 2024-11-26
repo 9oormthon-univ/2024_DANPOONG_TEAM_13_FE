@@ -19,6 +19,10 @@ object Routes {
         const val ROUTE = "mailBoxRoute"
     }
 
+    object Community {
+        const val ROUTE = "communityRoute"
+    }
+
     object Profile {
         const val ROUTE = "profileRoute"
 

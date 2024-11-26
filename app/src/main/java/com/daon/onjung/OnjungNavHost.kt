@@ -30,6 +30,7 @@ import androidx.navigation.navDeepLink
 import com.daon.onjung.network.model.StoreCategory
 import com.daon.onjung.ui.CelebrationScreen
 import com.daon.onjung.ui.auth.authGraph
+import com.daon.onjung.ui.community.communityGraph
 import com.daon.onjung.ui.component.BottomNavigationBar
 import com.daon.onjung.ui.component.BottomNavigationBarItem
 import com.daon.onjung.ui.donation.donationGraph
@@ -97,12 +98,15 @@ fun OnjungNavHost(
                 authGraph(
                     appState = appState
                 )
-
                 homeGraph(
                     appState = appState,
                     bottomSheetState = bottomSheetState
                 )
                 mailGraph(
+                    appState = appState,
+                    bottomSheetState = bottomSheetState
+                )
+                communityGraph(
                     appState = appState,
                     bottomSheetState = bottomSheetState
                 )
