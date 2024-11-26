@@ -43,11 +43,12 @@ fun PostCardItem (
     commentCount : Int = 10,
     imageUrl : String = "",
     date : String = "3시간 전",
+    modifier: Modifier = Modifier,
     onClick : () -> Unit = {}
 ) {
     val context = LocalContext.current
     Column (
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .noRippleClickable(onClick),
     ) {
