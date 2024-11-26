@@ -18,7 +18,7 @@ enum class TopLevelDestination(
         route = Routes.Mail.ROUTE
     ),
     Community(
-        label = "알려요",
+        label = "가게 추천",
         icon = R.drawable.ic_community,
         route = Routes.Community.ROUTE
     ),

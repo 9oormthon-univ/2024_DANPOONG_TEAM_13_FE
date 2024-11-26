@@ -18,7 +18,7 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Composable
 fun CommunityTopBar(
     modifier : Modifier = Modifier,
-    title: String = "알려요"
+    title: String = "가게 추천"
 ) {
     Box(
         modifier = modifier
