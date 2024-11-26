@@ -32,4 +32,12 @@ fun NavGraphBuilder.communityGraph(
             viewModel = viewModel
         )
     }
+
+    composable(
+        route = Routes.Community.DETAIL
+    ) {
+        CommunityDetailScreen(
+            appState = appState
+        )
+    }
 }

@@ -23,6 +23,7 @@ object Routes {
         const val ROUTE = "communityRoute"
 
         const val WRITE = "write"
+        const val DETAIL = "detail"
     }
 
     object Profile {

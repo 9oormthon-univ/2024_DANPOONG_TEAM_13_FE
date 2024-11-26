@@ -1,5 +1,8 @@
 package com.daon.onjung.ui.component
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.daon.onjung.ui.theme.OnjungTheme
 
 @Composable
@@ -19,6 +23,7 @@ fun OTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    contentPaddingValues: PaddingValues = PaddingValues(0.dp),
     maxLength: Int = 20,
     textStyle: TextStyle = OnjungTheme.typography.body1,
     textColor: Color = OnjungTheme.colors.text_1,
@@ -38,15 +43,17 @@ fun OTextField(
         ),
         cursorBrush = SolidColor(OnjungTheme.colors.main_coral),
         decorationBox = { innerTextField ->
-            if (value.isEmpty()) {
-                Text(
-                    text = placeholderText,
-                    style = textStyle.copy(
-                        color = hintColor
+            Box(modifier = Modifier.padding(contentPaddingValues)) {
+                if (value.isEmpty()) {
+                    Text(
+                        text = placeholderText,
+                        style = textStyle.copy(
+                            color = hintColor
+                        )
                     )
-                )
+                }
+                innerTextField()
             }
-            innerTextField()
         }
     )
 }
