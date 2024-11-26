@@ -17,6 +17,11 @@ enum class TopLevelDestination(
         icon = R.drawable.ic_mail,
         route = Routes.Mail.ROUTE
     ),
+    Community(
+        label = "알려요",
+        icon = R.drawable.ic_community,
+        route = Routes.Community.ROUTE
+    ),
     Profile(
         label = "나의 온기",
         icon = R.drawable.ic_heart,
