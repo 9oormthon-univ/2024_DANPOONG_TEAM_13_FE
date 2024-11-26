@@ -29,6 +29,7 @@ import com.daon.onjung.util.noRippleClickable
 @Preview(showBackground = true)
 @Composable
 fun CommentItem (
+    modifier: Modifier = Modifier,
     imageUrl : String = "",
     name : String = "익명1",
     date : String = "4분",
@@ -37,8 +38,9 @@ fun CommentItem (
     onRemove : () -> Unit = {}
 ) {
     val context = LocalContext.current
+
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         AsyncImage(
             modifier = Modifier
