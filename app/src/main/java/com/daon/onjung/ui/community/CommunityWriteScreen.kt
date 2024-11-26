@@ -1,5 +1,15 @@
 package com.daon.onjung.ui.community
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,17 +33,24 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
 import com.daon.onjung.ui.component.OTextField
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.component.button.FilledWidthButton
+import com.daon.onjung.ui.component.imagepicker.ImagePickerContract
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.flow.collectLatest
 
@@ -44,6 +61,49 @@ fun CommunityWriteScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val effectFlow = viewModel.effect
+
+    val context = LocalContext.current
+
+    val permissions = arrayOf(
+        Manifest.permission.CAMERA,
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_IMAGES
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+    )
+    val allPermissionsGranted = permissions.all {
+        ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ImagePickerContract(),
+        onResult = { uris ->
+            uris?.let {
+                viewModel.updateSelectedImage(it[0])
+            }
+        }
+    )
+
+    val launchMultiplePermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionMap ->
+        val areGranted = permissionMap.values.reduce { acc, next -> acc && next }
+        if (areGranted) {
+            imagePicker.launch(1)
+        } else {
+            appState.showSnackBar("미디어 권한과 카메라 권한을 허용해야 갤러리를 사용할 수 있습니다")
+
+            // 허용하지 않았을 경우 설정창으로 이동
+            Handler(Looper.getMainLooper()).postDelayed({
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uri = Uri.fromParts("package", context.packageName, null)
+                intent.data = uri
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(context, intent, null)
+            }, 500)
+        }
+    }
 
     LaunchedEffect(Unit) {
         effectFlow.collectLatest { effect ->
@@ -78,8 +138,14 @@ fun CommunityWriteScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 CommunityWritePickPhotoButton(
-                    imageUrl = null,
-                    onClick = { }
+                    imageUrl = uiState.selectedImgUri,
+                    onClick = {
+                        if (allPermissionsGranted) {
+                            imagePicker.launch(1)
+                        } else {
+                            launchMultiplePermissions.launch(permissions)
+                        }
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -126,7 +192,7 @@ fun CommunityWriteScreen(
 
 @Composable
 fun CommunityWritePickPhotoButton(
-    imageUrl: String?,
+    imageUrl: Uri?,
     onClick: () -> Unit
 ) {
     Box(
@@ -139,9 +205,19 @@ fun CommunityWritePickPhotoButton(
             ),
         contentAlignment = Alignment.Center
     ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current).data(imageUrl).build(),
+            contentDescription = "image",
+            contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+            modifier = Modifier.fillMaxSize().clip(
+                RoundedCornerShape(12.dp)
+            )
+        )
+
         Surface(
             shape = RoundedCornerShape(100.dp),
-            color = Color.White
+            color = Color.White,
+            onClick = onClick
         ) {
             Row(
                 modifier = Modifier.padding(

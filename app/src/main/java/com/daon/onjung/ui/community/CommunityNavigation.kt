@@ -14,12 +14,17 @@ fun NavGraphBuilder.communityGraph(
     composable(
         route = Routes.Community.ROUTE
     ) {
+        CommunityScreen()
+    }
+
+    composable(
+        route = Routes.Community.WRITE
+    ) {
         val viewModel: CommunityWriteViewModel = hiltViewModel()
 
         CommunityWriteScreen(
             appState = appState,
             viewModel = viewModel
         )
-        //CommunityScreen()
     }
 }

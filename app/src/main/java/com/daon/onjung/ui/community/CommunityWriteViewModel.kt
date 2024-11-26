@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.community
 
+import android.net.Uri
 import com.daon.onjung.util.BaseViewModel
 import javax.inject.Inject
 
@@ -17,6 +18,10 @@ class CommunityWriteViewModel @Inject constructor(
 
             }
         }
+    }
+
+    fun updateSelectedImage(imageUri: Uri) {
+        updateState(currentState.copy(selectedImgUri = imageUri))
     }
 
     fun updateTitle(title: String) {

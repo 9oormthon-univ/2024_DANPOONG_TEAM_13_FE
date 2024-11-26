@@ -21,6 +21,8 @@ object Routes {
 
     object Community {
         const val ROUTE = "communityRoute"
+
+        const val WRITE = "write"
     }
 
     object Profile {

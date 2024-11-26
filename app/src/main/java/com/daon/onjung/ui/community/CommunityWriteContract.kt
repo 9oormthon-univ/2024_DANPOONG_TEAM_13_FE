@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.community
 
+import android.net.Uri
 import androidx.navigation.NavOptions
 import com.daon.onjung.util.UiEffect
 import com.daon.onjung.util.UiEvent
@@ -9,7 +10,7 @@ class CommunityWriteContract {
 
     data class State(
         val isLoading: Boolean = false,
-        val selectedImgUrl: String? = null,
+        val selectedImgUri: Uri? = null,
         val titlePlaceholderText: String = "제목을 입력해주세요",
         val contentPlaceholderText: String = "가게의 주소지와 선행을 입력해 주세요 :)",
         val title: String = "",

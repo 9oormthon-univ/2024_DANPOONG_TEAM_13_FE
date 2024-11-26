@@ -1,10 +1,7 @@
 package com.daon.onjung.ui.component.imagepicker
 
-import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -39,7 +36,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -79,6 +75,7 @@ fun ImagePickerScreen(
     ) {
         TopBar(
             content = "최근 항목",
+            rightIcon = null,
             leftIconOnClick = {
                 viewModel.clearImages()
                 onClosed()
@@ -111,12 +108,13 @@ fun ImagePickerScreen(
 
                 FilledWidthButton(
                     text = "완료",
+                    isEnabled = viewModel.selectedImages.isNotEmpty(),
                     onClick = {
                         onSelected(viewModel.selectedImages.map { it.contentUri })
                         viewModel.clearImages()
                     }
                 )
-                Spacer(Modifier.height(50.dp))
+                Spacer(Modifier.height(20.dp))
             }
         }
     }
@@ -260,19 +258,5 @@ internal fun ImageIndicator(
                 fontSize = 14.sp,
             )
         }
-    }
-}
-
-private fun checkAndRequestPermissions(
-    context: Context,
-    permissions: Array<String>,
-    launcher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>,
-) {
-    val allPermissionsGranted = permissions.all {
-        ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-    }
-
-    if (!allPermissionsGranted) {
-        launcher.launch(permissions)
     }
 }
