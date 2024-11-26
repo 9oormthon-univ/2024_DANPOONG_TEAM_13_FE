@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +17,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,11 +29,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
+import com.daon.onjung.rememberOnjungAppState
 import com.daon.onjung.ui.community.component.CommentItem
 import com.daon.onjung.ui.component.OTextField
 import com.daon.onjung.ui.component.TopBar
@@ -46,6 +48,7 @@ fun CommunityDetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(OnjungTheme.colors.gray_2)
             .statusBarsPadding()
     ) {
         TopBar(
@@ -67,8 +70,8 @@ fun CommunityDetailScreen(
                     isLiked = true,
                     likeCount = 10,
                     commentCount = 5,
+                    title = "산책 다녀왔어요.",
                     content = "이번 주말에 놀러가기 좋은 곳 추천해주세요!",
-                    createdDate = "2021.09.01"
                 )
             }
 
@@ -84,6 +87,10 @@ fun CommunityDetailScreen(
                     date = "2021.09.01",
                     isMine = false
                 )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(50.dp))
             }
         }
 
@@ -102,8 +109,8 @@ fun CommunityFeedItem(
     isLiked: Boolean,
     likeCount: Int,
     commentCount: Int,
+    title: String,
     content: String,
-    createdDate: String,
 ) {
     val context = LocalContext.current
 
@@ -112,16 +119,27 @@ fun CommunityFeedItem(
     ) {
         CommunityFeedProfileSection(
             profileImageUrl = profileImgUrl,
-            userName = userName
+            userName = userName,
+            createdAt = "9시간 전"
         )
 
         AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f),
+                .aspectRatio(1f)
+                .padding(
+                    start = 20.dp, end = 20.dp,
+                    bottom = 20.dp
+                )
+                .clip(RoundedCornerShape(12.dp)),
             model = ImageRequest.Builder(context).data(imageUrl).build(),
             contentScale = ContentScale.Crop,
             contentDescription = "IMG_POST_IMAGE",
+        )
+
+        CommunityFeedDetailContent(
+            title = title,
+            content = content
         )
 
         CommunityFeedLikeAndCommentSection(
@@ -132,10 +150,7 @@ fun CommunityFeedItem(
 
         }
 
-        CommunityFeedDetailContent(
-            content = content,
-            createdDate = createdDate
-        )
+
     }
 }
 
@@ -143,6 +158,7 @@ fun CommunityFeedItem(
 fun CommunityFeedProfileSection(
     profileImageUrl: String,
     userName: String,
+    createdAt: String
 ) {
     val context = LocalContext.current
 
@@ -158,7 +174,6 @@ fun CommunityFeedProfileSection(
     ) {
         AsyncImage(
             modifier = Modifier
-                .fillMaxHeight()
                 .size(36.dp)
                 .clip(CircleShape),
             model = ImageRequest.Builder(context).data(profileImageUrl).build(),
@@ -173,6 +188,12 @@ fun CommunityFeedProfileSection(
                 fontWeight = FontWeight.SemiBold
             ),
             color = OnjungTheme.colors.text_1
+        )
+
+        Text(
+            createdAt,
+            style = OnjungTheme.typography.caption,
+            color = OnjungTheme.colors.text_3
         )
     }
 }
@@ -232,28 +253,25 @@ fun CommunityFeedLikeAndCommentSection(
 
 @Composable
 fun CommunityFeedDetailContent(
+    title: String,
     content: String,
-    createdDate: String
 ) {
     Column(
         modifier = Modifier.padding(
-            start = 20.dp,
-            end = 20.dp,
-            bottom = 20.dp
-        )
+            horizontal = 20.dp
+        ),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            content,
-            style = OnjungTheme.typography.body2,
+            title,
+            style = OnjungTheme.typography.h1,
             color = OnjungTheme.colors.text_1
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         Text(
-            createdDate,
-            style = OnjungTheme.typography.caption,
-            color = OnjungTheme.colors.text_3
+            content,
+            style = OnjungTheme.typography.body1,
+            color = OnjungTheme.colors.text_2
         )
     }
 }
@@ -299,7 +317,7 @@ fun CommunityDetailCommentInputSection(
                 onValueChange = {},
                 placeholderText = "따뜻한 댓글을 남겨주세요.",
                 modifier = Modifier.weight(1f),
-                contentPaddingValues = PaddingValues(vertical = 14.dp),
+                contentPaddingValues = PaddingValues(vertical = 18.dp),
                 textStyle = OnjungTheme.typography.body2,
                 textColor = OnjungTheme.colors.text_1,
                 hintColor = OnjungTheme.colors.text_3,
@@ -317,5 +335,15 @@ fun CommunityDetailCommentInputSection(
                 tint = Color.Unspecified
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun CommunityDetailScreenPreview() {
+    OnjungTheme {
+        CommunityDetailScreen(
+            appState = rememberOnjungAppState()
+        )
     }
 }

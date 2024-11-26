@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
+import com.daon.onjung.Routes
 import com.daon.onjung.ui.community.component.CommunityBanner
 import com.daon.onjung.ui.community.component.CommunityTopBar
 import com.daon.onjung.ui.community.component.PostCardItem
@@ -43,27 +44,14 @@ fun CommunityScreen(
     ){
         CommunityTopBar()
         CommunityBanner()
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
-        PostCardItem(modifier = Modifier.padding(20.dp))
+        repeat(10) {
+            PostCardItem(
+                modifier = Modifier.padding(20.dp),
+                onClick = {
+                    appState.navController.navigate(Routes.Community.DETAIL)
+                }
+            )
+        }
     }
 
 }
