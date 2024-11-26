@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.community
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.daon.onjung.OnjungAppState
@@ -13,6 +14,12 @@ fun NavGraphBuilder.communityGraph(
     composable(
         route = Routes.Community.ROUTE
     ) {
-        CommunityScreen()
+        val viewModel: CommunityWriteViewModel = hiltViewModel()
+
+        CommunityWriteScreen(
+            appState = appState,
+            viewModel = viewModel
+        )
+        //CommunityScreen()
     }
 }
