@@ -39,50 +39,51 @@ class CommunityViewModel @Inject constructor(
         if (currentState.isBoardsListFetching || currentState.isBoardsListLastPage) return
 
         viewModelScope.launch {
-            suggestionRepository.getBoards(currentState.pageSize, currentState.page)
-                .onStart {
-                    updateState(
-                        currentState.copy(
-                            isLoading = true
-                        )
+            suggestionRepository.getBoards(
+                page = currentState.page,
+                size = currentState.pageSize
+            ).onStart {
+                updateState(
+                    currentState.copy(
+                        isLoading = true
                     )
-                }
-                .collect {
-                    updateState(
-                        currentState.copy(
-                            isLoading = false
-                        )
+                )
+            }.collect {
+                updateState(
+                    currentState.copy(
+                        isLoading = false
                     )
-                    when (it) {
-                        is ApiResult.Success -> {
-                            it.data?.data?.let { result ->
-                                val updateList = currentState.posts.toMutableList()
-                                val updatedPage = if (!currentState.isBoardsListLastPage) {
-                                    currentState.page + 1
-                                } else {
-                                    currentState.page
-                                }
-                                updateList.addAll(result.boardList)
-                                updateState(currentState.copy(
-                                    posts = updateList,
-                                    isBoardsListLastPage = !result.hasNext,
-                                    page = updatedPage
-                                ))
-                                if (result.hasNext) {
-                                    updateState(currentState.copy(page = currentState.page + 1))
-                                }
+                )
+                when (it) {
+                    is ApiResult.Success -> {
+                        it.data?.data?.let { result ->
+                            val updateList = currentState.posts.toMutableList()
+                            val updatedPage = if (!currentState.isBoardsListLastPage) {
+                                currentState.page + 1
+                            } else {
+                                currentState.page
+                            }
+                            updateList.addAll(result.boardList)
+                            updateState(currentState.copy(
+                                posts = updateList,
+                                isBoardsListLastPage = !result.hasNext,
+                                page = updatedPage
+                            ))
+                            if (result.hasNext) {
+                                updateState(currentState.copy(page = currentState.page + 1))
                             }
                         }
+                    }
 
-                        is ApiResult.ApiError -> {
-                            postEffect(CommunityContract.Effect.ShowSnackBar(it.message))
-                        }
+                    is ApiResult.ApiError -> {
+                        postEffect(CommunityContract.Effect.ShowSnackBar(it.message))
+                    }
 
-                        is ApiResult.NetworkError -> {
-                            postEffect(CommunityContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
-                        }
+                    is ApiResult.NetworkError -> {
+                        postEffect(CommunityContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
                     }
                 }
+            }
         }
     }
 

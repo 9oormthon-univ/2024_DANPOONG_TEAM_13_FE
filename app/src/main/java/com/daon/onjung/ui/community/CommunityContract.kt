@@ -11,7 +11,7 @@ class CommunityContract {
         val isLoading: Boolean = false,
         val isBoardsListFetching: Boolean = false,
         val page: Int = 1,
-        val pageSize: Int = 10,
+        val pageSize: Int = 20,
         val posts: List<BoardDetail> = emptyList(),
         val isBoardsListLastPage: Boolean = false,
     ) : UiState

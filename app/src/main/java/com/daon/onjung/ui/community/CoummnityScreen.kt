@@ -101,7 +101,9 @@ fun CommunityScreen(
                         commentCount = post.commentCount,
                         imageUrl = post.imgUrl,
                         date = post.postedAgo,
-                        modifier = Modifier.padding(20.dp)
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(20.dp)
                     ) {
                         viewModel.processEvent(CommunityContract.Event.SelectPost(post.id))
                     }
