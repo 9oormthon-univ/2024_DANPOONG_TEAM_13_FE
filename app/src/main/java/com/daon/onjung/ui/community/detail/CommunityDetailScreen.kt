@@ -1,4 +1,4 @@
-package com.daon.onjung.ui.community
+package com.daon.onjung.ui.community.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,11 +16,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,22 +32,43 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
-import com.daon.onjung.rememberOnjungAppState
 import com.daon.onjung.ui.community.component.CommentItem
 import com.daon.onjung.ui.component.OTextField
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.theme.OnjungTheme
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun CommunityDetailScreen(
     appState: OnjungAppState,
+    viewModel: CommunityDetailViewModel,
+    postId: Int
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val effectFlow = viewModel.effect
+
+    LaunchedEffect(Unit) {
+        viewModel.getBoardDetail(postId)
+
+        effectFlow.collectLatest { effect ->
+            when (effect) {
+                is CommunityDetailContract.Effect.NavigateTo -> {
+                    appState.navigate(effect.destination, effect.navOptions)
+                }
+
+                is CommunityDetailContract.Effect.ShowSnackBar -> {
+                    appState.showSnackBar(effect.message)
+                }
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,28 +88,28 @@ fun CommunityDetailScreen(
         ) {
             item {
                 CommunityFeedItem(
-                    profileImgUrl = "https://avatars.githubusercontent.com/u/77449515?v=4",
-                    userName = "김온정",
-                    imageUrl = "https://avatars.githubusercontent.com/u/77449515?v=4",
-                    isLiked = true,
-                    likeCount = 10,
-                    commentCount = 5,
-                    title = "산책 다녀왔어요.",
-                    content = "이번 주말에 놀러가기 좋은 곳 추천해주세요!",
+                    profileImgUrl = uiState.writerInfo.profileImgUrl,
+                    userName = uiState.writerInfo.maskedNickname,
+                    imageUrl = uiState.boardInfo.imgUrl,
+                    isLiked = uiState.boardInfo.isLiked,
+                    likeCount = uiState.boardInfo.likeCount,
+                    commentCount = uiState.boardInfo.commentCount,
+                    title = uiState.boardInfo.title,
+                    content = uiState.boardInfo.content,
                 )
             }
 
-            items(2) {
+            items(uiState.commentList) { comment ->
                 CommentItem(
                     modifier = Modifier.padding(
                         horizontal = 20.dp,
                         vertical = 10.dp
                     ),
-                    imageUrl = "https://avatars.githubusercontent.com/u/77449515?v=4",
-                    name = "김온정",
-                    comment = "이번 주말에 놀러가기 좋은 곳 추천해주세요!",
-                    date = "2021.09.01",
-                    isMine = false
+                    imageUrl = comment.writerInfo.profileImgUrl,
+                    name = comment.writerInfo.maskedNickname,
+                    comment = comment.commentInfo.content,
+                    date = comment.commentInfo.postedAgo,
+                    isMine = comment.writerInfo.isMe
                 )
             }
 
@@ -105,7 +129,7 @@ fun CommunityDetailScreen(
 fun CommunityFeedItem(
     profileImgUrl: String,
     userName: String,
-    imageUrl: String,
+    imageUrl: String?,
     isLiked: Boolean,
     likeCount: Int,
     commentCount: Int,
@@ -123,19 +147,21 @@ fun CommunityFeedItem(
             createdAt = "9시간 전"
         )
 
-        AsyncImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .padding(
-                    start = 20.dp, end = 20.dp,
-                    bottom = 20.dp
-                )
-                .clip(RoundedCornerShape(12.dp)),
-            model = ImageRequest.Builder(context).data(imageUrl).build(),
-            contentScale = ContentScale.Crop,
-            contentDescription = "IMG_POST_IMAGE",
-        )
+        imageUrl?.let { uri ->
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .padding(
+                        start = 20.dp, end = 20.dp,
+                        bottom = 20.dp
+                    )
+                    .clip(RoundedCornerShape(12.dp)),
+                model = ImageRequest.Builder(context).data(uri).build(),
+                contentScale = ContentScale.Crop,
+                contentDescription = "IMG_POST_IMAGE",
+            )
+        }
 
         CommunityFeedDetailContent(
             title = title,
@@ -335,15 +361,5 @@ fun CommunityDetailCommentInputSection(
                 tint = Color.Unspecified
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun CommunityDetailScreenPreview() {
-    OnjungTheme {
-        CommunityDetailScreen(
-            appState = rememberOnjungAppState()
-        )
     }
 }

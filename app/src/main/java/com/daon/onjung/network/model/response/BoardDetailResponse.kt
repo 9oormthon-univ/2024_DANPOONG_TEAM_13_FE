@@ -2,14 +2,14 @@ package com.daon.onjung.network.model.response
 
 import com.google.gson.annotations.SerializedName
 
-data class PostDetailResponse(
+data class BoardDetailResponse(
     @SerializedName("writer_info")
-    val writeInfo: PostDetailWriterInfo,
+    val writerInfo: BoardDetailWriterInfo,
     @SerializedName("board_info")
-    val boardInfo: PostDetailBoardInfo
+    val boardInfo: BoardDetailBoardInfo
 )
 
-data class PostDetailWriterInfo(
+data class BoardDetailWriterInfo(
     @SerializedName("profile_img_url")
     val profileImgUrl: String,
     @SerializedName("masked_nickname")
@@ -18,13 +18,15 @@ data class PostDetailWriterInfo(
     val isMe: Boolean
 )
 
-data class PostDetailBoardInfo(
+data class BoardDetailBoardInfo(
     @SerializedName("id")
     val id: Int,
     @SerializedName("img_url")
     val imgUrl: String?,
     @SerializedName("title")
     val title: String,
+    @SerializedName("content")
+    val content: String,
     @SerializedName("posted_ago")
     val postedAgo: String,
     @SerializedName("like_count")

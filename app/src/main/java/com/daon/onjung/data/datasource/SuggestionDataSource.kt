@@ -3,6 +3,7 @@ package com.daon.onjung.data.datasource
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.PostCommentRequest
+import com.daon.onjung.network.model.response.BoardDetailResponse
 import com.daon.onjung.network.model.response.CommentListResponse
 import com.daon.onjung.network.model.response.PostBoardResponse
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +19,7 @@ interface SuggestionDataSource {
 
     suspend fun getBoardDetail(
         id: Int
-    ) : Flow<ApiResult<BaseResponse<PostBoardResponse>>>
+    ) : Flow<ApiResult<BaseResponse<BoardDetailResponse>>>
 
     suspend fun postLikeBoard(
         id: Int

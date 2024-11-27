@@ -3,6 +3,7 @@ package com.daon.onjung.network.service
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.PostCommentRequest
+import com.daon.onjung.network.model.response.BoardDetailResponse
 import com.daon.onjung.network.model.response.CommentListResponse
 import com.daon.onjung.network.model.response.PostBoardResponse
 import okhttp3.MultipartBody
@@ -28,7 +29,7 @@ interface SuggestionService {
     @GET("/api/v1/boards/{id}/details")
     suspend fun getBoardDetail(
         @Path("id") id: Int
-    ) : ApiResult<BaseResponse<PostBoardResponse>>
+    ) : ApiResult<BaseResponse<BoardDetailResponse>>
 
     @PUT("/api/v1/boards/{id}/likes")
     suspend fun postLikeBoard(
