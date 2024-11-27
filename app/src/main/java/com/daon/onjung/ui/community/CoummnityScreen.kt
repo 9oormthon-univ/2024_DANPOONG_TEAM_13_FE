@@ -75,10 +75,10 @@ fun CommunityScreen(
                     bottom = 25.dp
                 )
         ) {
-            /*appState.navigate(
+            appState.navigate(
                 destination = "${Routes.Community.DETAIL}?id=9"
-            )*/
-            appState.navigate(Routes.Community.WRITE)
+            )
+            //appState.navigate(Routes.Community.WRITE)
         }
     }
 }

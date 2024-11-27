@@ -11,7 +11,6 @@ import com.daon.onjung.util.UiState
 class CommunityDetailContract {
     data class State(
         val isLoading: Boolean = false,
-        val boardId: Int = 0,
         val writerInfo: BoardDetailWriterInfo = BoardDetailWriterInfo(
             profileImgUrl = "",
             maskedNickname = "",
@@ -36,7 +35,7 @@ class CommunityDetailContract {
     ) : UiState
 
     sealed class Event : UiEvent {
-        data class LoadMoreCommentList(val postId: Int) : Event()
+        data object LoadMoreCommentList : Event()
     }
 
     sealed class Effect : UiEffect {

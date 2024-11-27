@@ -1,6 +1,5 @@
 package com.daon.onjung.ui.community
 
-import android.util.Log
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -48,17 +47,12 @@ fun NavGraphBuilder.communityGraph(
                 defaultValue = ""
             }
         )
-    ) { entry ->
+    ) {
         val viewModel: CommunityDetailViewModel = hiltViewModel()
-        val idString = entry.arguments?.getString("id") ?: "0"
-        val id = idString.toInt()
-
-        Log.d("CommunityNavigation", "communityGraph: id = $id")
 
         CommunityDetailScreen(
             appState = appState,
-            viewModel = viewModel,
-            postId = id
+            viewModel = viewModel
         )
     }
 }

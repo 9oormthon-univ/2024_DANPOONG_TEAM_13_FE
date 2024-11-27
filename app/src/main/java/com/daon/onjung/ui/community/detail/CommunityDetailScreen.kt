@@ -11,12 +11,14 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -24,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,15 +50,14 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun CommunityDetailScreen(
     appState: OnjungAppState,
-    viewModel: CommunityDetailViewModel,
-    postId: Int
+    viewModel: CommunityDetailViewModel
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val effectFlow = viewModel.effect
 
-    LaunchedEffect(Unit) {
-        viewModel.getBoardDetail(postId)
+    val listState = rememberLazyListState()
 
+    LaunchedEffect(Unit) {
         effectFlow.collectLatest { effect ->
             when (effect) {
                 is CommunityDetailContract.Effect.NavigateTo -> {
@@ -67,6 +69,17 @@ fun CommunityDetailScreen(
                 }
             }
         }
+    }
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collect { lastVisibleIndex ->
+                val totalItemCount = listState.layoutInfo.totalItemsCount
+                if (lastVisibleIndex != null && lastVisibleIndex >= totalItemCount - 1) {
+                    viewModel.processEvent(CommunityDetailContract.Event.LoadMoreCommentList)
+                }
+            }
+
     }
 
     Column(
@@ -84,7 +97,8 @@ fun CommunityDetailScreen(
         )
 
         LazyColumn(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            state = listState
         ) {
             item {
                 CommunityFeedItem(
@@ -113,14 +127,16 @@ fun CommunityDetailScreen(
                 )
             }
 
-            item {
+            /*item {
                 Spacer(modifier = Modifier.height(50.dp))
-            }
+            }*/
         }
 
         CommunityDetailCommentInputSection(
-            profileImageUrl = "https://avatars.githubusercontent.com/u/77449515?v=4",
-            commentContent = ""
+            profileImageUrl = uiState.writerInfo.profileImgUrl,
+            commentContent = uiState.commentInput,
+            onContentChange = viewModel::updateCommentInput,
+            onPostComment = viewModel::postComment
         )
     }
 }
@@ -175,8 +191,6 @@ fun CommunityFeedItem(
         ) {
 
         }
-
-
     }
 }
 
@@ -204,6 +218,7 @@ fun CommunityFeedProfileSection(
                 .clip(CircleShape),
             model = ImageRequest.Builder(context).data(profileImageUrl).build(),
             placeholder = painterResource(id = R.drawable.ic_profile_icon),
+            error = painterResource(id = R.drawable.ic_profile_icon),
             contentScale = ContentScale.Crop,
             contentDescription = "IMG_PROFILE_IMAGE",
         )
@@ -306,12 +321,14 @@ fun CommunityFeedDetailContent(
 fun CommunityDetailCommentInputSection(
     profileImageUrl: String,
     commentContent: String,
+    onContentChange: (String) -> Unit,
+    onPostComment: () -> Unit
 ) {
     val context = LocalContext.current
 
     val enabled = commentContent.isNotEmpty()
 
-    Column {
+    Column(modifier = Modifier.imePadding()) {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
@@ -332,6 +349,7 @@ fun CommunityDetailCommentInputSection(
                     .clip(CircleShape),
                 model = ImageRequest.Builder(context).data(profileImageUrl).build(),
                 placeholder = painterResource(id = R.drawable.ic_profile_icon),
+                error = painterResource(id = R.drawable.ic_profile_icon),
                 contentScale = ContentScale.Crop,
                 contentDescription = "IMG_PROFILE_IMAGE",
             )
@@ -340,7 +358,7 @@ fun CommunityDetailCommentInputSection(
 
             OTextField(
                 value = commentContent,
-                onValueChange = {},
+                onValueChange = onContentChange,
                 placeholderText = "따뜻한 댓글을 남겨주세요.",
                 modifier = Modifier.weight(1f),
                 contentPaddingValues = PaddingValues(vertical = 18.dp),
@@ -357,6 +375,13 @@ fun CommunityDetailCommentInputSection(
                 } else {
                     R.drawable.ic_comment_upload_disabled
                 }),
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .clickable {
+                        if (enabled) {
+                            onPostComment()
+                        }
+                    },
                 contentDescription = "ic_post_comment",
                 tint = Color.Unspecified
             )

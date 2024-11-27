@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.community.detail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.daon.onjung.Constants
 import com.daon.onjung.data.repository.SuggestionRepository
@@ -12,11 +13,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CommunityDetailViewModel @Inject constructor(
-    private val suggestionRepository: SuggestionRepository
+    private val suggestionRepository: SuggestionRepository,
+    savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CommunityDetailContract.State, CommunityDetailContract.Event, CommunityDetailContract.Effect>(
     initialState = CommunityDetailContract.State()
 ) {
+    private val boardIdSting: String = savedStateHandle.get<String>("id") ?: "0"
+    private val boardId: Int = boardIdSting.toInt()
+
     init {
+        getBoardDetail()
         getCommentList()
     }
 
@@ -28,15 +34,10 @@ class CommunityDetailViewModel @Inject constructor(
         }
     }
 
-    fun getBoardDetail(id: Int) = viewModelScope.launch {
-        suggestionRepository.getBoardDetail(id)
+    private fun getBoardDetail() = viewModelScope.launch {
+        suggestionRepository.getBoardDetail(boardId)
             .onStart {
-                updateState(
-                    currentState.copy(
-                        isLoading = true,
-                        boardId = id
-                    )
-                )
+                updateState(currentState.copy(isLoading = true))
             }
             .collect {
                 updateState(currentState.copy(isLoading = false))
@@ -64,7 +65,7 @@ class CommunityDetailViewModel @Inject constructor(
         if (currentState.isCommentListFetching || currentState.isCommentListLastPage) return
 
         viewModelScope.launch {
-            suggestionRepository.getCommentList(currentState.boardInfo.id, currentState.commentListCurrentPage, currentState.commentListPageSize)
+            suggestionRepository.getCommentList(boardId, currentState.commentListCurrentPage, currentState.commentListPageSize)
                 .onStart {
                     updateState(
                         currentState.copy(
@@ -137,7 +138,7 @@ class CommunityDetailViewModel @Inject constructor(
             }
     }
 
-    private fun postComment() = viewModelScope.launch {
+    fun postComment() = viewModelScope.launch {
         suggestionRepository.postComment(
             id = currentState.boardInfo.id,
             content = currentState.commentInput
@@ -146,6 +147,9 @@ class CommunityDetailViewModel @Inject constructor(
                 updateState(currentState.copy(isLoading = false))
                 when (it) {
                     is ApiResult.Success -> {
+                        updateState(
+                            currentState.copy(commentInput = "")
+                        )
                         /*
                         updateState(currentState.copy(
                             commentList = listOf(it.data?.data?.commentDetail) + currentState.commentList

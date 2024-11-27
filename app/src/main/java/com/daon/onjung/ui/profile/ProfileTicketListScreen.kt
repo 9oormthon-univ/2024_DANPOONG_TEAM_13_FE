@@ -82,8 +82,8 @@ internal fun ProfileTicketListScreen(
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collect { lastVisibleItemIndex ->
-                val totalItems = listState.layoutInfo.totalItemsCount
-                if (lastVisibleItemIndex == totalItems - 1 && !uiState.isTicketListLastPage) {
+                val totalItemCount = listState.layoutInfo.totalItemsCount
+                if (lastVisibleItemIndex == totalItemCount - 1 && !uiState.isTicketListLastPage) {
                     viewModel.processEvent(ProfileTicketListContract.Event.LoadMoreTicketList)
                 }
         }
