@@ -64,4 +64,9 @@ class SuggestionRepositoryImpl @Inject constructor(
         page: Int,
         size: Int
     ) = suggestionDataSource.getCommentList(id, page, size)
+
+    override suspend fun getBoards(
+        page: Int,
+        size: Int
+    ) = suggestionDataSource.getBoards(page, size)
 }

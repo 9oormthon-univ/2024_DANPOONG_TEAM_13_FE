@@ -8,6 +8,7 @@ import com.daon.onjung.network.model.response.CommentDetail
 import com.daon.onjung.network.model.response.CommentListResponse
 import com.daon.onjung.network.model.response.LikeStatusResponse
 import com.daon.onjung.network.model.response.PostBoardResponse
+import com.daon.onjung.network.model.response.BoardListResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -51,4 +52,9 @@ interface SuggestionService {
         @Query("size") size: Int
     ) : ApiResult<BaseResponse<CommentListResponse>>
 
+    @GET("/api/v1/boards/overviews")
+    suspend fun getBoards(
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ) : ApiResult<BaseResponse<BoardListResponse>>
 }

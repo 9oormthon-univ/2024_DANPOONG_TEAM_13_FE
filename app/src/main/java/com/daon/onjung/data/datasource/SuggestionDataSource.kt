@@ -4,6 +4,7 @@ import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.PostCommentRequest
 import com.daon.onjung.network.model.response.BoardDetailResponse
+import com.daon.onjung.network.model.response.BoardListResponse
 import com.daon.onjung.network.model.response.CommentDetail
 import com.daon.onjung.network.model.response.CommentListResponse
 import com.daon.onjung.network.model.response.LikeStatusResponse
@@ -38,4 +39,8 @@ interface SuggestionDataSource {
         size: Int
     ) : Flow<ApiResult<BaseResponse<CommentListResponse>>>
 
+    suspend fun getBoards(
+        page: Int,
+        size: Int
+    ) : Flow<ApiResult<BaseResponse<BoardListResponse>>>
 }

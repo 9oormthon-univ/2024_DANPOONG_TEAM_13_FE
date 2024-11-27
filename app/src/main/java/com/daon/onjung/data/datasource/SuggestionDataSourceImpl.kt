@@ -5,6 +5,7 @@ import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
 import com.daon.onjung.network.model.request.PostCommentRequest
 import com.daon.onjung.network.model.response.BoardDetailResponse
+import com.daon.onjung.network.model.response.BoardListResponse
 import com.daon.onjung.network.model.response.CommentDetail
 import com.daon.onjung.network.model.response.CommentListResponse
 import com.daon.onjung.network.model.response.LikeStatusResponse
@@ -57,4 +58,10 @@ data class SuggestionDataSourceImpl @Inject constructor(
         emit(suggestionService.getCommentList(id, page, size))
     }.flowOn(ioDispatcher)
 
+    override suspend fun getBoards(
+        page: Int,
+        size: Int
+    ): Flow<ApiResult<BaseResponse<BoardListResponse>>> = flow {
+        emit(suggestionService.getBoards(page, size))
+    }.flowOn(ioDispatcher)
 }
