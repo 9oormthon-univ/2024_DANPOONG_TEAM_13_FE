@@ -9,10 +9,11 @@ import com.daon.onjung.util.UiState
 class CommunityContract {
     data class State(
         val isLoading: Boolean = false,
+        val isBoardsListFetching: Boolean = false,
         val page: Int = 1,
         val pageSize: Int = 10,
         val posts: List<BoardDetail> = emptyList(),
-        val hasNext: Boolean = false
+        val isBoardsListLastPage: Boolean = false,
     ) : UiState
 
     sealed class Event : UiEvent {

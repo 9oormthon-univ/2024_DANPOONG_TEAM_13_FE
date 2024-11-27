@@ -58,7 +58,7 @@ fun CommunityScreen(
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collect { lastVisibleItemIndex ->
                 val totalItems = listState.layoutInfo.totalItemsCount
-                if (lastVisibleItemIndex == totalItems - 1 && uiState.hasNext) {
+                if (lastVisibleItemIndex == totalItems - 1 && !uiState.isBoardsListLastPage) {
                     viewModel.processEvent(CommunityContract.Event.LoadPosts)
                 }
             }

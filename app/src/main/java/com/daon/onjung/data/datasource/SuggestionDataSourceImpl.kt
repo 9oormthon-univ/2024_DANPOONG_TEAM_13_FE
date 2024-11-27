@@ -25,10 +25,10 @@ data class SuggestionDataSourceImpl @Inject constructor(
         emit(suggestionService.postBoard(body, file))
     }.flowOn(ioDispatcher)
 
-    override suspend fun getBoard(
+    override suspend fun getBoards(
         page: Int,
         size: Int
     ): Flow<ApiResult<BaseResponse<BoardListResponse>>> = flow {
-        emit(suggestionService.getBoard(page, size))
-    }
+        emit(suggestionService.getBoards(page, size))
+    }.flowOn(ioDispatcher)
 }

@@ -14,7 +14,7 @@ interface SuggestionDataSource {
         file: MultipartBody.Part?
     ) : Flow<ApiResult<BaseResponse<Unit>>>
 
-    suspend fun getBoard(
+    suspend fun getBoards(
         page: Int,
         size: Int
     ) : Flow<ApiResult<BaseResponse<BoardListResponse>>>

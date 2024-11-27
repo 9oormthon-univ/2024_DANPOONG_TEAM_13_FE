@@ -21,7 +21,7 @@ interface SuggestionService {
     ) : ApiResult<BaseResponse<Unit>>
 
     @GET("/api/v1/boards/overviews")
-    suspend fun getBoard(
+    suspend fun getBoards(
         @Query("page") page: Int,
         @Query("size") size: Int
     ) : ApiResult<BaseResponse<BoardListResponse>>

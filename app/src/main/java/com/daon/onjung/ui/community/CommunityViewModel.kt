@@ -1,6 +1,5 @@
 package com.daon.onjung.ui.community
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.daon.onjung.Constants
 import com.daon.onjung.Routes
@@ -27,47 +26,64 @@ class CommunityViewModel @Inject constructor(
                 ))
             }
             is CommunityContract.Event.LoadPosts -> {
-                getPost()
+                getPosts()
             }
         }
     }
 
     init {
-        getPost()
+        getPosts()
     }
 
-    private fun getPost() = viewModelScope.launch {
-        suggestionRepository.getBoard(
-            size = currentState.pageSize,
-            page = currentState.page
-        ).onStart {
-            updateState(currentState.copy(isLoading = true))
-        }.collect {
-                updateState(currentState.copy(isLoading = false))
-                when (it) {
-                    is ApiResult.Success -> {
-                        it.data?.data?.let { result ->
-                            val updateList = currentState.posts.toMutableList()
-                            updateList.addAll(result.boardList)
-                            updateState(currentState.copy(
-                                posts = updateList,
-                                hasNext = result.hasNext
-                            ))
-                            if (result.hasNext) {
-                                updateState(currentState.copy(page = currentState.page + 1))
+    private fun getPosts() {
+        if (currentState.isBoardsListFetching || currentState.isBoardsListLastPage) return
+
+        viewModelScope.launch {
+            suggestionRepository.getBoards(currentState.pageSize, currentState.page)
+                .onStart {
+                    updateState(
+                        currentState.copy(
+                            isLoading = true
+                        )
+                    )
+                }
+                .collect {
+                    updateState(
+                        currentState.copy(
+                            isLoading = false
+                        )
+                    )
+                    when (it) {
+                        is ApiResult.Success -> {
+                            it.data?.data?.let { result ->
+                                val updateList = currentState.posts.toMutableList()
+                                val updatedPage = if (!currentState.isBoardsListLastPage) {
+                                    currentState.page + 1
+                                } else {
+                                    currentState.page
+                                }
+                                updateList.addAll(result.boardList)
+                                updateState(currentState.copy(
+                                    posts = updateList,
+                                    isBoardsListLastPage = !result.hasNext,
+                                    page = updatedPage
+                                ))
+                                if (result.hasNext) {
+                                    updateState(currentState.copy(page = currentState.page + 1))
+                                }
                             }
                         }
-                    }
 
-                    is ApiResult.ApiError -> {
-                        postEffect(CommunityContract.Effect.ShowSnackBar(it.message))
-                    }
+                        is ApiResult.ApiError -> {
+                            postEffect(CommunityContract.Effect.ShowSnackBar(it.message))
+                        }
 
-                    is ApiResult.NetworkError -> {
-                        postEffect(CommunityContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
+                        is ApiResult.NetworkError -> {
+                            postEffect(CommunityContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
+                        }
                     }
                 }
-            }
+        }
     }
 
 
