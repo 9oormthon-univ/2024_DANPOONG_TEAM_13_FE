@@ -18,8 +18,7 @@ class CommunityDetailViewModel @Inject constructor(
 ) : BaseViewModel<CommunityDetailContract.State, CommunityDetailContract.Event, CommunityDetailContract.Effect>(
     initialState = CommunityDetailContract.State()
 ) {
-    private val boardIdSting: String = savedStateHandle.get<String>("id") ?: "0"
-    private val boardId: Int = boardIdSting.toInt()
+    private val boardId: Int = savedStateHandle.get<Int>("id") ?: 0
 
     init {
         getBoardDetail()
@@ -30,6 +29,14 @@ class CommunityDetailViewModel @Inject constructor(
         when (event) {
             is CommunityDetailContract.Event.LoadMoreCommentList -> {
                 getCommentList()
+            }
+
+            is CommunityDetailContract.Event.PostComment -> {
+                postComment()
+            }
+
+            is CommunityDetailContract.Event.ToggleLike -> {
+                postLikeBoard()
             }
         }
     }
@@ -109,18 +116,26 @@ class CommunityDetailViewModel @Inject constructor(
         }
     }
 
-    private fun postLikeBoard(id: Int) = viewModelScope.launch {
-        suggestionRepository.postLikeBoard(id)
+    private fun postLikeBoard() = viewModelScope.launch {
+        suggestionRepository.putLikeBoard(boardId)
             .onStart { updateState(currentState.copy(isLoading = true)) }
             .collect {
                 updateState(currentState.copy(isLoading = false))
                 when (it) {
                     is ApiResult.Success -> {
-                        it.data?.data?.let {
+                        it.data?.data?.let { result ->
+                            val updatedLikeStatus = result.isLike
+                            val updatedLikeCount = if (result.isLike) {
+                                currentState.boardInfo.likeCount + 1
+                            } else {
+                                currentState.boardInfo.likeCount - 1
+                            }
+
                             updateState(
                                 currentState.copy(
                                     boardInfo = currentState.boardInfo.copy(
-                                        isLiked = true,
+                                        isLiked = updatedLikeStatus,
+                                        likeCount = updatedLikeCount
                                     )
                                 )
                             )
@@ -138,31 +153,43 @@ class CommunityDetailViewModel @Inject constructor(
             }
     }
 
-    fun postComment() = viewModelScope.launch {
-        suggestionRepository.postComment(
-            id = currentState.boardInfo.id,
-            content = currentState.commentInput
-        ).onStart { updateState(currentState.copy(isLoading = true)) }
-            .collect {
-                updateState(currentState.copy(isLoading = false))
-                when (it) {
-                    is ApiResult.Success -> {
-                        updateState(
-                            currentState.copy(commentInput = "")
-                        )
-                        /*
-                        updateState(currentState.copy(
-                            commentList = listOf(it.data?.data?.commentDetail) + currentState.commentList
-                        ))*/
-                    }
-                    is ApiResult.ApiError -> {
-                        postEffect(CommunityDetailContract.Effect.ShowSnackBar(it.message))
-                    }
-                    is ApiResult.NetworkError -> {
-                        postEffect(CommunityDetailContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
+    private fun postComment() {
+        viewModelScope.launch {
+            if (currentState.isLoading) return@launch
+
+            suggestionRepository.postComment(
+                id = currentState.boardInfo.id,
+                content = currentState.commentInput
+            ).onStart { updateState(currentState.copy(isLoading = true)) }
+                .collect {
+                    updateState(currentState.copy(isLoading = false))
+                    when (it) {
+                        is ApiResult.Success -> {
+                            it.data?.data?.let { result ->
+                                val updatedList = currentState.commentList.toMutableList()
+                                updatedList.add(result)
+                                updateState(
+                                    currentState.copy(
+                                        commentInput = "",
+                                        commentList = updatedList,
+                                        boardInfo = currentState.boardInfo.copy(
+                                            commentCount = currentState.boardInfo.commentCount + 1
+                                        )
+                                    )
+                                )
+                            }
+                        }
+
+                        is ApiResult.ApiError -> {
+                            postEffect(CommunityDetailContract.Effect.ShowSnackBar(it.message))
+                        }
+
+                        is ApiResult.NetworkError -> {
+                            postEffect(CommunityDetailContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
+                        }
                     }
                 }
-            }
+        }
     }
 
     fun updateCommentInput(commentInput: String)  {

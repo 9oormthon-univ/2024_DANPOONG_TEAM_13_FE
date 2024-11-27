@@ -85,7 +85,7 @@ fun CommunityDetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(OnjungTheme.colors.gray_2)
+            .background(Color.White)
             .statusBarsPadding()
     ) {
         TopBar(
@@ -110,6 +110,9 @@ fun CommunityDetailScreen(
                     commentCount = uiState.boardInfo.commentCount,
                     title = uiState.boardInfo.title,
                     content = uiState.boardInfo.content,
+                    onLike = {
+                        viewModel.processEvent(CommunityDetailContract.Event.ToggleLike)
+                    }
                 )
             }
 
@@ -126,17 +129,15 @@ fun CommunityDetailScreen(
                     isMine = comment.writerInfo.isMe
                 )
             }
-
-            /*item {
-                Spacer(modifier = Modifier.height(50.dp))
-            }*/
         }
 
         CommunityDetailCommentInputSection(
             profileImageUrl = uiState.writerInfo.profileImgUrl,
             commentContent = uiState.commentInput,
             onContentChange = viewModel::updateCommentInput,
-            onPostComment = viewModel::postComment
+            onPostComment = {
+                viewModel.processEvent(CommunityDetailContract.Event.PostComment)
+            }
         )
     }
 }
@@ -151,6 +152,7 @@ fun CommunityFeedItem(
     commentCount: Int,
     title: String,
     content: String,
+    onLike: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -189,7 +191,7 @@ fun CommunityFeedItem(
             likeCount = likeCount,
             commentCount = commentCount
         ) {
-
+            onLike()
         }
     }
 }
@@ -261,9 +263,9 @@ fun CommunityFeedLikeAndCommentSection(
                 modifier = Modifier.clickable {
                     onLike()
                 },
-                painter = painterResource(id = R.drawable.ic_post_like),
+                painter = painterResource(id = if (isLiked) R.drawable.ic_post_liked else  R.drawable.ic_post_like),
                 contentDescription = "ic_post_like",
-                tint = OnjungTheme.colors.text_3
+                tint = Color.Unspecified
             )
 
             Text(

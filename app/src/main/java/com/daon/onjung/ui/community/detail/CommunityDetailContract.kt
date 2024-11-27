@@ -36,6 +36,8 @@ class CommunityDetailContract {
 
     sealed class Event : UiEvent {
         data object LoadMoreCommentList : Event()
+        data object PostComment : Event()
+        data object ToggleLike : Event()
     }
 
     sealed class Effect : UiEffect {

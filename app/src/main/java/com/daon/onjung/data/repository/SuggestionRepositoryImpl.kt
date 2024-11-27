@@ -50,9 +50,9 @@ class SuggestionRepositoryImpl @Inject constructor(
         id: Int
     ) = suggestionDataSource.getBoardDetail(id)
 
-    override suspend fun postLikeBoard(
+    override suspend fun putLikeBoard(
         id: Int
-    ) = suggestionDataSource.postLikeBoard(id)
+    ) = suggestionDataSource.putLikeBoard(id)
 
     override suspend fun postComment(
         id: Int,

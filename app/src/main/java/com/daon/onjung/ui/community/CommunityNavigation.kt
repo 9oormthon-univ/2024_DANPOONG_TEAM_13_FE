@@ -43,8 +43,8 @@ fun NavGraphBuilder.communityGraph(
         route = "${Routes.Community.DETAIL}?id={id}",
         arguments = listOf(
             navArgument("id") {
-                type = NavType.StringType
-                defaultValue = ""
+                type = NavType.IntType
+                defaultValue = 0
             }
         )
     ) {

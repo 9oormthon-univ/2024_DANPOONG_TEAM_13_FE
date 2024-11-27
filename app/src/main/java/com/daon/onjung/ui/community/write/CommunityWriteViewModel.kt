@@ -1,7 +1,6 @@
 package com.daon.onjung.ui.community.write
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.navOptions
 import com.daon.onjung.Constants
@@ -39,8 +38,6 @@ class CommunityWriteViewModel @Inject constructor(
             updateState(currentState.copy(isLoading = false))
             when (it) {
                 is ApiResult.Success -> {
-                    Log.d("CommunityWriteViewModel", "uploadPost: ${Routes.Community.DETAIL}?id=${it.data?.data?.id}")
-
                     postEffect(CommunityWriteContract.Effect.ShowSnackBar("게시글이 성공적으로 등록되었습니다."))
                     postEffect(CommunityWriteContract.Effect.NavigateTo(
                         destination = "${Routes.Community.DETAIL}?id=${it.data?.data?.id}",
