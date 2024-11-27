@@ -3,6 +3,7 @@ package com.daon.onjung.data.datasource
 import com.daon.onjung.di.IoDispatcher
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.response.BoardListResponse
 import com.daon.onjung.network.service.SuggestionService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -24,4 +25,10 @@ data class SuggestionDataSourceImpl @Inject constructor(
         emit(suggestionService.postBoard(body, file))
     }.flowOn(ioDispatcher)
 
+    override suspend fun getBoard(
+        page: Int,
+        size: Int
+    ): Flow<ApiResult<BaseResponse<BoardListResponse>>> = flow {
+        emit(suggestionService.getBoard(page, size))
+    }
 }

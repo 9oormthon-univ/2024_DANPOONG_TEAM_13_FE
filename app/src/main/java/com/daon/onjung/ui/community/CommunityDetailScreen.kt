@@ -44,6 +44,7 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Composable
 fun CommunityDetailScreen(
     appState: OnjungAppState,
+    postId: Int
 ) {
     Column(
         modifier = Modifier
@@ -343,7 +344,8 @@ fun CommunityDetailCommentInputSection(
 fun CommunityDetailScreenPreview() {
     OnjungTheme {
         CommunityDetailScreen(
-            appState = rememberOnjungAppState()
+            appState = rememberOnjungAppState(),
+            postId = 1
         )
     }
 }
