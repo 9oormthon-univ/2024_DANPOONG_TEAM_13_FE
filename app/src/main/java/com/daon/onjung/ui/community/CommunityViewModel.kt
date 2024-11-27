@@ -22,7 +22,7 @@ class CommunityViewModel @Inject constructor(
         when (event) {
             is CommunityContract.Event.SelectPost -> {
                 postEffect(CommunityContract.Effect.NavigateTo(
-                    "${Routes.Community.DETAIL}/${event.postId}",
+                    "${Routes.Community.DETAIL}?id=${event.postId}",
                 ))
             }
             is CommunityContract.Event.LoadPosts -> {
