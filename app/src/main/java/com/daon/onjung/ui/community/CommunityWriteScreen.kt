@@ -182,7 +182,7 @@ fun CommunityWriteScreen(
             FilledWidthButton(
                 text = "등록하기"
             ) {
-
+                viewModel.processEvent(CommunityWriteContract.Event.UploadPost)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
