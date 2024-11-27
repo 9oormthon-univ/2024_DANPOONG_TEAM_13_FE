@@ -11,6 +11,7 @@ import com.daon.onjung.network.service.CompanyService
 import com.daon.onjung.network.service.EventService
 import com.daon.onjung.network.service.OnjungService
 import com.daon.onjung.network.service.StoreService
+import com.daon.onjung.network.service.SuggestionService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -79,6 +80,11 @@ object NetworkModule {
     @Singleton
     fun providesEventService(retrofit: Retrofit): EventService =
         retrofit.create(EventService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesSuggestionsService(retrofit: Retrofit): SuggestionService =
+        retrofit.create(SuggestionService::class.java)
 
     @Provides
     @Singleton

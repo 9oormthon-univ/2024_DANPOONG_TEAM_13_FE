@@ -16,12 +16,11 @@ class CommunityWriteContract {
         val title: String = "",
         val content: String = "",
         val titleMaxLength: Int = 20,
-        val contentMaxLength: Int = 200
+        val contentMaxLength: Int = 500
     ) : UiState
 
     sealed class Event : UiEvent {
-        data class SelectImage(val imgUrl: String) : Event()
-        data class UploadPost(val imgUrl: String?, val title: String, val content: String) : Event()
+        data object UploadPost : Event()
     }
 
     sealed class Effect : UiEffect {

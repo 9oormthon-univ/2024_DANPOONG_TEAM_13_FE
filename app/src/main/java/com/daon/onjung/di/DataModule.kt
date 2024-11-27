@@ -12,6 +12,8 @@ import com.daon.onjung.data.datasource.OnjungDataSource
 import com.daon.onjung.data.datasource.OnjungDataSourceImpl
 import com.daon.onjung.data.datasource.StoreDataSource
 import com.daon.onjung.data.datasource.StoreDataSourceImpl
+import com.daon.onjung.data.datasource.SuggestionDataSource
+import com.daon.onjung.data.datasource.SuggestionDataSourceImpl
 import com.daon.onjung.data.repository.AuthRepository
 import com.daon.onjung.data.repository.AuthRepositoryImpl
 import com.daon.onjung.data.repository.CompanyRepository
@@ -24,6 +26,8 @@ import com.daon.onjung.data.repository.OnjungRepository
 import com.daon.onjung.data.repository.OnjungRepositoryImpl
 import com.daon.onjung.data.repository.StoreRepository
 import com.daon.onjung.data.repository.StoreRepositoryImpl
+import com.daon.onjung.data.repository.SuggestionRepository
+import com.daon.onjung.data.repository.SuggestionRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -92,5 +96,15 @@ abstract class DataModule {
     abstract fun bindsEventRepository(
         eventRepository: EventRepositoryImpl
     ): EventRepository
+
+    @Binds
+    abstract fun bindsSuggestionDataSource(
+        suggestionDataSource: SuggestionDataSourceImpl
+    ): SuggestionDataSource
+
+    @Binds
+    abstract fun bindsSuggestionRepository(
+        suggestionRepository: SuggestionRepositoryImpl
+    ): SuggestionRepository
 
 }
