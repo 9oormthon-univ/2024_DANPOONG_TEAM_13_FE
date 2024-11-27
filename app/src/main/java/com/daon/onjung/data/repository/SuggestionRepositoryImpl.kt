@@ -43,4 +43,9 @@ class SuggestionRepositoryImpl @Inject constructor(
 
         return suggestionDataSource.postBoard(body, imageFile)
     }
+
+    override suspend fun getBoards(
+        page: Int,
+        size: Int
+    ) = suggestionDataSource.getBoards(page, size)
 }
