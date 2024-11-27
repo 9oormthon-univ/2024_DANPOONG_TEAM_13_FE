@@ -2,6 +2,7 @@ package com.daon.onjung.network.service
 
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.response.PostBoardResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Multipart
@@ -15,6 +16,6 @@ interface SuggestionService {
     suspend fun postBoard(
         @Part("body") request: RequestBody,
         @Part file: MultipartBody.Part?
-    ) : ApiResult<BaseResponse<Unit>>
+    ) : ApiResult<BaseResponse<PostBoardResponse>>
 
 }

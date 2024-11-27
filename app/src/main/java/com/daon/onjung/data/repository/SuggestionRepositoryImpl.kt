@@ -5,6 +5,7 @@ import android.net.Uri
 import com.daon.onjung.data.datasource.SuggestionDataSource
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.response.PostBoardResponse
 import com.daon.onjung.util.fileFromContentUri
 import com.daon.onjung.util.resizeAndSaveImage
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -25,7 +26,7 @@ class SuggestionRepositoryImpl @Inject constructor(
         imageUri: Uri?,
         title: String,
         content: String
-    ): Flow<ApiResult<BaseResponse<Unit>>> {
+    ): Flow<ApiResult<BaseResponse<PostBoardResponse>>> {
         val jsonObjectBuilder = JSONObject().apply {
             put("title", title)
             put("content", content)

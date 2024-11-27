@@ -39,13 +39,10 @@ class CommunityWriteViewModel @Inject constructor(
             when (it) {
                 is ApiResult.Success -> {
                     postEffect(CommunityWriteContract.Effect.ShowSnackBar("게시글이 성공적으로 등록되었습니다."))
-                    // TODO : API 응답에 id 내려주면 게시글 상세 보기로 이동 예정
                     postEffect(CommunityWriteContract.Effect.NavigateTo(
-                        destination = Routes.Community.ROUTE,
+                        destination = Routes.Community.DETAIL,
                         navOptions = navOptions {
-                            popUpTo(Routes.Community.ROUTE) {
-                                inclusive = true
-                            }
+                            popUpTo(Routes.Community.ROUTE)
                         }
                     ))
                 }
