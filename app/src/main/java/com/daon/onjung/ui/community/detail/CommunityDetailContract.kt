@@ -46,5 +46,6 @@ class CommunityDetailContract {
             val navOptions: NavOptions? = null
         ) : Effect()
         data class ShowSnackBar(val message: String) : Effect()
+        data object ScrollToLastItem : Effect()
     }
 }

@@ -177,6 +177,7 @@ class CommunityDetailViewModel @Inject constructor(
                                         )
                                     )
                                 )
+                                postEffect(CommunityDetailContract.Effect.ScrollToLastItem)
                             }
                         }
 

@@ -67,6 +67,11 @@ fun CommunityDetailScreen(
                 is CommunityDetailContract.Effect.ShowSnackBar -> {
                     appState.showSnackBar(effect.message)
                 }
+
+                is CommunityDetailContract.Effect.ScrollToLastItem -> {
+                    val totalItemCount = listState.layoutInfo.totalItemsCount
+                    listState.scrollToItem(totalItemCount - 1)
+                }
             }
         }
     }
@@ -79,7 +84,6 @@ fun CommunityDetailScreen(
                     viewModel.processEvent(CommunityDetailContract.Event.LoadMoreCommentList)
                 }
             }
-
     }
 
     Column(
