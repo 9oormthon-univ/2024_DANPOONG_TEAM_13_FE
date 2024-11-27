@@ -1,4 +1,4 @@
-package com.daon.onjung.ui.community
+package com.daon.onjung.ui.community.write
 
 import android.net.Uri
 import androidx.navigation.NavOptions

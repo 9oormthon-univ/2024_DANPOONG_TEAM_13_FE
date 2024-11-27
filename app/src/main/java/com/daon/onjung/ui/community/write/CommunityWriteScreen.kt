@@ -1,4 +1,4 @@
-package com.daon.onjung.ui.community
+package com.daon.onjung.ui.community.write
 
 import android.Manifest
 import android.content.Intent
@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -124,6 +125,7 @@ fun CommunityWriteScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
+                .imePadding()
         ) {
             TopBar(
                 "작성하기",
@@ -164,13 +166,14 @@ fun CommunityWriteScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 OTextField(
+                    modifier = Modifier.padding(
+                        bottom = 200.dp
+                    ),
                     value = uiState.content,
                     onValueChange = viewModel::updateContent,
                     maxLength = uiState.contentMaxLength,
                     placeholderText = uiState.contentPlaceholderText
                 )
-
-                Spacer(modifier = Modifier.height(200.dp))
             }
         }
 

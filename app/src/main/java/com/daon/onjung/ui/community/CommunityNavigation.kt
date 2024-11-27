@@ -8,6 +8,10 @@ import androidx.navigation.navArgument
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.OnjungBottomSheetState
 import com.daon.onjung.Routes
+import com.daon.onjung.ui.community.detail.CommunityDetailScreen
+import com.daon.onjung.ui.community.detail.CommunityDetailViewModel
+import com.daon.onjung.ui.community.write.CommunityWriteScreen
+import com.daon.onjung.ui.community.write.CommunityWriteViewModel
 
 fun NavGraphBuilder.communityGraph(
     appState: OnjungAppState,
@@ -36,20 +40,19 @@ fun NavGraphBuilder.communityGraph(
     }
 
     composable(
-        route = "${Routes.Community.DETAIL}/{postId}",
+        route = "${Routes.Community.DETAIL}?id={id}",
         arguments = listOf(
-            navArgument("postId") {
-                type = NavType.StringType
-                defaultValue = ""
+            navArgument("id") {
+                type = NavType.IntType
+                defaultValue = 0
             }
         )
+    ) {
+        val viewModel: CommunityDetailViewModel = hiltViewModel()
 
-    ) { entry ->
-        val postIdString = entry.arguments?.getString("postId") ?: "0"
-        val postId = postIdString.toInt()
         CommunityDetailScreen(
             appState = appState,
-            postId = postId
+            viewModel = viewModel
         )
     }
 }

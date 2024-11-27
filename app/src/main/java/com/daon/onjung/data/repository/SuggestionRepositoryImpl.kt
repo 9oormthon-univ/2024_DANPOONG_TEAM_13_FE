@@ -5,6 +5,8 @@ import android.net.Uri
 import com.daon.onjung.data.datasource.SuggestionDataSource
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.request.PostCommentRequest
+import com.daon.onjung.network.model.response.PostBoardResponse
 import com.daon.onjung.util.fileFromContentUri
 import com.daon.onjung.util.resizeAndSaveImage
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -25,7 +27,7 @@ class SuggestionRepositoryImpl @Inject constructor(
         imageUri: Uri?,
         title: String,
         content: String
-    ): Flow<ApiResult<BaseResponse<Unit>>> {
+    ): Flow<ApiResult<BaseResponse<PostBoardResponse>>> {
         val jsonObjectBuilder = JSONObject().apply {
             put("title", title)
             put("content", content)
@@ -43,6 +45,25 @@ class SuggestionRepositoryImpl @Inject constructor(
 
         return suggestionDataSource.postBoard(body, imageFile)
     }
+
+    override suspend fun getBoardDetail(
+        id: Int
+    ) = suggestionDataSource.getBoardDetail(id)
+
+    override suspend fun putLikeBoard(
+        id: Int
+    ) = suggestionDataSource.putLikeBoard(id)
+
+    override suspend fun postComment(
+        id: Int,
+        content: String
+    ) = suggestionDataSource.postComment(id, PostCommentRequest(content))
+
+    override suspend fun getCommentList(
+        id: Int,
+        page: Int,
+        size: Int
+    ) = suggestionDataSource.getCommentList(id, page, size)
 
     override suspend fun getBoards(
         page: Int,

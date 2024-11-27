@@ -1,4 +1,4 @@
-package com.daon.onjung.ui.community
+package com.daon.onjung.ui.community.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,16 +11,22 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,27 +35,57 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
-import com.daon.onjung.rememberOnjungAppState
 import com.daon.onjung.ui.community.component.CommentItem
 import com.daon.onjung.ui.component.OTextField
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.theme.OnjungTheme
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun CommunityDetailScreen(
     appState: OnjungAppState,
-    postId: Int
+    viewModel: CommunityDetailViewModel
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val effectFlow = viewModel.effect
+
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(Unit) {
+        effectFlow.collectLatest { effect ->
+            when (effect) {
+                is CommunityDetailContract.Effect.NavigateTo -> {
+                    appState.navigate(effect.destination, effect.navOptions)
+                }
+
+                is CommunityDetailContract.Effect.ShowSnackBar -> {
+                    appState.showSnackBar(effect.message)
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collect { lastVisibleIndex ->
+                val totalItemCount = listState.layoutInfo.totalItemsCount
+                if (lastVisibleIndex != null && lastVisibleIndex >= totalItemCount - 1) {
+                    viewModel.processEvent(CommunityDetailContract.Event.LoadMoreCommentList)
+                }
+            }
+
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(OnjungTheme.colors.gray_2)
+            .background(Color.White)
             .statusBarsPadding()
     ) {
         TopBar(
@@ -61,43 +97,47 @@ fun CommunityDetailScreen(
         )
 
         LazyColumn(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            state = listState
         ) {
             item {
                 CommunityFeedItem(
-                    profileImgUrl = "https://avatars.githubusercontent.com/u/77449515?v=4",
-                    userName = "김온정",
-                    imageUrl = "https://avatars.githubusercontent.com/u/77449515?v=4",
-                    isLiked = true,
-                    likeCount = 10,
-                    commentCount = 5,
-                    title = "산책 다녀왔어요.",
-                    content = "이번 주말에 놀러가기 좋은 곳 추천해주세요!",
+                    profileImgUrl = uiState.writerInfo.profileImgUrl,
+                    userName = uiState.writerInfo.maskedNickname,
+                    imageUrl = uiState.boardInfo.imgUrl,
+                    isLiked = uiState.boardInfo.isLiked,
+                    likeCount = uiState.boardInfo.likeCount,
+                    commentCount = uiState.boardInfo.commentCount,
+                    title = uiState.boardInfo.title,
+                    content = uiState.boardInfo.content,
+                    onLike = {
+                        viewModel.processEvent(CommunityDetailContract.Event.ToggleLike)
+                    }
                 )
             }
 
-            items(2) {
+            items(uiState.commentList) { comment ->
                 CommentItem(
                     modifier = Modifier.padding(
                         horizontal = 20.dp,
                         vertical = 10.dp
                     ),
-                    imageUrl = "https://avatars.githubusercontent.com/u/77449515?v=4",
-                    name = "김온정",
-                    comment = "이번 주말에 놀러가기 좋은 곳 추천해주세요!",
-                    date = "2021.09.01",
-                    isMine = false
+                    imageUrl = comment.writerInfo.profileImgUrl,
+                    name = comment.writerInfo.maskedNickname,
+                    comment = comment.commentInfo.content,
+                    date = comment.commentInfo.postedAgo,
+                    isMine = comment.writerInfo.isMe
                 )
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(50.dp))
             }
         }
 
         CommunityDetailCommentInputSection(
-            profileImageUrl = "https://avatars.githubusercontent.com/u/77449515?v=4",
-            commentContent = ""
+            profileImageUrl = uiState.writerInfo.profileImgUrl,
+            commentContent = uiState.commentInput,
+            onContentChange = viewModel::updateCommentInput,
+            onPostComment = {
+                viewModel.processEvent(CommunityDetailContract.Event.PostComment)
+            }
         )
     }
 }
@@ -106,12 +146,13 @@ fun CommunityDetailScreen(
 fun CommunityFeedItem(
     profileImgUrl: String,
     userName: String,
-    imageUrl: String,
+    imageUrl: String?,
     isLiked: Boolean,
     likeCount: Int,
     commentCount: Int,
     title: String,
     content: String,
+    onLike: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -124,19 +165,21 @@ fun CommunityFeedItem(
             createdAt = "9시간 전"
         )
 
-        AsyncImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .padding(
-                    start = 20.dp, end = 20.dp,
-                    bottom = 20.dp
-                )
-                .clip(RoundedCornerShape(12.dp)),
-            model = ImageRequest.Builder(context).data(imageUrl).build(),
-            contentScale = ContentScale.Crop,
-            contentDescription = "IMG_POST_IMAGE",
-        )
+        imageUrl?.let { uri ->
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .padding(
+                        start = 20.dp, end = 20.dp,
+                        bottom = 20.dp
+                    )
+                    .clip(RoundedCornerShape(12.dp)),
+                model = ImageRequest.Builder(context).data(uri).build(),
+                contentScale = ContentScale.Crop,
+                contentDescription = "IMG_POST_IMAGE",
+            )
+        }
 
         CommunityFeedDetailContent(
             title = title,
@@ -148,10 +191,8 @@ fun CommunityFeedItem(
             likeCount = likeCount,
             commentCount = commentCount
         ) {
-
+            onLike()
         }
-
-
     }
 }
 
@@ -179,6 +220,7 @@ fun CommunityFeedProfileSection(
                 .clip(CircleShape),
             model = ImageRequest.Builder(context).data(profileImageUrl).build(),
             placeholder = painterResource(id = R.drawable.ic_profile_icon),
+            error = painterResource(id = R.drawable.ic_profile_icon),
             contentScale = ContentScale.Crop,
             contentDescription = "IMG_PROFILE_IMAGE",
         )
@@ -221,9 +263,9 @@ fun CommunityFeedLikeAndCommentSection(
                 modifier = Modifier.clickable {
                     onLike()
                 },
-                painter = painterResource(id = R.drawable.ic_post_like),
+                painter = painterResource(id = if (isLiked) R.drawable.ic_post_liked else  R.drawable.ic_post_like),
                 contentDescription = "ic_post_like",
-                tint = OnjungTheme.colors.text_3
+                tint = Color.Unspecified
             )
 
             Text(
@@ -281,12 +323,14 @@ fun CommunityFeedDetailContent(
 fun CommunityDetailCommentInputSection(
     profileImageUrl: String,
     commentContent: String,
+    onContentChange: (String) -> Unit,
+    onPostComment: () -> Unit
 ) {
     val context = LocalContext.current
 
     val enabled = commentContent.isNotEmpty()
 
-    Column {
+    Column(modifier = Modifier.imePadding()) {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
@@ -307,6 +351,7 @@ fun CommunityDetailCommentInputSection(
                     .clip(CircleShape),
                 model = ImageRequest.Builder(context).data(profileImageUrl).build(),
                 placeholder = painterResource(id = R.drawable.ic_profile_icon),
+                error = painterResource(id = R.drawable.ic_profile_icon),
                 contentScale = ContentScale.Crop,
                 contentDescription = "IMG_PROFILE_IMAGE",
             )
@@ -315,7 +360,7 @@ fun CommunityDetailCommentInputSection(
 
             OTextField(
                 value = commentContent,
-                onValueChange = {},
+                onValueChange = onContentChange,
                 placeholderText = "따뜻한 댓글을 남겨주세요.",
                 modifier = Modifier.weight(1f),
                 contentPaddingValues = PaddingValues(vertical = 18.dp),
@@ -332,20 +377,16 @@ fun CommunityDetailCommentInputSection(
                 } else {
                     R.drawable.ic_comment_upload_disabled
                 }),
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .clickable {
+                        if (enabled) {
+                            onPostComment()
+                        }
+                    },
                 contentDescription = "ic_post_comment",
                 tint = Color.Unspecified
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun CommunityDetailScreenPreview() {
-    OnjungTheme {
-        CommunityDetailScreen(
-            appState = rememberOnjungAppState(),
-            postId = 1
-        )
     }
 }
