@@ -2,6 +2,8 @@ package com.daon.onjung.data.datasource
 
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.request.PostCommentRequest
+import com.daon.onjung.network.model.response.CommentListResponse
 import com.daon.onjung.network.model.response.PostBoardResponse
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
@@ -13,5 +15,24 @@ interface SuggestionDataSource {
         body: RequestBody,
         file: MultipartBody.Part?
     ) : Flow<ApiResult<BaseResponse<PostBoardResponse>>>
+
+    suspend fun getBoardDetail(
+        id: Int
+    ) : Flow<ApiResult<BaseResponse<PostBoardResponse>>>
+
+    suspend fun postLikeBoard(
+        id: Int
+    ) : Flow<ApiResult<BaseResponse<Unit>>>
+
+    suspend fun postComment(
+        id: Int,
+        postCommentRequest: PostCommentRequest
+    ) : Flow<ApiResult<BaseResponse<Unit>>>
+
+    suspend fun getCommentList(
+        id: Int,
+        page: Int,
+        size: Int
+    ) : Flow<ApiResult<BaseResponse<CommentListResponse>>>
 
 }

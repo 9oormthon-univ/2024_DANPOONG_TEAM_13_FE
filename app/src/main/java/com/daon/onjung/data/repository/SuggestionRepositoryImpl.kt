@@ -5,6 +5,7 @@ import android.net.Uri
 import com.daon.onjung.data.datasource.SuggestionDataSource
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.network.model.BaseResponse
+import com.daon.onjung.network.model.request.PostCommentRequest
 import com.daon.onjung.network.model.response.PostBoardResponse
 import com.daon.onjung.util.fileFromContentUri
 import com.daon.onjung.util.resizeAndSaveImage
@@ -44,4 +45,23 @@ class SuggestionRepositoryImpl @Inject constructor(
 
         return suggestionDataSource.postBoard(body, imageFile)
     }
+
+    override suspend fun getBoardDetail(
+        id: Int
+    ) = suggestionDataSource.getBoardDetail(id)
+
+    override suspend fun postLikeBoard(
+        id: Int
+    ) = suggestionDataSource.postLikeBoard(id)
+
+    override suspend fun postComment(
+        id: Int,
+        content: String
+    ) = suggestionDataSource.postComment(id, PostCommentRequest(content))
+
+    override suspend fun getCommentList(
+        id: Int,
+        page: Int,
+        size: Int
+    ) = suggestionDataSource.getCommentList(id, page, size)
 }
