@@ -2,6 +2,8 @@ package com.daon.onjung.ui.community.detail
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +50,7 @@ import com.daon.onjung.R
 import com.daon.onjung.ui.community.component.CommentItem
 import com.daon.onjung.ui.component.OTextField
 import com.daon.onjung.ui.component.TopBar
+import com.daon.onjung.ui.component.button.CircleButton
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
@@ -63,6 +67,14 @@ fun CommunityDetailScreen(
     val effectFlow = viewModel.effect
 
     val listState = rememberLazyListState()
+
+    val animatedProgress = remember { Animatable(0f) }
+
+    LaunchedEffect(Unit) {
+        animatedProgress.snapTo(0f)
+        // TODO : 서버 API에 좋아요 목표치가 반영되면 수정
+        animatedProgress.animateTo(57 / 100f, tween(durationMillis = 1000))
+    }
 
     LaunchedEffect(Unit) {
         effectFlow.collectLatest { effect ->
@@ -93,63 +105,75 @@ fun CommunityDetailScreen(
             }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .statusBarsPadding()
-    ) {
-        TopBar(
-            "상세 보기",
-            rightIcon = null,
-            leftIconOnClick = {
-                appState.navController.navigateUp()
-            },
-        )
-
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            state = listState
+    Box {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .statusBarsPadding()
         ) {
-            item {
-                CommunityFeedItem(
-                    profileImgUrl = uiState.writerInfo.profileImgUrl,
-                    userName = uiState.writerInfo.maskedNickname,
-                    imageUrl = uiState.boardInfo.imgUrl,
-                    isLiked = uiState.boardInfo.isLiked,
-                    likeCount = uiState.boardInfo.likeCount,
-                    commentCount = uiState.boardInfo.commentCount,
-                    title = uiState.boardInfo.title,
-                    content = uiState.boardInfo.content,
-                    onLike = {
-                        viewModel.processEvent(CommunityDetailContract.Event.ToggleLike)
-                    }
-                )
+            TopBar(
+                "상세 보기",
+                rightIcon = null,
+                leftIconOnClick = {
+                    appState.navController.navigateUp()
+                },
+            )
+
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                state = listState
+            ) {
+                item {
+                    CommunityFeedItem(
+                        profileImgUrl = uiState.writerInfo.profileImgUrl,
+                        userName = uiState.writerInfo.maskedNickname,
+                        imageUrl = uiState.boardInfo.imgUrl,
+                        likeCount = uiState.boardInfo.likeCount,
+                        progress = animatedProgress.value,
+                        commentCount = uiState.boardInfo.commentCount,
+                        title = uiState.boardInfo.title,
+                        content = uiState.boardInfo.content
+                    )
+                }
+
+                items(uiState.commentList) { comment ->
+                    CommentItem(
+                        modifier = Modifier.padding(
+                            horizontal = 20.dp,
+                            vertical = 10.dp
+                        ),
+                        imageUrl = comment.writerInfo.profileImgUrl,
+                        name = comment.writerInfo.maskedNickname,
+                        comment = comment.commentInfo.content,
+                        date = comment.commentInfo.postedAgo,
+                        isMine = comment.writerInfo.isMe
+                    )
+                }
             }
 
-            items(uiState.commentList) { comment ->
-                CommentItem(
-                    modifier = Modifier.padding(
-                        horizontal = 20.dp,
-                        vertical = 10.dp
-                    ),
-                    imageUrl = comment.writerInfo.profileImgUrl,
-                    name = comment.writerInfo.maskedNickname,
-                    comment = comment.commentInfo.content,
-                    date = comment.commentInfo.postedAgo,
-                    isMine = comment.writerInfo.isMe
-                )
-            }
+            CommunityDetailCommentInputSection(
+                profileImageUrl = uiState.writerInfo.profileImgUrl,
+                commentContent = uiState.commentInput,
+                onContentChange = viewModel::updateCommentInput,
+                onPostComment = {
+                    viewModel.processEvent(CommunityDetailContract.Event.PostComment)
+                }
+            )
         }
 
-        CommunityDetailCommentInputSection(
-            profileImageUrl = uiState.writerInfo.profileImgUrl,
-            commentContent = uiState.commentInput,
-            onContentChange = viewModel::updateCommentInput,
-            onPostComment = {
-                viewModel.processEvent(CommunityDetailContract.Event.PostComment)
-            }
-        )
+        CircleButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(
+                    end = 20.dp,
+                    bottom = 80.dp
+                ),
+            text = "추천하기",
+            icon = R.drawable.ic_heart,
+        ) {
+            viewModel.processEvent(CommunityDetailContract.Event.ToggleLike)
+        }
     }
 }
 
@@ -159,12 +183,11 @@ fun CommunityFeedItem(
     profileImgUrl: String,
     userName: String,
     imageUrl: String?,
-    isLiked: Boolean,
     likeCount: Int,
+    progress: Float,
     commentCount: Int,
     title: String,
-    content: String,
-    onLike: () -> Unit
+    content: String
 ) {
     val context = LocalContext.current
 
@@ -195,6 +218,7 @@ fun CommunityFeedItem(
 
         CommunityFeedDetailContent(
             title = title,
+            progress = progress,
             likeCount = likeCount,
             goalCount = 100,
             startDate = "2021.09.01",
@@ -203,12 +227,8 @@ fun CommunityFeedItem(
         )
 
         CommunityFeedLikeAndCommentSection(
-            isLiked = isLiked,
-            likeCount = likeCount,
             commentCount = commentCount
-        ) {
-            onLike()
-        }
+        )
     }
 }
 
@@ -261,6 +281,7 @@ fun CommunityFeedProfileSection(
 @Composable
 private fun CommunityDetailProgressBarSection(
     modifier: Modifier = Modifier,
+    progress: Float,
     likeCount: Int,
     goalCount: Int,
     startDate: String,
@@ -321,7 +342,7 @@ private fun CommunityDetailProgressBarSection(
 
             Spacer(
                 modifier = Modifier
-                    .fillMaxWidth(likeCount / goalCount.toFloat())
+                    .fillMaxWidth(progress)
                     .height(10.dp)
                     .background(
                         color = Color(0xFFFF5856),
@@ -341,7 +362,7 @@ private fun CommunityDetailProgressBarSection(
                 style = OnjungTheme.typography.caption,
                 color = OnjungTheme.colors.text_3
             )
-            
+
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
@@ -357,10 +378,7 @@ private fun CommunityDetailProgressBarSection(
 
 @Composable
 fun CommunityFeedLikeAndCommentSection(
-    isLiked: Boolean,
-    likeCount: Int,
-    commentCount: Int,
-    onLike: () -> Unit
+    commentCount: Int
 ) {
     Row(
         modifier = Modifier.padding(
@@ -371,27 +389,7 @@ fun CommunityFeedLikeAndCommentSection(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Icon(
-                modifier = Modifier.clickable {
-                    onLike()
-                },
-                painter = painterResource(id = if (isLiked) R.drawable.ic_post_liked else  R.drawable.ic_post_like),
-                contentDescription = "ic_post_like",
-                tint = Color.Unspecified
-            )
-
-            Text(
-                "$likeCount",
-                style = OnjungTheme.typography.body2,
-                color = OnjungTheme.colors.text_2
-            )
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_post_comment),
@@ -400,9 +398,15 @@ fun CommunityFeedLikeAndCommentSection(
             )
 
             Text(
+                "댓글",
+                style = OnjungTheme.typography.body2,
+                color = OnjungTheme.colors.text_3
+            )
+
+            Text(
                 "$commentCount",
                 style = OnjungTheme.typography.body2,
-                color = OnjungTheme.colors.text_2
+                color = OnjungTheme.colors.text_3
             )
         }
     }
@@ -412,6 +416,7 @@ fun CommunityFeedLikeAndCommentSection(
 @Composable
 fun CommunityFeedDetailContent(
     title: String,
+    progress: Float,
     likeCount: Int,
     goalCount: Int,
     startDate: String,
@@ -431,7 +436,8 @@ fun CommunityFeedDetailContent(
         )
 
         CommunityDetailProgressBarSection(
-            likeCount = likeCount,
+            progress = progress,
+            likeCount = 57,
             goalCount = goalCount,
             startDate = startDate,
             endDate = endDate
