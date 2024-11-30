@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,7 +53,8 @@ fun DonationStore(
                 .clip(RoundedCornerShape(10.dp)),
             model = ImageRequest.Builder(context).data(shopInfo.logoImgUrl).build(),
             contentDescription = "IMG_SHOP",
-            placeholder = painterResource(id = R.drawable.img_dummy)
+            placeholder = painterResource(id = R.drawable.img_dummy),
+            contentScale = ContentScale.Crop
         )
 
         Column(

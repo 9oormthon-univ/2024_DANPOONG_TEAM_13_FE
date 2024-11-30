@@ -1,36 +1,39 @@
 package com.daon.onjung.ui.community
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
 import com.daon.onjung.Routes
-import com.daon.onjung.ui.community.component.CommunityBanner
-import com.daon.onjung.ui.community.component.CommunityTopBar
 import com.daon.onjung.ui.community.component.PostCardItem
+import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.flow.collectLatest
 
@@ -68,31 +71,23 @@ fun CommunityScreen(
     Box (
         modifier = Modifier
             .fillMaxSize()
+            .background(OnjungTheme.colors.white)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color(0xFFFFEEDF),
-                            Color.Transparent,
-                        ),
-                        start = Offset(0f, 0f),
-                        end = Offset(0f, Float.POSITIVE_INFINITY)
-                    )
-                )
         ) {
-            CommunityTopBar()
+            TopBar(
+                "가게 추천",
+                leftIcon = null,
+                rightIcon = null
+            )
             LazyColumn(
                 state = listState,
                 modifier = Modifier
                     .weight(1f)
             ) {
-                item {
-                    CommunityBanner()
-                }
                 items(uiState.posts) { post ->
                     PostCardItem(
                         title = post.titleSummary,
@@ -102,22 +97,25 @@ fun CommunityScreen(
                         imageUrl = post.imgUrl,
                         date = post.postedAgo,
                         modifier = Modifier
-                            .background(color = Color.White)
-                            .padding(20.dp)
                     ) {
                         viewModel.processEvent(CommunityContract.Event.SelectPost(post.id))
                     }
+                    Divider(
+                        color = OnjungTheme.colors.gray_2,
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .height(1.dp)
+                    )
                 }
             }
         }
         WritePostButton(
             modifier = Modifier
                 .align(
-                    alignment = Alignment.BottomEnd
+                    alignment = Alignment.BottomCenter
                 )
                 .padding(
-                    end = 20.dp,
-                    bottom = 25.dp
+                    bottom = 24.dp
                 )
         ) {
             appState.navigate(Routes.Community.WRITE)
@@ -131,20 +129,34 @@ private fun WritePostButton(
     onClick: () -> Unit
 ) {
     Surface(
-        modifier = modifier
-            .size(64.dp),
+        modifier = modifier,
         shadowElevation = 10.dp,
         shape = CircleShape,
-        color = OnjungTheme.colors.main_coral,
+        color = Color(0xFF4E4E4E),
         onClick = onClick
     ) {
-        Box(
-            contentAlignment = Alignment.Center
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(
+                    start = 16.dp,
+                    end = 20.dp,
+                    top = 16.dp,
+                    bottom = 16.dp
+                )
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_plus),
-                contentDescription = "IC_PLUS",
+                painter = painterResource(id = R.drawable.ic_pencil),
+                contentDescription = "IC_PENCIL",
                 tint = Color.Unspecified,
+            )
+            Text(
+                "선행가게 알리기",
+                style = OnjungTheme.typography.body1.copy(
+                    color = OnjungTheme.colors.white,
+                    fontWeight = FontWeight.Bold
+                )
             )
         }
     }
