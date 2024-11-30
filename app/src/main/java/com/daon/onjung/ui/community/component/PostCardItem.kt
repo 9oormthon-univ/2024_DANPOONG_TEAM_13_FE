@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.error
@@ -50,6 +50,7 @@ fun PostCardItem (
     Column (
         modifier = modifier
             .fillMaxWidth()
+            .padding(20.dp)
             .noRippleClickable(onClick),
     ) {
         Row(
@@ -98,7 +99,7 @@ fun PostCardItem (
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_post_like),
+                        painter = painterResource(id = R.drawable.ic_community_like),
                         contentDescription = "ic_post_like",
                         tint = Color.Unspecified
                     )
@@ -112,7 +113,7 @@ fun PostCardItem (
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_post_comment),
+                        painter = painterResource(id = R.drawable.ic_community_comment),
                         contentDescription = "ic_post_like",
                         tint = Color.Unspecified
                     )

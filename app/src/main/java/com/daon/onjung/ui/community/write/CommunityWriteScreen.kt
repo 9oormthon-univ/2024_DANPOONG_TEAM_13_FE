@@ -48,6 +48,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
+import com.daon.onjung.Routes
 import com.daon.onjung.ui.component.OTextField
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.component.button.FilledWidthButton
@@ -130,7 +131,9 @@ fun CommunityWriteScreen(
             TopBar(
                 "작성하기",
                 rightIcon = null,
-                leftIconOnClick = { }
+                leftIconOnClick = {
+                    appState.navigate(Routes.Community.ROUTE)
+                }
             )
 
             Column(
