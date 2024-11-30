@@ -1,6 +1,7 @@
 package com.daon.onjung.ui.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +40,6 @@ fun ShopCard(
     shopId: Int,
     imgUrl: String,
     tag: String,
-    tagColor: Color,
     title: String,
     likeCount: Int,
     name: String,
@@ -108,8 +108,9 @@ fun ShopCard(
                     Column {
                         Box(
                             modifier = Modifier
-                                .background(
-                                    color = tagColor,
+                                .border(
+                                    width = 1.dp,
+                                    color = OnjungTheme.colors.white,
                                     shape = CircleShape
                                 )
                                 .padding(
@@ -190,7 +191,6 @@ fun ShopCardPreview() {
             shopId = 1,
             imgUrl = "",
             tag = "장애우",
-            tagColor = Color(0xFF81A5DA),
             title = "헌신에 보답하는\n감사의 식탁",
             likeCount = 100,
             name = "한걸음 닭꼬치dkdjsalkfjsadlkfjasjdlk",
