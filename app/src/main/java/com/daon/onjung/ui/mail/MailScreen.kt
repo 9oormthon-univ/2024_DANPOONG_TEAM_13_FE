@@ -1,5 +1,6 @@
 package com.daon.onjung.ui.mail
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -151,7 +153,6 @@ internal fun MailScreen(
                     viewModel.processEvent(MailContract.Event.LoadMoreMailList)
                 }
             }
-
     }
 
     Column(
@@ -164,45 +165,84 @@ internal fun MailScreen(
             rightIcon = null,
             leftIcon = null
         )
-        LazyColumn(
-            modifier = Modifier
-                .padding(horizontal = 20.dp)
-                .weight(1f)
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-                MailBanner()
-                Spacer(modifier = Modifier.height(32.dp))
-            }
-
-            item {
-                Text(
-                    "${uiState.onjungCount}개의 식당과 온기를 나누었어요.",
-                    style = OnjungTheme.typography.body2.copy(
-                        color = OnjungTheme.colors.text_3,
-                    ),
+        if (uiState.onjungCount == 0) {
+            Column(
+                modifier = Modifier.padding(
+                    start = 20.dp, end = 20.dp, top = 24.dp
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+            ) {
+                MailBanner()
+                MailEmpty()
             }
-
-            items(uiState.mailList) { mail ->
-                ShopMailContainer(
-                    shopId = mail.storeInfo.id,
-                    imageUrl = mail.storeInfo.logoImgUrl,
-                    title = mail.storeInfo.title,
-                    date = mail.createdDate,
-                    name = mail.storeInfo.name,
-                    type = mail.onjungType,
-                    status = mail.status,
-                    eventPeriod = mail.eventPeriod,
-                    storeDeliveryDate = mail.storeDeliveryDate,
-                    ticketIssueDate = mail.ticketIssueDate,
-                    reportDate = mail.reportDate
-                ) { shopId ->
-                    viewModel.processEvent(MailContract.Event.MailClicked(shopId))
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .weight(1f),
+                state = listState
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    MailBanner()
+                    Spacer(modifier = Modifier.height(32.dp))
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+
+                item {
+                    Text(
+                        "${uiState.onjungCount}개의 식당과 온기를 나누었어요.",
+                        style = OnjungTheme.typography.body2.copy(
+                            color = OnjungTheme.colors.text_3,
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                items(uiState.mailList) { mail ->
+                    ShopMailContainer(
+                        shopId = mail.storeInfo.id,
+                        imageUrl = mail.storeInfo.logoImgUrl,
+                        title = mail.storeInfo.title,
+                        date = mail.createdDate,
+                        name = mail.storeInfo.name,
+                        type = mail.onjungType,
+                        status = mail.status,
+                        eventPeriod = mail.eventPeriod,
+                        storeDeliveryDate = mail.storeDeliveryDate,
+                        ticketIssueDate = mail.ticketIssueDate,
+                        reportDate = mail.reportDate
+                    ) { shopId ->
+                        viewModel.processEvent(MailContract.Event.MailClicked(shopId))
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
+        }
+    }
+}
+
+@Composable
+internal fun MailEmpty() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.mipmap.img_mail_empty),
+                contentDescription = "IMG_MAIL_EMPTY"
+            )
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            Text(
+                "아직 전한 온기가 없어요.\n온기를 전할 식당을 찾아볼까요?",
+                style = OnjungTheme.typography.body1.copy(
+                    color = OnjungTheme.colors.text_2
+                ),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
