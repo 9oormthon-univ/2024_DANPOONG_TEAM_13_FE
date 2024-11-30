@@ -1,8 +1,11 @@
 package com.daon.onjung.ui.community.detail
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -46,7 +49,11 @@ import com.daon.onjung.ui.component.OTextField
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.flow.collectLatest
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CommunityDetailScreen(
     appState: OnjungAppState,
@@ -146,6 +153,7 @@ fun CommunityDetailScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CommunityFeedItem(
     profileImgUrl: String,
@@ -173,7 +181,7 @@ fun CommunityFeedItem(
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f)
+                    .aspectRatio(1.88f)
                     .padding(
                         start = 20.dp, end = 20.dp,
                         bottom = 20.dp
@@ -187,6 +195,10 @@ fun CommunityFeedItem(
 
         CommunityFeedDetailContent(
             title = title,
+            likeCount = likeCount,
+            goalCount = 100,
+            startDate = "2021.09.01",
+            endDate = "2021.09.30",
             content = content
         )
 
@@ -245,6 +257,104 @@ fun CommunityFeedProfileSection(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+private fun CommunityDetailProgressBarSection(
+    modifier: Modifier = Modifier,
+    likeCount: Int,
+    goalCount: Int,
+    startDate: String,
+    endDate: String
+) {
+    Column(
+        modifier = modifier.padding(
+            vertical = 10.dp
+        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_heart),
+                modifier = Modifier.size(30.dp),
+                contentDescription = "ic_heart",
+                tint = OnjungTheme.colors.main_coral
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            Text(
+                "$likeCount",
+                style = OnjungTheme.typography.h1,
+                color = OnjungTheme.colors.text_1
+            )
+
+            Spacer(modifier = Modifier.width(5.dp))
+
+            Text(
+                "추천",
+                style = OnjungTheme.typography.body2,
+                color = OnjungTheme.colors.text_3
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                "목표 $goalCount",
+                style = OnjungTheme.typography.body2,
+                color = OnjungTheme.colors.text_3
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Box {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(10.dp)
+                    .background(
+                        color = Color(0xFFEAEAEA),
+                        shape = CircleShape
+                    )
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth(likeCount / goalCount.toFloat())
+                    .height(10.dp)
+                    .background(
+                        color = Color(0xFFFF5856),
+                        shape = CircleShape
+                    )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top
+        ) {
+            Text(
+                "기간 $startDate~$endDate",
+                style = OnjungTheme.typography.caption,
+                color = OnjungTheme.colors.text_3
+            )
+            
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                "D-${calculateDDay(startDate, endDate)}",
+                style = OnjungTheme.typography.body2.copy(
+                    fontWeight = FontWeight.SemiBold
+                ),
+                color = OnjungTheme.colors.text_1
+            )
+        }
+    }
+}
+
 @Composable
 fun CommunityFeedLikeAndCommentSection(
     isLiked: Boolean,
@@ -298,9 +408,14 @@ fun CommunityFeedLikeAndCommentSection(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CommunityFeedDetailContent(
     title: String,
+    likeCount: Int,
+    goalCount: Int,
+    startDate: String,
+    endDate: String,
     content: String,
 ) {
     Column(
@@ -313,6 +428,13 @@ fun CommunityFeedDetailContent(
             title,
             style = OnjungTheme.typography.h1,
             color = OnjungTheme.colors.text_1
+        )
+
+        CommunityDetailProgressBarSection(
+            likeCount = likeCount,
+            goalCount = goalCount,
+            startDate = startDate,
+            endDate = endDate
         )
 
         Text(
@@ -393,4 +515,14 @@ fun CommunityDetailCommentInputSection(
             )
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun calculateDDay(startDateStr: String, endDateStr: String): Long {
+    val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
+
+    val startDate = LocalDate.parse(startDateStr, formatter)
+    val endDate = LocalDate.parse(endDateStr, formatter)
+
+    return ChronoUnit.DAYS.between(startDate, endDate)
 }
