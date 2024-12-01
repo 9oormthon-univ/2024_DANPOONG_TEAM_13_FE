@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.daon.onjung.network.model.StoreTag
 import com.daon.onjung.network.model.response.StoreOverviewInfo
@@ -33,15 +32,15 @@ fun HomeShopCardLazyRow(
         contentPadding = PaddingValues(horizontal = 20.dp)
     ) {
         items(shopList) { shop ->
-            val (tag, tagColor) = when (shop.tags.first()) {
+            val tag = when (shop.tags.first()) {
                 StoreTag.DISABLED_GROUP -> {
-                    "장애우" to Color(0xFF81A5DA).copy(alpha = 0.8f)
+                    "장애우"
                 }
                 StoreTag.GOOD_PRICE -> {
-                    "착한 가격" to Color(0xFFF5AB67).copy(alpha = 0.8f)
+                    "착한 가격"
                 }
                 StoreTag.UNDERFED_CHILD -> {
-                    "결식아동" to Color(0xFF83CB82).copy(alpha = 0.8f)
+                    "결식아동"
                 }
             }
 
@@ -49,7 +48,6 @@ fun HomeShopCardLazyRow(
                 shopId = shop.id,
                 imgUrl = shop.bannerImgUrl,
                 tag = tag,
-                tagColor = tagColor,
                 title = shop.title,
                 likeCount = shop.totalOnjungCount,
                 name = shop.name,
