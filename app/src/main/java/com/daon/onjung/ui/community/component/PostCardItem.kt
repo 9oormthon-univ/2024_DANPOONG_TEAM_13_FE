@@ -2,6 +2,7 @@ package com.daon.onjung.ui.community.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import coil3.request.ImageRequest
 import coil3.request.error
 import coil3.request.placeholder
 import com.daon.onjung.R
+import com.daon.onjung.network.model.CommunityPostStatus
 import com.daon.onjung.ui.theme.OnjungTheme
 import com.daon.onjung.util.noRippleClickable
 
@@ -41,6 +43,7 @@ fun PostCardItem (
     content : String = "여기 역저할맥 진짜 맛있는데 시장님이 선한 일도 하시네요 도움이 필요하신 분들 여기로! 여기 역저할맥 진짜 맛있는데 시장님이 선한 일도 하시네요 도움이 필요하신 분들 여기로!",
     like : Int = 3,
     commentCount : Int = 10,
+    status: CommunityPostStatus = CommunityPostStatus.EXPIRED,
     imageUrl : String = "",
     date : String = "3시간 전",
     modifier: Modifier = Modifier,
@@ -58,6 +61,10 @@ fun PostCardItem (
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            TagChip(
+                status = status,
+            )
+            Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = title,
                 style = OnjungTheme.typography.body1.copy(
@@ -147,4 +154,38 @@ fun PostCardItem (
 
         }
     }
+}
+
+
+@Composable
+private fun TagChip(
+    modifier: Modifier = Modifier,
+    status: CommunityPostStatus
+) {
+    val (tag, tagColor) = when (status) {
+        CommunityPostStatus.IN_PROGRESS -> "진행중" to Color(0xFFFF7B69)
+        CommunityPostStatus.EXPIRED -> "만료" to OnjungTheme.colors.text_2
+        else -> null to null
+    }
+
+    if(tag != null && tagColor != null) {
+        Box(
+            modifier = modifier
+                .background(
+                    color = tagColor.copy(alpha = 0.1f),
+                    shape = RoundedCornerShape(4.dp)
+                )
+        ) {
+            Text(
+                text = tag,
+                style = OnjungTheme.typography.caption.copy(
+                    color = tagColor,
+                    fontWeight = FontWeight.SemiBold
+                ),
+                modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
+                maxLines = 1
+            )
+        }
+    }
+
 }

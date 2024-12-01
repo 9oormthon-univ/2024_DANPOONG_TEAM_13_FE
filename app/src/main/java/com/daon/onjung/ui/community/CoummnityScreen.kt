@@ -95,6 +95,7 @@ fun CommunityScreen(
                         like = post.likeCount,
                         commentCount = post.commentCount,
                         imageUrl = post.imgUrl,
+                        status = post.status,
                         date = post.postedAgo,
                         modifier = Modifier
                     ) {
