@@ -25,17 +25,59 @@ class CommunityViewModel @Inject constructor(
                     "${Routes.Community.DETAIL}?id=${event.postId}",
                 ))
             }
-            is CommunityContract.Event.LoadPosts -> {
+            is CommunityContract.Event.LoadMorePosts -> {
+                getMorePosts()
+            }
+            is CommunityContract.Event.RefreshPosts -> {
                 getPosts()
             }
         }
     }
 
-    init {
-        getPosts()
+    private fun getPosts() {
+        viewModelScope.launch {
+            suggestionRepository.getBoards(
+                page = 1,
+                size = 20
+            ).onStart {
+                updateState(
+                    currentState.copy(
+                        isLoading = true
+                    )
+                )
+            }.collect {
+                updateState(
+                    currentState.copy(
+                        isLoading = false
+                    )
+                )
+                when (it) {
+                    is ApiResult.Success -> {
+                        it.data?.data?.let { result ->
+                            updateState(currentState.copy(
+                                posts = result.boardList,
+                                isBoardsListLastPage = !result.hasNext,
+                                page = 2
+                            ))
+                            if (result.hasNext) {
+                                updateState(currentState.copy(page = currentState.page + 1))
+                            }
+                        }
+                    }
+
+                    is ApiResult.ApiError -> {
+                        postEffect(CommunityContract.Effect.ShowSnackBar(it.message))
+                    }
+
+                    is ApiResult.NetworkError -> {
+                        postEffect(CommunityContract.Effect.ShowSnackBar(Constants.NETWORK_ERROR_MESSAGE))
+                    }
+                }
+            }
+        }
     }
 
-    private fun getPosts() {
+    private fun getMorePosts() {
         if (currentState.isBoardsListFetching || currentState.isBoardsListLastPage) return
 
         viewModelScope.launch {
