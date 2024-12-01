@@ -46,6 +46,7 @@ fun CommunityScreen(
     val effectFlow = viewModel.effect
     val listState = rememberLazyListState()
     LaunchedEffect(Unit) {
+        viewModel.processEvent(CommunityContract.Event.RefreshPosts)
         effectFlow.collectLatest { effect ->
             when (effect) {
                 is CommunityContract.Effect.NavigateTo -> {
@@ -62,7 +63,7 @@ fun CommunityScreen(
             .collect { lastVisibleItemIndex ->
                 val totalItems = listState.layoutInfo.totalItemsCount
                 if (lastVisibleItemIndex == totalItems - 1 && !uiState.isBoardsListLastPage) {
-                    viewModel.processEvent(CommunityContract.Event.LoadPosts)
+                    viewModel.processEvent(CommunityContract.Event.LoadMorePosts)
                 }
             }
     }

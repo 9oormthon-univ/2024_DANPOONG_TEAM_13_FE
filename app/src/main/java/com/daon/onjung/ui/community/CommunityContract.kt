@@ -18,7 +18,8 @@ class CommunityContract {
 
     sealed class Event : UiEvent {
         data class SelectPost(val postId : Int) : Event()
-        data object LoadPosts : Event()
+        data object LoadMorePosts : Event()
+        data object RefreshPosts : Event()
     }
 
     sealed class Effect : UiEffect {

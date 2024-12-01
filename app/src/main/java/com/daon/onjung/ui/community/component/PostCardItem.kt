@@ -164,28 +164,25 @@ private fun TagChip(
 ) {
     val (tag, tagColor) = when (status) {
         CommunityPostStatus.IN_PROGRESS -> "진행중" to Color(0xFFFF7B69)
-        CommunityPostStatus.EXPIRED -> "만료" to OnjungTheme.colors.text_2
-        else -> null to null
+        else -> "만료" to OnjungTheme.colors.text_2
     }
 
-    if(tag != null && tagColor != null) {
-        Box(
-            modifier = modifier
-                .background(
-                    color = tagColor.copy(alpha = 0.1f),
-                    shape = RoundedCornerShape(4.dp)
-                )
-        ) {
-            Text(
-                text = tag,
-                style = OnjungTheme.typography.caption.copy(
-                    color = tagColor,
-                    fontWeight = FontWeight.SemiBold
-                ),
-                modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
-                maxLines = 1
+    Box(
+        modifier = modifier
+            .background(
+                color = tagColor.copy(alpha = 0.1f),
+                shape = RoundedCornerShape(4.dp)
             )
-        }
+    ) {
+        Text(
+            text = tag,
+            style = OnjungTheme.typography.caption.copy(
+                color = tagColor,
+                fontWeight = FontWeight.SemiBold
+            ),
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
+            maxLines = 1
+        )
     }
 
 }
