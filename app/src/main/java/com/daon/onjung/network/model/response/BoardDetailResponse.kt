@@ -29,10 +29,18 @@ data class BoardDetailBoardInfo(
     val content: String,
     @SerializedName("posted_ago")
     val postedAgo: String,
+    @SerializedName("goal_count")
+    val goalCount: Int,
     @SerializedName("like_count")
     val likeCount: Int,
     @SerializedName("comment_count")
     val commentCount: Int,
     @SerializedName("is_liked")
-    val isLiked: Boolean
+    val isLiked: Boolean,
+    @SerializedName("start_date")
+    val startDate: String,
+    @SerializedName("end_date")
+    val endDate: String,
+    @SerializedName("remaining_days")
+    val remainingDays: Int
 )

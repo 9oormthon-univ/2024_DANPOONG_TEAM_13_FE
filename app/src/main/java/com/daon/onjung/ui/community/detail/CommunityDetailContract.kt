@@ -22,9 +22,13 @@ class CommunityDetailContract {
             title = "",
             content = "",
             postedAgo = "",
+            goalCount = 100,
             likeCount = 0,
             commentCount = 0,
-            isLiked = false
+            isLiked = false,
+            startDate = "2024.12.02",
+            endDate = "2024.01.01",
+            remainingDays = 30
         ),
         val isCommentListFetching: Boolean = false,
         val isCommentListLastPage: Boolean = false,

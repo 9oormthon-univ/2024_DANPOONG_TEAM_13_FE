@@ -72,8 +72,7 @@ fun CommunityDetailScreen(
 
     LaunchedEffect(Unit) {
         animatedProgress.snapTo(0f)
-        // TODO : 서버 API에 좋아요 목표치가 반영되면 수정
-        animatedProgress.animateTo(57 / 100f, tween(durationMillis = 1000))
+        animatedProgress.animateTo(uiState.boardInfo.likeCount / uiState.boardInfo.goalCount.toFloat(), tween(durationMillis = 1000))
     }
 
     LaunchedEffect(Unit) {
@@ -129,7 +128,10 @@ fun CommunityDetailScreen(
                         profileImgUrl = uiState.writerInfo.profileImgUrl,
                         userName = uiState.writerInfo.maskedNickname,
                         imageUrl = uiState.boardInfo.imgUrl,
+                        goalCount = uiState.boardInfo.goalCount,
                         likeCount = uiState.boardInfo.likeCount,
+                        startDate = uiState.boardInfo.startDate,
+                        endDate = uiState.boardInfo.endDate,
                         progress = animatedProgress.value,
                         commentCount = uiState.boardInfo.commentCount,
                         title = uiState.boardInfo.title,
@@ -184,6 +186,9 @@ fun CommunityFeedItem(
     userName: String,
     imageUrl: String?,
     likeCount: Int,
+    goalCount: Int,
+    startDate: String,
+    endDate: String,
     progress: Float,
     commentCount: Int,
     title: String,
@@ -220,9 +225,9 @@ fun CommunityFeedItem(
             title = title,
             progress = progress,
             likeCount = likeCount,
-            goalCount = 100,
-            startDate = "2021.09.01",
-            endDate = "2021.09.30",
+            goalCount = goalCount,
+            startDate = startDate,
+            endDate = endDate,
             content = content
         )
 
@@ -437,7 +442,7 @@ fun CommunityFeedDetailContent(
 
         CommunityDetailProgressBarSection(
             progress = progress,
-            likeCount = 57,
+            likeCount = likeCount,
             goalCount = goalCount,
             startDate = startDate,
             endDate = endDate
