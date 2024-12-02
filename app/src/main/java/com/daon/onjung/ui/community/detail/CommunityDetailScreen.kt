@@ -1,8 +1,13 @@
 package com.daon.onjung.ui.community.detail
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -26,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,9 +50,14 @@ import com.daon.onjung.R
 import com.daon.onjung.ui.community.component.CommentItem
 import com.daon.onjung.ui.component.OTextField
 import com.daon.onjung.ui.component.TopBar
+import com.daon.onjung.ui.component.button.CircleButton
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.flow.collectLatest
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CommunityDetailScreen(
     appState: OnjungAppState,
@@ -56,6 +67,14 @@ fun CommunityDetailScreen(
     val effectFlow = viewModel.effect
 
     val listState = rememberLazyListState()
+
+    val animatedProgress = remember { Animatable(0f) }
+
+    LaunchedEffect(Unit) {
+        animatedProgress.snapTo(0f)
+        // TODO : 서버 API에 좋아요 목표치가 반영되면 수정
+        animatedProgress.animateTo(57 / 100f, tween(durationMillis = 1000))
+    }
 
     LaunchedEffect(Unit) {
         effectFlow.collectLatest { effect ->
@@ -86,77 +105,89 @@ fun CommunityDetailScreen(
             }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .statusBarsPadding()
-    ) {
-        TopBar(
-            "상세 보기",
-            rightIcon = null,
-            leftIconOnClick = {
-                appState.navController.navigateUp()
-            },
-        )
-
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            state = listState
+    Box {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .statusBarsPadding()
         ) {
-            item {
-                CommunityFeedItem(
-                    profileImgUrl = uiState.writerInfo.profileImgUrl,
-                    userName = uiState.writerInfo.maskedNickname,
-                    imageUrl = uiState.boardInfo.imgUrl,
-                    isLiked = uiState.boardInfo.isLiked,
-                    likeCount = uiState.boardInfo.likeCount,
-                    commentCount = uiState.boardInfo.commentCount,
-                    title = uiState.boardInfo.title,
-                    content = uiState.boardInfo.content,
-                    onLike = {
-                        viewModel.processEvent(CommunityDetailContract.Event.ToggleLike)
-                    }
-                )
+            TopBar(
+                "상세 보기",
+                rightIcon = null,
+                leftIconOnClick = {
+                    appState.navController.navigateUp()
+                },
+            )
+
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                state = listState
+            ) {
+                item {
+                    CommunityFeedItem(
+                        profileImgUrl = uiState.writerInfo.profileImgUrl,
+                        userName = uiState.writerInfo.maskedNickname,
+                        imageUrl = uiState.boardInfo.imgUrl,
+                        likeCount = uiState.boardInfo.likeCount,
+                        progress = animatedProgress.value,
+                        commentCount = uiState.boardInfo.commentCount,
+                        title = uiState.boardInfo.title,
+                        content = uiState.boardInfo.content
+                    )
+                }
+
+                items(uiState.commentList) { comment ->
+                    CommentItem(
+                        modifier = Modifier.padding(
+                            horizontal = 20.dp,
+                            vertical = 10.dp
+                        ),
+                        imageUrl = comment.writerInfo.profileImgUrl,
+                        name = comment.writerInfo.maskedNickname,
+                        comment = comment.commentInfo.content,
+                        date = comment.commentInfo.postedAgo,
+                        isMine = comment.writerInfo.isMe
+                    )
+                }
             }
 
-            items(uiState.commentList) { comment ->
-                CommentItem(
-                    modifier = Modifier.padding(
-                        horizontal = 20.dp,
-                        vertical = 10.dp
-                    ),
-                    imageUrl = comment.writerInfo.profileImgUrl,
-                    name = comment.writerInfo.maskedNickname,
-                    comment = comment.commentInfo.content,
-                    date = comment.commentInfo.postedAgo,
-                    isMine = comment.writerInfo.isMe
-                )
-            }
+            CommunityDetailCommentInputSection(
+                profileImageUrl = uiState.writerInfo.profileImgUrl,
+                commentContent = uiState.commentInput,
+                onContentChange = viewModel::updateCommentInput,
+                onPostComment = {
+                    viewModel.processEvent(CommunityDetailContract.Event.PostComment)
+                }
+            )
         }
 
-        CommunityDetailCommentInputSection(
-            profileImageUrl = uiState.writerInfo.profileImgUrl,
-            commentContent = uiState.commentInput,
-            onContentChange = viewModel::updateCommentInput,
-            onPostComment = {
-                viewModel.processEvent(CommunityDetailContract.Event.PostComment)
-            }
-        )
+        CircleButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(
+                    end = 20.dp,
+                    bottom = 80.dp
+                ),
+            text = "추천하기",
+            icon = R.drawable.ic_heart,
+        ) {
+            viewModel.processEvent(CommunityDetailContract.Event.ToggleLike)
+        }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CommunityFeedItem(
     profileImgUrl: String,
     userName: String,
     imageUrl: String?,
-    isLiked: Boolean,
     likeCount: Int,
+    progress: Float,
     commentCount: Int,
     title: String,
-    content: String,
-    onLike: () -> Unit
+    content: String
 ) {
     val context = LocalContext.current
 
@@ -173,7 +204,7 @@ fun CommunityFeedItem(
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f)
+                    .aspectRatio(1.88f)
                     .padding(
                         start = 20.dp, end = 20.dp,
                         bottom = 20.dp
@@ -187,16 +218,17 @@ fun CommunityFeedItem(
 
         CommunityFeedDetailContent(
             title = title,
+            progress = progress,
+            likeCount = likeCount,
+            goalCount = 100,
+            startDate = "2021.09.01",
+            endDate = "2021.09.30",
             content = content
         )
 
         CommunityFeedLikeAndCommentSection(
-            isLiked = isLiked,
-            likeCount = likeCount,
             commentCount = commentCount
-        ) {
-            onLike()
-        }
+        )
     }
 }
 
@@ -245,12 +277,108 @@ fun CommunityFeedProfileSection(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+private fun CommunityDetailProgressBarSection(
+    modifier: Modifier = Modifier,
+    progress: Float,
+    likeCount: Int,
+    goalCount: Int,
+    startDate: String,
+    endDate: String
+) {
+    Column(
+        modifier = modifier.padding(
+            vertical = 10.dp
+        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_heart),
+                modifier = Modifier.size(30.dp),
+                contentDescription = "ic_heart",
+                tint = OnjungTheme.colors.main_coral
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            Text(
+                "$likeCount",
+                style = OnjungTheme.typography.h1,
+                color = OnjungTheme.colors.text_1
+            )
+
+            Spacer(modifier = Modifier.width(5.dp))
+
+            Text(
+                "추천",
+                style = OnjungTheme.typography.body2,
+                color = OnjungTheme.colors.text_3
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                "목표 $goalCount",
+                style = OnjungTheme.typography.body2,
+                color = OnjungTheme.colors.text_3
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Box {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(10.dp)
+                    .background(
+                        color = Color(0xFFEAEAEA),
+                        shape = CircleShape
+                    )
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth(progress)
+                    .height(10.dp)
+                    .background(
+                        color = Color(0xFFFF5856),
+                        shape = CircleShape
+                    )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top
+        ) {
+            Text(
+                "기간 $startDate~$endDate",
+                style = OnjungTheme.typography.caption,
+                color = OnjungTheme.colors.text_3
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                "D-${calculateDDay(startDate, endDate)}",
+                style = OnjungTheme.typography.body2.copy(
+                    fontWeight = FontWeight.SemiBold
+                ),
+                color = OnjungTheme.colors.text_1
+            )
+        }
+    }
+}
+
 @Composable
 fun CommunityFeedLikeAndCommentSection(
-    isLiked: Boolean,
-    likeCount: Int,
-    commentCount: Int,
-    onLike: () -> Unit
+    commentCount: Int
 ) {
     Row(
         modifier = Modifier.padding(
@@ -261,27 +389,7 @@ fun CommunityFeedLikeAndCommentSection(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Icon(
-                modifier = Modifier.clickable {
-                    onLike()
-                },
-                painter = painterResource(id = if (isLiked) R.drawable.ic_post_liked else  R.drawable.ic_post_like),
-                contentDescription = "ic_post_like",
-                tint = Color.Unspecified
-            )
-
-            Text(
-                "$likeCount",
-                style = OnjungTheme.typography.body2,
-                color = OnjungTheme.colors.text_2
-            )
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_post_comment),
@@ -290,17 +398,29 @@ fun CommunityFeedLikeAndCommentSection(
             )
 
             Text(
+                "댓글",
+                style = OnjungTheme.typography.body2,
+                color = OnjungTheme.colors.text_3
+            )
+
+            Text(
                 "$commentCount",
                 style = OnjungTheme.typography.body2,
-                color = OnjungTheme.colors.text_2
+                color = OnjungTheme.colors.text_3
             )
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CommunityFeedDetailContent(
     title: String,
+    progress: Float,
+    likeCount: Int,
+    goalCount: Int,
+    startDate: String,
+    endDate: String,
     content: String,
 ) {
     Column(
@@ -313,6 +433,14 @@ fun CommunityFeedDetailContent(
             title,
             style = OnjungTheme.typography.h1,
             color = OnjungTheme.colors.text_1
+        )
+
+        CommunityDetailProgressBarSection(
+            progress = progress,
+            likeCount = 57,
+            goalCount = goalCount,
+            startDate = startDate,
+            endDate = endDate
         )
 
         Text(
@@ -393,4 +521,14 @@ fun CommunityDetailCommentInputSection(
             )
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun calculateDDay(startDateStr: String, endDateStr: String): Long {
+    val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
+
+    val startDate = LocalDate.parse(startDateStr, formatter)
+    val endDate = LocalDate.parse(endDateStr, formatter)
+
+    return ChronoUnit.DAYS.between(startDate, endDate)
 }
