@@ -1,6 +1,7 @@
 package com.daon.onjung.ui.community.detail
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -27,6 +29,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,15 +50,12 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
+import com.daon.onjung.network.model.CommunityPostStatus
 import com.daon.onjung.ui.community.component.CommentItem
 import com.daon.onjung.ui.component.OTextField
 import com.daon.onjung.ui.component.TopBar
-import com.daon.onjung.ui.component.button.CircleButton
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.flow.collectLatest
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -72,8 +72,7 @@ fun CommunityDetailScreen(
 
     LaunchedEffect(Unit) {
         animatedProgress.snapTo(0f)
-        // TODO : 서버 API에 좋아요 목표치가 반영되면 수정
-        animatedProgress.animateTo(57 / 100f, tween(durationMillis = 1000))
+        animatedProgress.animateTo(uiState.boardInfo.likeCount / uiState.boardInfo.goalCount.toFloat(), tween(durationMillis = 1000))
     }
 
     LaunchedEffect(Unit) {
@@ -120,6 +119,15 @@ fun CommunityDetailScreen(
                 },
             )
 
+            if (
+                uiState.boardInfo.status != CommunityPostStatus.IN_PROGRESS &&
+                uiState.boardInfo.status != CommunityPostStatus.EXPIRED
+            ) {
+                CommunityDetailStatusBar(
+                    status = uiState.boardInfo.status
+                )
+            }
+
             LazyColumn(
                 modifier = Modifier.weight(1f),
                 state = listState
@@ -129,11 +137,17 @@ fun CommunityDetailScreen(
                         profileImgUrl = uiState.writerInfo.profileImgUrl,
                         userName = uiState.writerInfo.maskedNickname,
                         imageUrl = uiState.boardInfo.imgUrl,
+                        goalCount = uiState.boardInfo.goalCount,
                         likeCount = uiState.boardInfo.likeCount,
+                        startDate = uiState.boardInfo.startDate,
+                        endDate = uiState.boardInfo.endDate,
                         progress = animatedProgress.value,
                         commentCount = uiState.boardInfo.commentCount,
                         title = uiState.boardInfo.title,
-                        content = uiState.boardInfo.content
+                        content = uiState.boardInfo.content,
+                        status = uiState.boardInfo.status,
+                        postedAgo = uiState.boardInfo.postedAgo,
+                        remainingDays = uiState.boardInfo.remainingDays
                     )
                 }
 
@@ -162,15 +176,14 @@ fun CommunityDetailScreen(
             )
         }
 
-        CircleButton(
+        RecommendButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(
                     end = 20.dp,
                     bottom = 80.dp
                 ),
-            text = "추천하기",
-            icon = R.drawable.ic_heart,
+            enabled = !uiState.boardInfo.isLiked
         ) {
             viewModel.processEvent(CommunityDetailContract.Event.ToggleLike)
         }
@@ -179,15 +192,21 @@ fun CommunityDetailScreen(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CommunityFeedItem(
+private fun CommunityFeedItem(
     profileImgUrl: String,
     userName: String,
     imageUrl: String?,
     likeCount: Int,
+    goalCount: Int,
+    startDate: String,
+    endDate: String,
     progress: Float,
     commentCount: Int,
     title: String,
-    content: String
+    content: String,
+    status: CommunityPostStatus,
+    postedAgo: String,
+    remainingDays: Int
 ) {
     val context = LocalContext.current
 
@@ -197,7 +216,7 @@ fun CommunityFeedItem(
         CommunityFeedProfileSection(
             profileImageUrl = profileImgUrl,
             userName = userName,
-            createdAt = "9시간 전"
+            createdAt = postedAgo
         )
 
         imageUrl?.let { uri ->
@@ -220,10 +239,12 @@ fun CommunityFeedItem(
             title = title,
             progress = progress,
             likeCount = likeCount,
-            goalCount = 100,
-            startDate = "2021.09.01",
-            endDate = "2021.09.30",
-            content = content
+            goalCount = goalCount,
+            status = status,
+            startDate = startDate,
+            endDate = endDate,
+            content = content,
+            remainingDays = remainingDays
         )
 
         CommunityFeedLikeAndCommentSection(
@@ -233,7 +254,61 @@ fun CommunityFeedItem(
 }
 
 @Composable
-fun CommunityFeedProfileSection(
+private fun CommunityDetailStatusBar(
+    status: CommunityPostStatus
+) {
+    val backgroundColor = when (status) {
+        CommunityPostStatus.UNDER_REVIEW -> OnjungTheme.colors.sub_yellow
+        CommunityPostStatus.REGISTERED -> OnjungTheme.colors.main_coral
+        CommunityPostStatus.REGISTRATION_FAILED -> OnjungTheme.colors.gray_3
+        else -> Color.White
+    }
+
+    val iconColor = when (status) {
+        CommunityPostStatus.UNDER_REVIEW -> OnjungTheme.colors.text_2
+        CommunityPostStatus.REGISTERED -> Color.White
+        CommunityPostStatus.REGISTRATION_FAILED -> OnjungTheme.colors.text_2
+        else -> Color.White
+    }
+
+    val statusText = when (status) {
+        CommunityPostStatus.UNDER_REVIEW -> "현재 검토중인 가게예요."
+        CommunityPostStatus.REGISTERED -> "선행 가게로 등록이 완료되었습니다."
+        CommunityPostStatus.REGISTRATION_FAILED -> "아쉽게도 등록되지 않았어요."
+        else -> ""
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = backgroundColor
+            )
+            .padding(
+                horizontal = 20.dp,
+                vertical = 10.dp
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_notification),
+            contentDescription = "ic_notification",
+            tint = iconColor
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+            statusText,
+            style = OnjungTheme.typography.body2,
+            color = iconColor
+        )
+    }
+}
+
+
+@Composable
+private fun CommunityFeedProfileSection(
     profileImageUrl: String,
     userName: String,
     createdAt: String
@@ -281,12 +356,19 @@ fun CommunityFeedProfileSection(
 @Composable
 private fun CommunityDetailProgressBarSection(
     modifier: Modifier = Modifier,
+    status: CommunityPostStatus,
     progress: Float,
     likeCount: Int,
     goalCount: Int,
     startDate: String,
-    endDate: String
+    endDate: String,
+    remainingDays: Int
 ) {
+    val barColor = when (status) {
+        CommunityPostStatus.IN_PROGRESS -> OnjungTheme.colors.main_coral
+        else -> OnjungTheme.colors.gray_1
+    }
+
     Column(
         modifier = modifier.padding(
             vertical = 10.dp
@@ -299,7 +381,7 @@ private fun CommunityDetailProgressBarSection(
                 painter = painterResource(id = R.drawable.ic_heart),
                 modifier = Modifier.size(30.dp),
                 contentDescription = "ic_heart",
-                tint = OnjungTheme.colors.main_coral
+                tint = barColor
             )
 
             Spacer(modifier = Modifier.width(4.dp))
@@ -345,7 +427,7 @@ private fun CommunityDetailProgressBarSection(
                     .fillMaxWidth(progress)
                     .height(10.dp)
                     .background(
-                        color = Color(0xFFFF5856),
+                        color = barColor,
                         shape = CircleShape
                     )
             )
@@ -366,7 +448,7 @@ private fun CommunityDetailProgressBarSection(
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                "D-${calculateDDay(startDate, endDate)}",
+                "D-$remainingDays",
                 style = OnjungTheme.typography.body2.copy(
                     fontWeight = FontWeight.SemiBold
                 ),
@@ -377,7 +459,7 @@ private fun CommunityDetailProgressBarSection(
 }
 
 @Composable
-fun CommunityFeedLikeAndCommentSection(
+private fun CommunityFeedLikeAndCommentSection(
     commentCount: Int
 ) {
     Row(
@@ -414,14 +496,16 @@ fun CommunityFeedLikeAndCommentSection(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CommunityFeedDetailContent(
+private fun CommunityFeedDetailContent(
     title: String,
     progress: Float,
     likeCount: Int,
     goalCount: Int,
+    status: CommunityPostStatus,
     startDate: String,
     endDate: String,
     content: String,
+    remainingDays: Int
 ) {
     Column(
         modifier = Modifier.padding(
@@ -436,11 +520,13 @@ fun CommunityFeedDetailContent(
         )
 
         CommunityDetailProgressBarSection(
+            status = status,
             progress = progress,
-            likeCount = 57,
+            likeCount = likeCount,
             goalCount = goalCount,
             startDate = startDate,
-            endDate = endDate
+            endDate = endDate,
+            remainingDays = remainingDays
         )
 
         Text(
@@ -452,7 +538,7 @@ fun CommunityFeedDetailContent(
 }
 
 @Composable
-fun CommunityDetailCommentInputSection(
+private fun CommunityDetailCommentInputSection(
     profileImageUrl: String,
     commentContent: String,
     onContentChange: (String) -> Unit,
@@ -523,12 +609,45 @@ fun CommunityDetailCommentInputSection(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-fun calculateDDay(startDateStr: String, endDateStr: String): Long {
-    val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
+@Composable
+private fun RecommendButton(
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    onClick: () -> Unit = {}
+) {
+    val context = LocalContext.current
 
-    val startDate = LocalDate.parse(startDateStr, formatter)
-    val endDate = LocalDate.parse(endDateStr, formatter)
-
-    return ChronoUnit.DAYS.between(startDate, endDate)
+    Surface(
+        modifier = modifier
+            .size(80.dp),
+        shadowElevation = 10.dp,
+        shape = CircleShape,
+        color = if (enabled) OnjungTheme.colors.white else OnjungTheme.colors.main_coral,
+        onClick = {
+            if (enabled) onClick() else Toast.makeText(context, "이미 추천한 게시글이에요.", Toast.LENGTH_SHORT).show()
+        }
+    ) {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_heart),
+                    contentDescription = "IC_HEART",
+                    tint = if (enabled) OnjungTheme.colors.main_coral else Color.White,
+                    modifier = Modifier.offset(0.dp, (-3).dp)
+                )
+                Text(
+                    modifier = Modifier.offset(0.dp, (-4).dp),
+                    text = if (enabled) "추천하기" else "추천 완료",
+                    style = OnjungTheme.typography.body2.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = if (enabled) OnjungTheme.colors.main_coral else Color.White
+                    ),
+                )
+            }
+        }
+    }
 }

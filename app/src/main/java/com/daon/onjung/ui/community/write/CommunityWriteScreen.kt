@@ -129,7 +129,7 @@ fun CommunityWriteScreen(
                 .imePadding()
         ) {
             TopBar(
-                "작성하기",
+                "선행가게 알리기",
                 rightIcon = null,
                 leftIconOnClick = {
                     appState.navigate(Routes.Community.ROUTE)
