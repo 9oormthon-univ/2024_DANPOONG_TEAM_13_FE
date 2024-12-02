@@ -1,6 +1,7 @@
 package com.daon.onjung.ui.community.detail
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -27,6 +29,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,7 +53,6 @@ import com.daon.onjung.R
 import com.daon.onjung.ui.community.component.CommentItem
 import com.daon.onjung.ui.component.OTextField
 import com.daon.onjung.ui.component.TopBar
-import com.daon.onjung.ui.component.button.CircleButton
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
@@ -164,15 +166,14 @@ fun CommunityDetailScreen(
             )
         }
 
-        CircleButton(
+        RecommendButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(
                     end = 20.dp,
                     bottom = 80.dp
                 ),
-            text = "추천하기",
-            icon = R.drawable.ic_heart,
+            enabled = !uiState.boardInfo.isLiked
         ) {
             viewModel.processEvent(CommunityDetailContract.Event.ToggleLike)
         }
@@ -528,8 +529,52 @@ fun CommunityDetailCommentInputSection(
     }
 }
 
+@Composable
+private fun RecommendButton(
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    onClick: () -> Unit = {}
+) {
+    val context = LocalContext.current
+
+    Surface(
+        modifier = modifier
+            .size(80.dp),
+        shadowElevation = 10.dp,
+        shape = CircleShape,
+        color = if (enabled) OnjungTheme.colors.white else OnjungTheme.colors.main_coral,
+        onClick = {
+            if (enabled) onClick() else Toast.makeText(context, "이미 추천한 게시글이에요.", Toast.LENGTH_SHORT).show()
+        }
+    ) {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_heart),
+                    contentDescription = "IC_HEART",
+                    tint = if (enabled) OnjungTheme.colors.main_coral else Color.White,
+                    modifier = Modifier.offset(0.dp, (-3).dp)
+                )
+                Text(
+                    modifier = Modifier.offset(0.dp, (-4).dp),
+                    text = if (enabled) "추천하기" else "추천 완료",
+                    style = OnjungTheme.typography.body2.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = if (enabled) OnjungTheme.colors.main_coral else Color.White
+                    ),
+                )
+            }
+        }
+    }
+}
+
+
 @RequiresApi(Build.VERSION_CODES.O)
-fun calculateDDay(startDateStr: String, endDateStr: String): Long {
+private fun calculateDDay(startDateStr: String, endDateStr: String): Long {
     val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
 
     val startDate = LocalDate.parse(startDateStr, formatter)
@@ -537,3 +582,4 @@ fun calculateDDay(startDateStr: String, endDateStr: String): Long {
 
     return ChronoUnit.DAYS.between(startDate, endDate)
 }
+
