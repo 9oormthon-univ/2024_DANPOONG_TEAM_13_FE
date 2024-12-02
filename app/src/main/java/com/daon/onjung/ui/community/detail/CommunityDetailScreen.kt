@@ -50,14 +50,12 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
+import com.daon.onjung.network.model.CommunityPostStatus
 import com.daon.onjung.ui.community.component.CommentItem
 import com.daon.onjung.ui.component.OTextField
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.theme.OnjungTheme
 import kotlinx.coroutines.flow.collectLatest
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -121,6 +119,15 @@ fun CommunityDetailScreen(
                 },
             )
 
+            if (
+                uiState.boardInfo.status != CommunityPostStatus.IN_PROGRESS &&
+                uiState.boardInfo.status != CommunityPostStatus.EXPIRED
+            ) {
+                CommunityDetailStatusBar(
+                    status = uiState.boardInfo.status
+                )
+            }
+
             LazyColumn(
                 modifier = Modifier.weight(1f),
                 state = listState
@@ -137,7 +144,10 @@ fun CommunityDetailScreen(
                         progress = animatedProgress.value,
                         commentCount = uiState.boardInfo.commentCount,
                         title = uiState.boardInfo.title,
-                        content = uiState.boardInfo.content
+                        content = uiState.boardInfo.content,
+                        status = uiState.boardInfo.status,
+                        postedAgo = uiState.boardInfo.postedAgo,
+                        remainingDays = uiState.boardInfo.remainingDays
                     )
                 }
 
@@ -182,7 +192,7 @@ fun CommunityDetailScreen(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CommunityFeedItem(
+private fun CommunityFeedItem(
     profileImgUrl: String,
     userName: String,
     imageUrl: String?,
@@ -193,7 +203,10 @@ fun CommunityFeedItem(
     progress: Float,
     commentCount: Int,
     title: String,
-    content: String
+    content: String,
+    status: CommunityPostStatus,
+    postedAgo: String,
+    remainingDays: Int
 ) {
     val context = LocalContext.current
 
@@ -203,7 +216,7 @@ fun CommunityFeedItem(
         CommunityFeedProfileSection(
             profileImageUrl = profileImgUrl,
             userName = userName,
-            createdAt = "9시간 전"
+            createdAt = postedAgo
         )
 
         imageUrl?.let { uri ->
@@ -227,9 +240,11 @@ fun CommunityFeedItem(
             progress = progress,
             likeCount = likeCount,
             goalCount = goalCount,
+            status = status,
             startDate = startDate,
             endDate = endDate,
-            content = content
+            content = content,
+            remainingDays = remainingDays
         )
 
         CommunityFeedLikeAndCommentSection(
@@ -239,7 +254,61 @@ fun CommunityFeedItem(
 }
 
 @Composable
-fun CommunityFeedProfileSection(
+private fun CommunityDetailStatusBar(
+    status: CommunityPostStatus
+) {
+    val backgroundColor = when (status) {
+        CommunityPostStatus.UNDER_REVIEW -> OnjungTheme.colors.sub_yellow
+        CommunityPostStatus.REGISTERED -> OnjungTheme.colors.main_coral
+        CommunityPostStatus.REGISTRATION_FAILED -> OnjungTheme.colors.gray_3
+        else -> Color.White
+    }
+
+    val iconColor = when (status) {
+        CommunityPostStatus.UNDER_REVIEW -> OnjungTheme.colors.text_2
+        CommunityPostStatus.REGISTERED -> Color.White
+        CommunityPostStatus.REGISTRATION_FAILED -> OnjungTheme.colors.text_2
+        else -> Color.White
+    }
+
+    val statusText = when (status) {
+        CommunityPostStatus.UNDER_REVIEW -> "현재 검토중인 가게예요."
+        CommunityPostStatus.REGISTERED -> "선행 가게로 등록이 완료되었습니다."
+        CommunityPostStatus.REGISTRATION_FAILED -> "아쉽게도 등록되지 않았어요."
+        else -> ""
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = backgroundColor
+            )
+            .padding(
+                horizontal = 20.dp,
+                vertical = 10.dp
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_notification),
+            contentDescription = "ic_notification",
+            tint = iconColor
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+            statusText,
+            style = OnjungTheme.typography.body2,
+            color = iconColor
+        )
+    }
+}
+
+
+@Composable
+private fun CommunityFeedProfileSection(
     profileImageUrl: String,
     userName: String,
     createdAt: String
@@ -287,12 +356,19 @@ fun CommunityFeedProfileSection(
 @Composable
 private fun CommunityDetailProgressBarSection(
     modifier: Modifier = Modifier,
+    status: CommunityPostStatus,
     progress: Float,
     likeCount: Int,
     goalCount: Int,
     startDate: String,
-    endDate: String
+    endDate: String,
+    remainingDays: Int
 ) {
+    val barColor = when (status) {
+        CommunityPostStatus.IN_PROGRESS -> OnjungTheme.colors.main_coral
+        else -> OnjungTheme.colors.gray_1
+    }
+
     Column(
         modifier = modifier.padding(
             vertical = 10.dp
@@ -305,7 +381,7 @@ private fun CommunityDetailProgressBarSection(
                 painter = painterResource(id = R.drawable.ic_heart),
                 modifier = Modifier.size(30.dp),
                 contentDescription = "ic_heart",
-                tint = OnjungTheme.colors.main_coral
+                tint = barColor
             )
 
             Spacer(modifier = Modifier.width(4.dp))
@@ -351,7 +427,7 @@ private fun CommunityDetailProgressBarSection(
                     .fillMaxWidth(progress)
                     .height(10.dp)
                     .background(
-                        color = Color(0xFFFF5856),
+                        color = barColor,
                         shape = CircleShape
                     )
             )
@@ -372,7 +448,7 @@ private fun CommunityDetailProgressBarSection(
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                "D-${calculateDDay(startDate, endDate)}",
+                "D-$remainingDays",
                 style = OnjungTheme.typography.body2.copy(
                     fontWeight = FontWeight.SemiBold
                 ),
@@ -383,7 +459,7 @@ private fun CommunityDetailProgressBarSection(
 }
 
 @Composable
-fun CommunityFeedLikeAndCommentSection(
+private fun CommunityFeedLikeAndCommentSection(
     commentCount: Int
 ) {
     Row(
@@ -420,14 +496,16 @@ fun CommunityFeedLikeAndCommentSection(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CommunityFeedDetailContent(
+private fun CommunityFeedDetailContent(
     title: String,
     progress: Float,
     likeCount: Int,
     goalCount: Int,
+    status: CommunityPostStatus,
     startDate: String,
     endDate: String,
     content: String,
+    remainingDays: Int
 ) {
     Column(
         modifier = Modifier.padding(
@@ -442,11 +520,13 @@ fun CommunityFeedDetailContent(
         )
 
         CommunityDetailProgressBarSection(
+            status = status,
             progress = progress,
             likeCount = likeCount,
             goalCount = goalCount,
             startDate = startDate,
-            endDate = endDate
+            endDate = endDate,
+            remainingDays = remainingDays
         )
 
         Text(
@@ -458,7 +538,7 @@ fun CommunityFeedDetailContent(
 }
 
 @Composable
-fun CommunityDetailCommentInputSection(
+private fun CommunityDetailCommentInputSection(
     profileImageUrl: String,
     commentContent: String,
     onContentChange: (String) -> Unit,
@@ -571,15 +651,3 @@ private fun RecommendButton(
         }
     }
 }
-
-
-@RequiresApi(Build.VERSION_CODES.O)
-private fun calculateDDay(startDateStr: String, endDateStr: String): Long {
-    val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
-
-    val startDate = LocalDate.parse(startDateStr, formatter)
-    val endDate = LocalDate.parse(endDateStr, formatter)
-
-    return ChronoUnit.DAYS.between(startDate, endDate)
-}
-

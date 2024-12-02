@@ -1,5 +1,6 @@
 package com.daon.onjung.network.model.response
 
+import com.daon.onjung.network.model.CommunityPostStatus
 import com.google.gson.annotations.SerializedName
 
 data class BoardDetailResponse(
@@ -27,6 +28,8 @@ data class BoardDetailBoardInfo(
     val title: String,
     @SerializedName("content")
     val content: String,
+    @SerializedName("status")
+    val status: CommunityPostStatus,
     @SerializedName("posted_ago")
     val postedAgo: String,
     @SerializedName("goal_count")
