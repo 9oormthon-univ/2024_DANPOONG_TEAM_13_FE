@@ -46,6 +46,7 @@ fun ShopInfoContainer(
     imageUrl: String,
     category: StoreCategory,
     address: String,
+    onClickAddress: () -> Unit,
     totalFundsRaised: Int,
     restOfDate: Int,
     totalVisitedUsers: Int,
@@ -75,6 +76,7 @@ fun ShopInfoContainer(
                 StoreCategory.ETC -> "기타"
             },
             address = address,
+            onClickAddress = onClickAddress,
             totalFundsRaised = totalFundsRaised,
             updatePeriod = "D-$restOfDate"
         )
@@ -98,6 +100,7 @@ private fun ShopInfoHeader(
     imageUrl: String,
     tag: String,
     address: String,
+    onClickAddress: () -> Unit,
     totalFundsRaised: Int,
     updatePeriod: String,
 ) {
@@ -149,12 +152,13 @@ private fun ShopInfoHeader(
                 }
 
                 Row(
+                    modifier = Modifier.clickable { onClickAddress() },
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_gps),
-                        contentDescription = "IC_GPS",
+                        painter = painterResource(id = R.drawable.ic_kakao_map),
+                        contentDescription = "IC_KAKAO_MAP",
                         tint = Color.Unspecified
                     )
 
@@ -422,6 +426,7 @@ fun ShopInfoContainerPreview() {
         imageUrl = "https://via.placeholder.com/150",
         category = StoreCategory.KOREAN,
         address = "송파구 오금로 533 1층 (거여동)",
+        onClickAddress = { },
         totalFundsRaised = 121800,
         restOfDate = 13,
         totalVisitedUsers = 24,

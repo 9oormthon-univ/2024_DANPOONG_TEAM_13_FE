@@ -31,7 +31,7 @@ import com.daon.onjung.ui.theme.OnjungTheme
 @Preview(showBackground = true)
 @Composable
 fun DonationStore(
-    shopInfo : StoreDetailInfo = StoreDetailInfo("", listOf(StoreTag.DISABLED_GROUP), "", "", "", "", StoreCategory.KOREAN, "", "")
+    shopInfo : StoreDetailInfo = StoreDetailInfo("", listOf(StoreTag.DISABLED_GROUP), "", "", "", "", StoreCategory.KOREAN, "", 0.0, 0.0, "")
 ) {
     val context = LocalContext.current
 

@@ -1,6 +1,13 @@
 package com.daon.onjung.ui.home.shopdetail
 
+import android.Manifest
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -61,6 +69,22 @@ internal fun ShopDetailScreen(
     val effectFlow = viewModel.effect
 
     val context = LocalContext.current
+    val locationPermissionLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                viewModel.fetchUserLocation {
+                    navigateToKakaoMap(
+                        uiState.userPosition.first,
+                        uiState.userPosition.second,
+                        uiState.storeInfo.latitude,
+                        uiState.storeInfo.longitude,
+                        context
+                    )
+                }
+            } else {
+                appState.showSnackBar("위치 권한이 필요합니다.")
+            }
+        }
 
     LaunchedEffect(Unit) {
         viewModel.getStoreDetailInfo(shopId)
@@ -68,7 +92,7 @@ internal fun ShopDetailScreen(
         effectFlow.collectLatest { effect ->
             when (effect) {
                 is ShopDetailContract.Effect.KakaoShare -> {
-                    shareNoteWithKakaoLink(
+                    shareWithKakaoLink(
                         context,
                         uiState.storeInfo.title,
                         "선한 영향력, 지금 이 식당과 함께 시작해보세요!",
@@ -147,6 +171,25 @@ internal fun ShopDetailScreen(
                     imageUrl = uiState.storeInfo.logoImgUrl,
                     category = uiState.storeInfo.category,
                     address = uiState.storeInfo.address,
+                    onClickAddress = {
+                        if (ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            viewModel.fetchUserLocation {
+                                navigateToKakaoMap(
+                                    uiState.userPosition.first,
+                                    uiState.userPosition.second,
+                                    uiState.storeInfo.latitude,
+                                    uiState.storeInfo.longitude,
+                                    context
+                                )
+                            }
+                        } else {
+                            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                        }
+                    },
                     totalFundsRaised = uiState.eventInfo.totalAmount,
                     restOfDate = uiState.eventInfo.restOfDate,
                     totalVisitedUsers = uiState.onjungInfo.totalDonatorCount,
@@ -461,7 +504,7 @@ private fun ShopHistoryItem(
     }
 }
 
-private fun shareNoteWithKakaoLink(
+private fun shareWithKakaoLink(
     context: Context,
     title: String,
     description: String,
@@ -505,5 +548,54 @@ private fun shareNoteWithKakaoLink(
         } catch (e: Exception) {
             showErrorMessage("카카오톡 공유 실패")
         }
+    }
+}
+
+private fun requestLocationPermission(
+    context: Context,
+    onPermissionResult: (Boolean) -> Unit
+) {
+    val activity = context as? MainActivity
+    activity?.let {
+        activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            onPermissionResult(isGranted)
+        }.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+}
+
+private fun navigateToKakaoMap(
+    startLat: Double,
+    startLng: Double,
+    endLat: Double,
+    endLng: Double,
+    context: Context
+) {
+    val url = "kakaomap://route?sp=$startLat,$startLng&ep=$endLat,$endLng&by=PUBLICTRANSIT"
+
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    intent.addCategory(Intent.CATEGORY_BROWSABLE)
+
+    val installCheck = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        context.packageManager.queryIntentActivities(
+            Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER),
+            PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong())
+        )
+    } else {
+        context.packageManager.queryIntentActivities(
+            Intent(Intent.ACTION_MAIN, null).addCategory(Intent.CATEGORY_LAUNCHER),
+            PackageManager.GET_META_DATA
+        )
+    }
+
+    // 카카오맵이 설치되어 있다면 앱으로 연결, 설치되어 있지 않다면 스토어로 이동
+    if (installCheck.isEmpty()) {
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("market://details?id=net.daum.android.map")
+            )
+        )
+    } else {
+        context.startActivity(intent)
     }
 }

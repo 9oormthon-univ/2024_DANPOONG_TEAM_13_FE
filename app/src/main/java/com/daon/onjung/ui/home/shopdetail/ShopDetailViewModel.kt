@@ -5,6 +5,7 @@ import com.daon.onjung.Constants
 import com.daon.onjung.data.repository.StoreRepository
 import com.daon.onjung.network.adapter.ApiResult
 import com.daon.onjung.util.BaseViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -13,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ShopDetailViewModel @Inject constructor(
     private val storeRepository: StoreRepository,
+    private val fusedLocationProviderClient: FusedLocationProviderClient
 ) : BaseViewModel<ShopDetailContract.State, ShopDetailContract.Event, ShopDetailContract.Effect>(
     initialState = ShopDetailContract.State()
 ) {
@@ -25,6 +27,32 @@ class ShopDetailViewModel @Inject constructor(
             is ShopDetailContract.Event.OnjungShareClicked -> {
                 shareOnjung(event.id)
             }
+        }
+    }
+
+    @Suppress("MissingPermission")
+    fun fetchUserLocation(
+        onSuccess: () -> Unit
+    ) {
+        try {
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    updateState(
+                        currentState.copy(
+                            userPosition = Pair(latitude, longitude)
+                        )
+                    )
+                    onSuccess()
+                } else {
+                    postEffect(ShopDetailContract.Effect.ShowSnackBar("위치를 가져올 수 없습니다."))
+                }
+            }.addOnFailureListener {
+                postEffect(ShopDetailContract.Effect.ShowSnackBar("위치를 가져올 수 없습니다."))
+            }
+        } catch (e: Exception) {
+            postEffect(ShopDetailContract.Effect.ShowSnackBar("예외 발생: ${e.message}"))
         }
     }
 
