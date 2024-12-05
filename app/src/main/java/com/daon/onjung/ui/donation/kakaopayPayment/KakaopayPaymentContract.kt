@@ -12,7 +12,7 @@ class KakaopayPaymentContract {
     data class State(
         val isLoading: Boolean = false,
         val isChecked: Boolean = false,
-        val storeInfo: StoreDetailInfo = StoreDetailInfo("", listOf(StoreTag.DISABLED_GROUP), "", "", "", "", StoreCategory.KOREAN, "", ""),
+        val storeInfo: StoreDetailInfo = StoreDetailInfo("", listOf(StoreTag.DISABLED_GROUP), "", "", "", "", StoreCategory.KOREAN, "", 0.0, 0.0, ""),
     ) : UiState
 
     sealed class Event : UiEvent {

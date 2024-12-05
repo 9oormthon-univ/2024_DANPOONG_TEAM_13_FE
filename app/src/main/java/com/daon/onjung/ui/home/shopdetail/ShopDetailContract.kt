@@ -16,9 +16,10 @@ class ShopDetailContract {
     data class State(
         val isLoading: Boolean = false,
         val isExpanded: Boolean = false,
-        val storeInfo: StoreDetailInfo = StoreDetailInfo("", listOf(StoreTag.DISABLED_GROUP), "", "", "", "", StoreCategory.KOREAN, "", ""),
+        val storeInfo: StoreDetailInfo = StoreDetailInfo("", listOf(StoreTag.DISABLED_GROUP), "", "", "", "", StoreCategory.KOREAN, "", 0.0, 0.0, ""),
         val eventInfo: EventDetailInfo = EventDetailInfo(0, 0, 0),
         val onjungInfo: OnjungDetailInfo = OnjungDetailInfo(0, 0, 0, 0),
+        val userPosition: Pair<Double, Double> = Pair(0.0, 0.0),
         val storeHistories: List<StoreHistory> = emptyList(),
     ) : UiState
 

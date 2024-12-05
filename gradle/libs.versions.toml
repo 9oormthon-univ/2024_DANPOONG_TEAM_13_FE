@@ -17,7 +17,8 @@ kakaoSdkUser = "2.20.0"
 dataStore = "1.1.1"
 navigationCompose = "2.8.1"
 firebaseBom = "33.5.1"
-googleServices = "4.4.2"
+googleServicesPlugin = "4.4.2"
+googleServices = "21.0.1"
 retrofit2 = "2.9.0"
 okhttp3 = "5.0.0-alpha.11"
 chuckerLibrary = "4.0.0"
@@ -90,6 +91,8 @@ camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.r
 camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraX" }
 camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraX" }
 
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "googleServices" }
+
 accompanist-systemui = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist_systemui" }
 lottie_compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie_compose_version" }
 
@@ -101,5 +104,5 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 jetbrains-kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
 dagger-hilt-android= { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServicesPlugin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }

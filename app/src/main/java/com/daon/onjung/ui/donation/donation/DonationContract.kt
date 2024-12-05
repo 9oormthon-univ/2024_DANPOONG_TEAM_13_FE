@@ -12,7 +12,7 @@ import com.daon.onjung.util.UiState
 class DonationContract {
     data class State(
         val isLoading: Boolean = false,
-        val storeInfo: StoreDetailInfo = StoreDetailInfo("", listOf(StoreTag.DISABLED_GROUP), "", "", "", "", StoreCategory.KOREAN, "", ""),
+        val storeInfo: StoreDetailInfo = StoreDetailInfo("", listOf(StoreTag.DISABLED_GROUP), "", "", "", "", StoreCategory.KOREAN, "", 0.0, 0.0, ""),
         val amount: Int = 0,
         val isEnabled: Boolean = false
     ) : UiState
