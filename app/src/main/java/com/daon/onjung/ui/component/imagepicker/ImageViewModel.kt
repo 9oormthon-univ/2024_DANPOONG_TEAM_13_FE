@@ -26,8 +26,13 @@ internal class ImageViewModel(
         repository.deleteImage(cameraUri)
     }
 
-    fun selectImage(image: ImageInfo) {
-        _selectedImages.add(image)
+    fun selectImage(image: ImageInfo, maxImgCount: Int) {
+        if (maxImgCount == 1) {
+            _selectedImages.clear()
+            _selectedImages.add(image)
+        } else {
+            _selectedImages.add(image)
+        }
     }
 
     fun removeImage(image: ImageInfo) {

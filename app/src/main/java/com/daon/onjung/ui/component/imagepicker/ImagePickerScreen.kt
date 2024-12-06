@@ -128,7 +128,7 @@ internal fun PickerContent(
     loadImages: () -> Unit,
     insertImage: () -> Uri?,
     deleteImage: (Uri?) -> Unit,
-    selectImage: (ImageInfo) -> Unit,
+    selectImage: (ImageInfo, Int) -> Unit,
     removeImage: (ImageInfo) -> Unit,
     maxImgCount: Int,
 ) {
@@ -195,7 +195,7 @@ internal fun PickerContent(
 internal fun ImageItem(
     image: ImageInfo,
     selectedImages: List<ImageInfo>,
-    selectImage: (ImageInfo) -> Unit,
+    selectImage: (ImageInfo, Int) -> Unit,
     removeImage: (ImageInfo) -> Unit,
     maxImgCount: Int
 ) {
@@ -211,8 +211,8 @@ internal fun ImageItem(
                     if (selected) {
                         removeImage(image)
                     } else {
-                        if (selectedImages.size < maxImgCount) {
-                            selectImage(image)
+                        if (selectedImages.size <= maxImgCount) {
+                            selectImage(image, maxImgCount)
                         }
                     }
                 }
