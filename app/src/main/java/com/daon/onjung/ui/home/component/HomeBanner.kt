@@ -52,12 +52,12 @@ fun HomeBanner(
             Column {
                 Text(
                     "따듯한 온기를 전해요",
-                    style = OnjungTheme.typography.h2.copy(
+                    style = OnjungTheme.typography.body1.copy(
                         color = OnjungTheme.colors.white,
                         fontWeight = FontWeight.Bold
                     )
                 )
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     "선행 동참하고 식권 당첨 확률 올리기",
                     style = OnjungTheme.typography.body2.copy(
@@ -67,6 +67,7 @@ fun HomeBanner(
             }
 
             Icon(
+                modifier = Modifier.height(77.dp),
                 painter = painterResource(id = R.drawable.ic_home_char2),
                 contentDescription = "home_character",
                 tint = Color.Unspecified
