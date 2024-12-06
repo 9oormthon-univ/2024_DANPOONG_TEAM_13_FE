@@ -253,6 +253,7 @@ internal fun MailBanner() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .height(77.dp)
             .background(
                 color = OnjungTheme.colors.main_coral,
                 shape = RoundedCornerShape(10.dp)
@@ -272,7 +273,7 @@ internal fun MailBanner() {
         ) {
             Text(
                 "온기를 나눈 식당의\n소식을 전해드려요.",
-                style = OnjungTheme.typography.h2,
+                style = OnjungTheme.typography.title,
                 color = OnjungTheme.colors.white
             )
 

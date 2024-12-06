@@ -51,7 +51,7 @@ fun HomeBanner(
         ) {
             Column {
                 Text(
-                    "따듯한 온기를 전해요",
+                    "따뜻한 온기를 전해요",
                     style = OnjungTheme.typography.body1.copy(
                         color = OnjungTheme.colors.white,
                         fontWeight = FontWeight.Bold
