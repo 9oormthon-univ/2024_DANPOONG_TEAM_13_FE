@@ -155,7 +155,7 @@ class CommunityDetailViewModel @Inject constructor(
 
     private fun postComment() {
         viewModelScope.launch {
-            if (currentState.isLoading) return@launch
+            if (currentState.isLoading || currentState.commentInput.isEmpty()) return@launch
 
             suggestionRepository.postComment(
                 id = currentState.boardInfo.id,

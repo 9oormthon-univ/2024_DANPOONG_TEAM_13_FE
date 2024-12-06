@@ -65,6 +65,12 @@ fun ShopInfoContainer(
             )
         )
     ) {
+        val updatePeriod = if (restOfDate == 0) {
+            "D-Day"
+        } else {
+            "D-$restOfDate"
+        }
+
         ShopInfoHeader(
             name = name,
             imageUrl = imageUrl,
@@ -78,7 +84,7 @@ fun ShopInfoContainer(
             address = address,
             onClickAddress = onClickAddress,
             totalFundsRaised = totalFundsRaised,
-            updatePeriod = "D-$restOfDate"
+            updatePeriod = updatePeriod
         )
         if (isExpanded) {
             ShopInfoDetail(
@@ -163,11 +169,18 @@ private fun ShopInfoHeader(
                     )
 
                     Text(
+                        modifier = Modifier.weight(1f),
                         text = address,
                         style = OnjungTheme.typography.body2,
                         color = OnjungTheme.colors.text_3,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
+                    )
+
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_right),
+                        contentDescription = "IC_ARROW_RIGHT",
+                        tint = OnjungTheme.colors.text_3
                     )
                 }
             }

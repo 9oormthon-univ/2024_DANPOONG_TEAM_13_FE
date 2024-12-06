@@ -88,19 +88,19 @@ fun DonationSelectPrice (
                 onPriceClick(10000)
             }
             DonationSelectPriceButton(
-                3,
-                modifier = Modifier.weight(1f)
-            ) {
-                onPriceClick(30000)
-            }
-            DonationSelectPriceButton(
                 5,
                 modifier = Modifier.weight(1f)
             ) {
                 onPriceClick(50000)
             }
+            DonationSelectPriceButton(
+                10,
+                modifier = Modifier.weight(1f)
+            ) {
+                onPriceClick(100000)
+            }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        /*Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -124,7 +124,7 @@ fun DonationSelectPrice (
             ) {
                 onPriceClick(1000000)
             }
-        }
+        }*/
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             "동참은 1만원 단위로 가능합니다.",

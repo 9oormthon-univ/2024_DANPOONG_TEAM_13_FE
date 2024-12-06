@@ -147,8 +147,6 @@ internal fun OcrCameraScreen(
 
                 is OcrCameraContract.Effect.ShowOcrResult -> {
                     bottomSheetState.showBottomSheet {
-                        cameraProvider?.unbindAll()
-
                         ReceiptConfirmBottomSheet(
                             name = effect.storeName,
                             address = effect.storeAddress,
@@ -274,6 +272,7 @@ internal fun OcrCameraScreen(
                         .size(56.dp)
                         .clickable {
                             captureImage(imageCapture, context) { uri ->
+                                cameraProvider?.unbindAll()
                                 viewModel.processEvent(OcrCameraContract.Event.ImageCaptured(uri))
                             }
                         },

@@ -24,7 +24,6 @@ import coil3.request.error
 import coil3.request.placeholder
 import com.daon.onjung.R
 import com.daon.onjung.ui.theme.OnjungTheme
-import com.daon.onjung.util.noRippleClickable
 
 @Preview(showBackground = true)
 @Composable
@@ -89,7 +88,7 @@ fun CommentItem (
                     color = OnjungTheme.colors.text_1
                 )
             )
-            if (isMine) {
+            /*if (isMine) {
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     "삭제",
@@ -99,7 +98,7 @@ fun CommentItem (
                     ),
                     modifier = Modifier.noRippleClickable(onRemove)
                 )
-            }
+            }*/
         }
     }
 

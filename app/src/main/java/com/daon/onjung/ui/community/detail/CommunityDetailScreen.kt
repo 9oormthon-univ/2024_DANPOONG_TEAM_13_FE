@@ -219,6 +219,13 @@ private fun CommunityFeedItem(
             createdAt = postedAgo
         )
 
+        Text(
+            title,
+            modifier = Modifier.padding(start = 20.dp, bottom = 12.dp),
+            style = OnjungTheme.typography.h1,
+            color = OnjungTheme.colors.text_1
+        )
+
         imageUrl?.let { uri ->
             AsyncImage(
                 modifier = Modifier
@@ -236,7 +243,6 @@ private fun CommunityFeedItem(
         }
 
         CommunityFeedDetailContent(
-            title = title,
             progress = progress,
             likeCount = likeCount,
             goalCount = goalCount,
@@ -462,42 +468,50 @@ private fun CommunityDetailProgressBarSection(
 private fun CommunityFeedLikeAndCommentSection(
     commentCount: Int
 ) {
-    Row(
-        modifier = Modifier.padding(
-            horizontal = 20.dp,
-            vertical = 10.dp
-        ),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
+    Column {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
+            modifier = Modifier.padding(
+                horizontal = 20.dp,
+                vertical = 10.dp
+            ),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_post_comment),
-                contentDescription = "ic_post_comment",
-                tint = OnjungTheme.colors.text_3
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_post_comment),
+                    contentDescription = "ic_post_comment",
+                    tint = OnjungTheme.colors.text_3
+                )
 
-            Text(
-                "댓글",
-                style = OnjungTheme.typography.body2,
-                color = OnjungTheme.colors.text_3
-            )
+                Text(
+                    "댓글",
+                    style = OnjungTheme.typography.body2,
+                    color = OnjungTheme.colors.text_3
+                )
 
-            Text(
-                "$commentCount",
-                style = OnjungTheme.typography.body2,
-                color = OnjungTheme.colors.text_3
-            )
+                Text(
+                    "$commentCount",
+                    style = OnjungTheme.typography.body2,
+                    color = OnjungTheme.colors.text_3
+                )
+            }
         }
+
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(10.dp)
+                .background(OnjungTheme.colors.gray_3)
+        )
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun CommunityFeedDetailContent(
-    title: String,
     progress: Float,
     likeCount: Int,
     goalCount: Int,
@@ -513,12 +527,6 @@ private fun CommunityFeedDetailContent(
         ),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            title,
-            style = OnjungTheme.typography.h1,
-            color = OnjungTheme.colors.text_1
-        )
-
         CommunityDetailProgressBarSection(
             status = status,
             progress = progress,
@@ -579,7 +587,7 @@ private fun CommunityDetailCommentInputSection(
             OTextField(
                 value = commentContent,
                 onValueChange = onContentChange,
-                placeholderText = "따뜻한 댓글을 남겨주세요.",
+                placeholderText = "따뜻한 응원의 댓글을 남겨주세요.",
                 modifier = Modifier.weight(1f),
                 contentPaddingValues = PaddingValues(vertical = 18.dp),
                 textStyle = OnjungTheme.typography.body2,
