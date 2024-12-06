@@ -34,7 +34,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +46,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -52,6 +55,7 @@ import com.daon.onjung.OnjungAppState
 import com.daon.onjung.R
 import com.daon.onjung.network.model.CommunityPostStatus
 import com.daon.onjung.ui.community.component.CommentItem
+import com.daon.onjung.ui.community.component.HeartAnimation
 import com.daon.onjung.ui.component.OTextField
 import com.daon.onjung.ui.component.TopBar
 import com.daon.onjung.ui.theme.OnjungTheme
@@ -617,29 +621,43 @@ private fun CommunityDetailCommentInputSection(
     }
 }
 
+@Preview
 @Composable
 private fun RecommendButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     onClick: () -> Unit = {}
 ) {
+    var isPlaying by remember { mutableStateOf(false) }
     val context = LocalContext.current
-
-    Surface(
+    Box(
+        contentAlignment = Alignment.BottomCenter,
         modifier = modifier
-            .size(80.dp),
-        shadowElevation = 10.dp,
-        shape = CircleShape,
-        color = if (enabled) OnjungTheme.colors.white else OnjungTheme.colors.main_coral,
-        onClick = {
-            if (enabled) onClick() else Toast.makeText(context, "이미 추천한 게시글이에요.", Toast.LENGTH_SHORT).show()
-        }
+            .size(width = 80.dp, height = 140.dp)
     ) {
-        Box(
-            contentAlignment = Alignment.Center
+        HeartAnimation(
+            modifier = Modifier.offset(y = (-40).dp),
+            isPlaying = isPlaying,
+            onAnimationEnd = { isPlaying = false }
+        )
+        Surface(
+            modifier = Modifier
+                .size(80.dp),
+            shadowElevation = 10.dp,
+            shape = CircleShape,
+            color = if (enabled) OnjungTheme.colors.white else OnjungTheme.colors.main_coral,
+            onClick = {
+                isPlaying = true
+                if (enabled) onClick() else Toast.makeText(
+                    context,
+                    "이미 추천한 게시글이에요.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_heart),
