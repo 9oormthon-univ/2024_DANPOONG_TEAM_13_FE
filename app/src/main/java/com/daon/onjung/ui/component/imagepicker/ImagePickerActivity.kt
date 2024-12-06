@@ -22,7 +22,7 @@ class ImagePickerActivity : ComponentActivity() {
         onBackPressedDispatcher.addCallback(this, callback)
 
         val receivedIntent = intent
-        val maxImageCount = receivedIntent.getIntExtra(MAX_IMAGE_COUNT, 3)
+        val maxImageCount = receivedIntent.getIntExtra(MAX_IMAGE_COUNT, 1)
 
         setContent {
             ImagePickerScreen(

@@ -61,4 +61,33 @@ internal object ImageLoader {
 
         return images
     }
+
+    fun getImageInfoFromUri(context: Context, uri: Uri): ImageInfo? {
+        val cursor = context.contentResolver.query(
+            uri,
+            projection,
+            null, null, null
+        )
+
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val idColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+                val dateTakenColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN)
+                val displayNameColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+
+                val id = it.getLong(idColumn)
+                val dateTaken = Date(it.getLong(dateTakenColumn))
+                val displayName = it.getString(displayNameColumn)
+
+                return ImageInfo(
+                    id = id,
+                    displayName = displayName,
+                    dateTaken = dateTaken,
+                    contentUri = uri
+                )
+            }
+        }
+
+        return null
+    }
 }
