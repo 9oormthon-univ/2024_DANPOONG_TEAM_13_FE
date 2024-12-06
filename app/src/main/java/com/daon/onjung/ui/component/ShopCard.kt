@@ -96,7 +96,7 @@ fun ShopCard(
                         )
 
                         Text(
-                            "${likeCount}명의 온기",
+                            "${likeCount}개의 온기",
                             style = OnjungTheme.typography.caption.copy(
                                 color = OnjungTheme.colors.white
                             ),
