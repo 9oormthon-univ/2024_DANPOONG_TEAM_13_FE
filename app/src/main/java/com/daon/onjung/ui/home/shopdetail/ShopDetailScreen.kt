@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -285,8 +286,9 @@ private fun ShopDetailHeader(
         ) {
             Box(
                 modifier = Modifier
-                    .background(
-                        color = tagColor,
+                    .border(
+                        width = 1.dp,
+                        color = OnjungTheme.colors.white,
                         shape = CircleShape
                     )
                     .padding(
@@ -387,7 +389,7 @@ private fun ShopDetailHistorySection(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                "가게가 지출한 선행 내역이예요.",
+                "해당 가게의 선행 내역이예요.",
                 style = OnjungTheme.typography.body2,
                 color = OnjungTheme.colors.text_2
             )

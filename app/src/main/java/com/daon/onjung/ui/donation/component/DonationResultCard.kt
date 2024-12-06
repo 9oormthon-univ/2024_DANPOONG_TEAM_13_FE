@@ -144,10 +144,12 @@ private fun DonationStoreCard(
                     "결식아동" to Color(0xFF83CB82).copy(alpha = 0.8f)
                 }
             }
+
             Box(
                 modifier = Modifier
-                    .background(
-                        color = tagColor,
+                    .border(
+                        width = 1.dp,
+                        color = OnjungTheme.colors.text_2,
                         shape = CircleShape
                     )
                     .padding(
@@ -158,10 +160,11 @@ private fun DonationStoreCard(
                 Text(
                     tagName,
                     style = OnjungTheme.typography.caption.copy(
-                        color = OnjungTheme.colors.white
+                        color = OnjungTheme.colors.text_1
                     ),
                 )
             }
+
             Text(
                 text = name,
                 style = OnjungTheme.typography.h2.copy(
