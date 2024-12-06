@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,6 +54,7 @@ import com.daon.onjung.OnjungAppState
 import com.daon.onjung.OnjungBottomSheetState
 import com.daon.onjung.R
 import com.daon.onjung.TopLevelDestination
+import com.daon.onjung.ui.component.OnjungLoadingDialog
 import com.daon.onjung.ui.home.component.OcrFailedDialog
 import com.daon.onjung.ui.home.component.OnjungSuccessDialog
 import com.daon.onjung.ui.theme.OnjungTheme
@@ -258,7 +258,9 @@ internal fun OcrCameraScreen(
                 )
             }
 
-            AndroidView(factory = { previewView }, modifier = Modifier.fillMaxWidth().weight(1f))
+            AndroidView(factory = { previewView }, modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f))
 
             Box(
                 modifier = Modifier
@@ -293,13 +295,7 @@ internal fun OcrCameraScreen(
         }
 
         if (uiState.isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(45.dp)
-                    .align(Alignment.Center),
-                color = OnjungTheme.colors.main_coral,
-                trackColor = Color(0xFFECECEC)
-            )
+            OnjungLoadingDialog()
         }
     }
 }
