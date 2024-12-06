@@ -104,7 +104,7 @@ fun KakaopayPaymentScreen(
         )
         Spacer(modifier = Modifier.height(25.dp))
         KakaopayCardview(
-            money = formatCurrency(1000000),
+            money = formatCurrency(5000000),
             modifier = Modifier.padding(horizontal = 38.dp)
         )
         Spacer(modifier = Modifier.height(48.dp))
