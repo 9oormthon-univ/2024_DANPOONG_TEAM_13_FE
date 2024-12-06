@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -32,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -47,6 +46,7 @@ import com.daon.onjung.R
 import com.daon.onjung.Routes
 import com.daon.onjung.ui.theme.OnjungTheme
 import com.daon.onjung.util.formatCurrency
+import com.daon.onjung.util.noRippleClickable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
@@ -272,42 +272,36 @@ private fun ProfileAppBar(
 
             Box(
                 modifier = Modifier
-                    .background(
-                        color = OnjungTheme.colors.gray_3,
-                        shape = CircleShape
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = OnjungTheme.colors.gray_1,
-                        shape = CircleShape
-                    )
-                    .clip(shape = CircleShape)
+                    .size(40.dp)
                     .align(Alignment.CenterEnd)
-                    .clickable { onTicketClick() }
+                    .noRippleClickable {
+                        onTicketClick()
+                    }
             ) {
-                Row(
-                    modifier = Modifier
-                        .padding(
-                            horizontal = 10.dp,
-                            vertical = 2.dp
-                        ),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_meal_ticket_chip),
-                        contentDescription = null,
-                        tint = if (ticketCount > 0) OnjungTheme.colors.main_coral else OnjungTheme.colors.gray_1,
-                    )
+                Icon(
+                    modifier = Modifier.size(33.dp).align(Alignment.Center),
+                    painter = painterResource(id = R.drawable.ic_meal_ticket_chip),
+                    contentDescription = null,
+                    tint = if (ticketCount > 0) OnjungTheme.colors.main_coral else OnjungTheme.colors.gray_1,
+                )
 
-                    Spacer(modifier = Modifier.width(6.dp))
-
-                    Text(
-                        text = ticketCount.toString(),
-                        style = OnjungTheme.typography.body1.copy(
-                            fontWeight = FontWeight.SemiBold,
-                            color = OnjungTheme.colors.text_1
+                if (ticketCount > 0) {
+                    Box(
+                        modifier = Modifier
+                            .size(18.dp)
+                            .background(
+                                color = Color.Black,
+                                shape = CircleShape
+                            )
+                            .align(Alignment.TopEnd),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            "$ticketCount",
+                            style = OnjungTheme.typography.caption,
+                            color = Color.White
                         )
-                    )
+                    }
                 }
             }
         }
