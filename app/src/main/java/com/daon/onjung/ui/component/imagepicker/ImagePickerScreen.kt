@@ -26,7 +26,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,10 +61,6 @@ fun ImagePickerScreen(
         onClosed()
     }
 
-    LaunchedEffect(true) {
-        viewModel.loadImages()
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -87,12 +82,12 @@ fun ImagePickerScreen(
         ) {
             PickerContent(
                 modifier = modifier.fillMaxSize(),
-                loadImages = viewModel::loadImages,
                 insertImage = viewModel::insertImage,
                 deleteImage = viewModel::deleteImage,
                 images = viewModel.images,
                 selectedImages = viewModel.selectedImages,
                 selectImage = viewModel::selectImage,
+                selectImageFromUri = viewModel::selectImageFromUri,
                 removeImage = viewModel::removeImage,
                 maxImgCount = maxImgCount
             )
@@ -125,10 +120,10 @@ internal fun PickerContent(
     modifier: Modifier = Modifier,
     images: List<ImageInfo>,
     selectedImages: List<ImageInfo>,
-    loadImages: () -> Unit,
     insertImage: () -> Uri?,
     deleteImage: (Uri?) -> Unit,
     selectImage: (ImageInfo, Int) -> Unit,
+    selectImageFromUri: (Uri, Int) -> Unit,
     removeImage: (ImageInfo) -> Unit,
     maxImgCount: Int,
 ) {
@@ -138,7 +133,7 @@ internal fun PickerContent(
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
             if (success) {
                 cameraUri?.let {
-                    loadImages()
+                    selectImageFromUri(it, maxImgCount)
                 }
             } else {
                 deleteImage(cameraUri)

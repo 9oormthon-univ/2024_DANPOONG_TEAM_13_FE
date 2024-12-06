@@ -13,6 +13,10 @@ internal class ImageViewModel(
     private val _selectedImages = mutableStateListOf<ImageInfo>()
     val selectedImages = _selectedImages
 
+    init {
+        loadImages()
+    }
+
     fun loadImages() {
         _images.clear()
         _images.addAll(repository.getImages())
@@ -20,6 +24,14 @@ internal class ImageViewModel(
 
     fun insertImage(): Uri? {
         return repository.insertImage()
+    }
+
+    fun selectImageFromUri(uri: Uri, maxImgCount: Int) {
+        val newImage = ImageLoader.getImageInfoFromUri(context = repository.context, uri = uri)
+        newImage?.let { imageInfo ->
+            _images.add(0, imageInfo)
+            selectImage(imageInfo, maxImgCount)
+        }
     }
 
     fun deleteImage(cameraUri: Uri?) {

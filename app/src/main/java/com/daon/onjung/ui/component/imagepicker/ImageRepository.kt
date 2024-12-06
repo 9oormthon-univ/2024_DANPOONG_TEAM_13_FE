@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 
 internal class ImageRepository(
-    private val context: Context
+    val context: Context
 ) {
     fun getImages(): List<ImageInfo> {
         return ImageLoader.load(context)
