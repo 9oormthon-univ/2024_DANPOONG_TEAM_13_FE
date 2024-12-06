@@ -21,8 +21,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ExperimentalComposeApi
@@ -40,10 +42,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.daon.onjung.R
-import com.daon.onjung.ui.component.button.FilledWidthButton
 import com.daon.onjung.ui.theme.OnjungTheme
+import com.daon.onjung.util.noRippleClickable
 import dev.shreyaspatil.capturable.capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import kotlinx.coroutines.launch
@@ -151,7 +155,7 @@ internal fun MealTicketBottomSheet(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                FilledWidthButton(
+                CaptureButton(
                     text = "사진으로 저장하기",
                     modifier = Modifier
                         .padding(
@@ -347,5 +351,42 @@ private fun decodeBase64ToBitmap(base64String: String): Bitmap? {
     } catch (e: IllegalArgumentException) {
         e.printStackTrace()
         null
+    }
+}
+
+@Composable
+fun CaptureButton(
+    text: String = "",
+    modifier: Modifier = Modifier,
+    fontSize: Int = 20,
+    shadowElevation: Dp = 0.dp,
+    onClick: () -> Unit = {}
+) {
+    Surface(
+        shadowElevation = shadowElevation,
+        shape = CircleShape,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = if (shadowElevation > 0.dp) 4.dp else 0.dp)
+            .noRippleClickable {
+                onClick()
+            }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(OnjungTheme.colors.main_coral)
+                .padding(vertical = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text,
+                style = OnjungTheme.typography.h2.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = fontSize.sp
+                ),
+                color = Color.White
+            )
+        }
     }
 }
