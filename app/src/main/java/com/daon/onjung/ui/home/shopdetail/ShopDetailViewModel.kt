@@ -27,6 +27,14 @@ class ShopDetailViewModel @Inject constructor(
             is ShopDetailContract.Event.OnjungShareClicked -> {
                 shareOnjung(event.id)
             }
+
+            is ShopDetailContract.Event.OnjungShareDialogOpen -> {
+                updateIsShareDialogOpen(true)
+            }
+
+            is ShopDetailContract.Event.OnjungShareDialogDismissed -> {
+                updateIsShareDialogOpen(false)
+            }
         }
     }
 
@@ -111,5 +119,9 @@ class ShopDetailViewModel @Inject constructor(
 
     private fun updateIsExpanded(isExpanded: Boolean) {
         updateState(currentState.copy(isExpanded = isExpanded))
+    }
+
+    private fun updateIsShareDialogOpen(isOpen: Boolean) {
+        updateState(currentState.copy(isShareDialogOpen = isOpen))
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -29,6 +30,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,7 +42,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -55,6 +63,7 @@ import com.daon.onjung.ui.component.YoutubeScreen
 import com.daon.onjung.ui.component.button.CircleButton
 import com.daon.onjung.ui.component.button.FilledWidthButton
 import com.daon.onjung.ui.theme.OnjungTheme
+import com.daon.onjung.util.noRippleClickable
 import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.share.ShareClient
 import com.kakao.sdk.share.WebSharerClient
@@ -100,6 +109,7 @@ internal fun ShopDetailScreen(
                         uiState.storeInfo.bannerImgUrl,
                         appState::showSnackBar
                     )
+                    viewModel.processEvent(ShopDetailContract.Event.OnjungShareDialogDismissed)
                 }
 
                 is ShopDetailContract.Effect.NavigateTo -> {
@@ -110,6 +120,14 @@ internal fun ShopDetailScreen(
                     appState.showSnackBar(effect.message)
                 }
             }
+        }
+    }
+
+    if (uiState.isShareDialogOpen) {
+        KakaoShareDialog(
+            onShare = { viewModel.processEvent(ShopDetailContract.Event.OnjungShareClicked(shopId)) }
+        ) {
+            viewModel.processEvent(ShopDetailContract.Event.OnjungShareDialogDismissed)
         }
     }
 
@@ -227,7 +245,7 @@ internal fun ShopDetailScreen(
                     ),
                     icon = R.drawable.ic_heart
                 ) {
-                    viewModel.processEvent(ShopDetailContract.Event.OnjungShareClicked(shopId))
+                    viewModel.processEvent(ShopDetailContract.Event.OnjungShareDialogOpen)
                 }
 
                 FilledWidthButton(
@@ -373,12 +391,14 @@ private fun ShopDetailHistorySection(
         )
     ) {
         Column(
-            modifier = Modifier.padding(
-                top = 20.dp,
-                bottom = 20.dp,
-                start = 20.dp,
-                end = 24.dp
-            ).fillMaxWidth()
+            modifier = Modifier
+                .padding(
+                    top = 20.dp,
+                    bottom = 20.dp,
+                    start = 20.dp,
+                    end = 24.dp
+                )
+                .fillMaxWidth()
         ) {
             Text(
                 "선행 소식",
@@ -553,15 +573,77 @@ private fun shareWithKakaoLink(
     }
 }
 
-private fun requestLocationPermission(
-    context: Context,
-    onPermissionResult: (Boolean) -> Unit
+@Composable
+fun KakaoShareDialog(
+    onShare: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
-    val activity = context as? MainActivity
-    activity?.let {
-        activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            onPermissionResult(isGranted)
-        }.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    Dialog(
+        onDismissRequest
+    ) {
+        Box(
+            modifier = Modifier
+                .background(
+                    color = OnjungTheme.colors.white,
+                    shape = RoundedCornerShape(14.dp)
+                )
+                .padding(20.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .noRippleClickable {
+                            onDismissRequest()
+                        },
+                    painter = painterResource(id = R.drawable.ic_kakaopay_close),
+                    contentDescription = "IC_CLOSE"
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    "가게를 공유하면\n온정이 대신 100원 기부해요!",
+                    modifier = Modifier.fillMaxWidth(),
+                    style = OnjungTheme.typography.body1,
+                    color = OnjungTheme.colors.text_2,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp),
+                    contentPadding = PaddingValues(vertical = 14.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFBE400)
+                    ),
+                    onClick = onShare
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_kakao_talk),
+                            contentDescription = "IC_KAKAO_TALK",
+                            tint = Color.Unspecified
+                        )
+
+                        Text(
+                            "카카오톡으로 공유하기",
+                            style = OnjungTheme.typography.body1.copy(
+                                fontWeight = FontWeight.SemiBold
+                            ),
+                            color = Color(0xFF3F2325)
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
