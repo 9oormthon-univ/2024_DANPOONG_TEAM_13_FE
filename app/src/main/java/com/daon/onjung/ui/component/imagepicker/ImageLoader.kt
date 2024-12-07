@@ -9,7 +9,7 @@ import java.util.Date
 private val projection = arrayOf(
     MediaStore.Images.Media._ID,
     MediaStore.Images.Media.DISPLAY_NAME,
-    MediaStore.Images.Media.DATE_TAKEN
+    MediaStore.Images.Media.DATE_MODIFIED
 )
 
 internal object ImageLoader {
@@ -34,19 +34,19 @@ internal object ImageLoader {
         val cursor = context.contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             projection,
-            null, null, "${MediaStore.Images.Media.DATE_TAKEN} DESC"
+            null, null, "${MediaStore.Images.Media.DATE_MODIFIED} DESC"
         )
 
         cursor?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-            val dateTakenColumn =
-                cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN)
+            val dateModifiedColumn =
+                cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED)
             val displayNameColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idColumn)
-                val dateTaken = Date(cursor.getLong(dateTakenColumn))
+                val dateTaken = Date(cursor.getLong(dateModifiedColumn))
                 val displayName = cursor.getString(displayNameColumn)
                 val contentUri = Uri.withAppendedPath(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,

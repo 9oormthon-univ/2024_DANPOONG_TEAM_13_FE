@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -169,9 +170,9 @@ fun CommunityWriteScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 OTextField(
-                    modifier = Modifier.padding(
-                        bottom = 200.dp
-                    ),
+                    modifier = Modifier
+                        .heightIn(min = 150.dp)
+                        .padding(bottom = 100.dp),
                     value = uiState.content,
                     onValueChange = viewModel::updateContent,
                     maxLength = uiState.contentMaxLength,
@@ -186,7 +187,8 @@ fun CommunityWriteScreen(
                 .align(Alignment.BottomCenter)
         ) {
             FilledWidthButton(
-                text = "등록하기"
+                text = "등록하기",
+                isEnabled = uiState.title.isNotEmpty() && uiState.content.isNotEmpty()
             ) {
                 viewModel.processEvent(CommunityWriteContract.Event.UploadPost)
             }

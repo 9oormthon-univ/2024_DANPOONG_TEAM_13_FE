@@ -168,6 +168,10 @@ fun CommunityDetailScreen(
                         isMine = comment.writerInfo.isMe
                     )
                 }
+
+                item {
+                    Spacer(modifier = Modifier.height(100.dp))
+                }
             }
 
             CommunityDetailCommentInputSection(

@@ -39,11 +39,13 @@ fun HeartAnimation (
         }
     }
 
-    LottieAnimation(
-        composition = heartComposition,
-        progress = heartLottieAnimatable.progress,
-        modifier = modifier
-            .fillMaxSize(1f),
-        contentScale = ContentScale.FillWidth
-    )
+    if (isPlaying) {
+        LottieAnimation(
+            composition = heartComposition,
+            progress = heartLottieAnimatable.progress,
+            modifier = modifier
+                .fillMaxSize(1f),
+            contentScale = ContentScale.FillWidth
+        )
+    }
 }
