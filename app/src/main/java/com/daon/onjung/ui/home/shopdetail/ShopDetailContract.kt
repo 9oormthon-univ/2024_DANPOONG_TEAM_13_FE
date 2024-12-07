@@ -21,10 +21,13 @@ class ShopDetailContract {
         val onjungInfo: OnjungDetailInfo = OnjungDetailInfo(0, 0, 0, 0),
         val userPosition: Pair<Double, Double> = Pair(0.0, 0.0),
         val storeHistories: List<StoreHistory> = emptyList(),
+        val isShareDialogOpen: Boolean = false
     ) : UiState
 
     sealed class Event : UiEvent {
         data class ToggleExpand(val isExpanded: Boolean) : Event()
+        data object OnjungShareDialogOpen : Event()
+        data object OnjungShareDialogDismissed : Event()
         data class OnjungShareClicked(val id: Int) : Event()
     }
 
